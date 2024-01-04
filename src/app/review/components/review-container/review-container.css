@@ -1,0 +1,84 @@
+.review-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.review-header {
+    min-height: 4rem;
+}
+.title-bar {
+    display: flex;
+    flex-direction: row;
+}
+.review-header-sidebar {
+    width: 7rem;
+}
+.countdown-timer {
+    height: 3.125rem;
+}
+.header-icon-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+.review-header-title {
+    flex: 1;
+    text-align: center;
+    font-weight: bold;
+}
+.progress-bar {
+    width: 100%;
+    margin-top: 0.5625rem;
+}
+.review-body {
+    flex: 1;
+    overflow-y: auto;
+}
+.review-body-main {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow-y: auto;
+    padding-top: 10vh;
+}
+.review-body-sidebar {
+    width: 10%;
+    display: flex;
+    justify-content: flex-end;
+}
+.review-prompt{
+    width: 45%;
+    margin: 0 auto 0 auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
+}
+.review-next {
+    height: 7rem;
+    width: 4.8125rem;
+    margin: 8rem 1.3125rem 0 0;
+    padding: auto;
+}
+.navigate-next-icon {    
+    font-size: 3.5rem;
+    height: 3.5rem;
+    width: 3.5rem;
+    margin-top: .25rem;
+}
+.single-word-edit {
+    width: 100%;
+    padding-top: 10vh;
+}
+.pause-overlay {
+    position: fixed;
+    width: 100%;
+    height: 0%;
+    top: inherit;
+    left: 0;
+    z-index: 100;
+    backdrop-filter: blur(7px);
+}
+.alert {
+    text-align: center;
+}

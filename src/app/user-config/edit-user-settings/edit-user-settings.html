@@ -1,0 +1,17 @@
+
+<div class="user-settings">
+    <button mat-icon-button class="close-button" [routerLink]="['/app']"><mat-icon>close</mat-icon></button>
+
+    @for(setting of editableSettings; track setting.name) {
+        <div class="setting-row">
+            <span class="setting-prompt">{{ setting.displayName }}:</span>
+            <mat-form-field subscriptSizing="dynamic" class="setting-input-field" appearance="outline">
+
+                <input matInput [class]="'setting-input' + setting.parser.rightAlign() ? ' setting-right-align': ''"  
+                                (change)="onFieldUpdate(setting)" 
+                                [(ngModel)]="currentSettingValues[setting.name]"
+                                [placeholder]="setting.parser.settingValueToString(setting.defaultValue)" />
+            </mat-form-field>
+        </div>
+    }
+</div>

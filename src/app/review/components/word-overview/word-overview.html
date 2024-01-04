@@ -1,0 +1,25 @@
+
+@if(language && word) {
+    <div class="word-overview-elements">
+        <div class="word-overview-icons">
+            <div class="audio-player-pad"></div>
+            @for(audioFileName of word.audioFiles; track audioFileName) {
+                <word-audio-player class="audio-player-button" [wordId]="word.id" [audioFileName]="audioFileName" />
+            }
+            <div class="word-overview-edit">
+                <button mat-icon-button class="word-overview-edit-button" (click)="onEditWord()"><mat-icon>edit</mat-icon></button>
+            </div>
+        </div>
+        @for(element of language.validElements; track element.id) {
+            @if(word.elements[element.id]) {
+                <div class="word-overview-element-row">
+                    <span class="word-overview-element-key">{{ element.name }}</span>
+                    <span class="word-overview-element-value">{{ word.elements[element.id] }}</span>
+                </div>
+            }
+        }
+        <div class="word-overview-attributes">
+            <review-attributes [attributes]="word.attributes" />
+        </div>
+    </div>
+}

@@ -1,0 +1,17 @@
+
+<form>
+    <div class="adjustment-select">
+        <mat-form-field class="adjustment-value" appearance="outline">
+            <mat-label>Adjustment Amount</mat-label>
+            <input name="adjustment-value" matInput type="number" [(ngModel)]="adjustmentAmount" value="0">
+        </mat-form-field>
+            <mat-radio-group class="unit-select" color="primary" (change)="onSelectedUnitChange($event)">
+                <mat-radio-button class="days-select-button" value="days" checked>Days</mat-radio-button>
+                <mat-radio-button value="hours">Hours</mat-radio-button>
+            </mat-radio-group>
+        <div class="button-row">
+            <button mat-button color="primary" (click)="onCancel()">Cancel</button>
+            <button mat-button color="primary" (click)="onAccept()">Adjust</button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,30 @@
+<div class="navigation-header">
+    <button mat-icon-button class="ssrs-icon-button" [routerLink]="['/app']"><mat-icon class="ssrs-icon">arrow_back</mat-icon></button>
+</div>
+@if (lexiconMetadata !== undefined) {    
+
+    <div class="lexicon-header-grid">
+        <div class="lexicon-header-image">
+            <img class="lexicon-image" [src]="lexiconImagePath" />
+        </div>
+        <div class="lexicon-title">
+            <mat-label class="lexicon-title-label">{{ lexiconMetadata.title }}</mat-label>
+            <mat-label class="lexicon-description">{{ lexiconMetadata.description }}</mat-label>
+        </div>
+        <div>
+            <button mat-icon-button [matMenuTriggerFor]="additionalOptions" class="ssrs-icon-button"><mat-icon class="ssrs-icon">more_vertt</mat-icon></button>    
+            <mat-menu #additionalOptions="matMenu">
+                <button mat-menu-item (click)="wordFileUpload.value=''; wordFileUpload.click();">Load Words From File</button>
+                <button mat-menu-item (click)="audioFileUpload.value=''; audioFileUpload.click();">Load Audio From Files</button>    
+                <button mat-menu-item (click)="onExportWords(false)">Export Words To File</button>
+                <button mat-menu-item (click)="onExportWords(true)">Export Words and History To File</button>
+                <button mat-menu-item (click)="onEditLexiconMetadatClick()">Edit Lexicon Metadata</button>
+                <button mat-menu-item (click)="onAdjustNextReviewTime()">Adjust Next Review Times</button>
+                <button mat-menu-item (click)="onDeleteLexiconClick()">Delete Lexicon</button>
+            </mat-menu>
+        </div>
+    </div>
+
+    <input type="file" class="hidden-file-input" (change)="onWordFileSelected($event)" #wordFileUpload accept=".txt, .tsv" />
+    <input type="file" class="hidden-file-input" multiple="true" (change)="onAudioFilesSelected($event)" #audioFileUpload accept="audio/*" />
+}

@@ -1,0 +1,17 @@
+<div class="multiple-choice-select">
+    @for(multipleChoiceOption of multipleChoiceOptions; track $index) {
+        <div [class]="'multiple-choice-option multiple-choice-option-' + ($even ? 'even' : 'odd')">
+            <div class="numeric-overlay"><span class="multiple-choice-index">{{ $index + 1 }}.</span></div>
+            <button [name]="BUTTON_NAME_PREFIX + $index" 
+                    mat-stroked-button 
+                    #multipleChoiceButton 
+                    [class]="multipleChoiceOptionClass[$index]"
+                    class="multiple-choice-button"
+                    (click)="onClick($index)" 
+                    [disabled]="disabled">
+                <div class="multiple-choice-value" [style.font-family]="optionFont">{{ multipleChoiceOption }}</div>
+                <!--<div class="button-internal"><div class="button-number">{{ $index }}.</div><span class="multiple-choice-value" [style.font-family]="optionFont">{{ multipleChoiceOption }}</span></div>-->
+            </button>
+        </div>
+    }
+</div>

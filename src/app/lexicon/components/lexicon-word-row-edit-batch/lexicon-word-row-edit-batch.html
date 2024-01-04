@@ -1,0 +1,29 @@
+@for(newWord of newWords; track newWord.id) {
+    <word-row-edit [language]="language" 
+                   [lexiconId]="lexiconId" 
+                   [word]="newWord"
+                   [(reviewHistory)]="reviewHistoryByWordId[newWord.id]" 
+                   (deleteWord)="onDeleteWord($event)"
+                   (viewHistory)="onViewHistory($event)" />    
+}
+@for(word of words; track word.id) {
+    <word-row-edit [language]="language" 
+                   [lexiconId]="lexiconId" 
+                   [word]="word" 
+                   [(reviewHistory)]="reviewHistoryByWordId[word.id]" 
+                   (deleteWord)="onDeleteWord($event)"
+                   (viewHistory)="onViewHistory($event)" />    
+}
+@if (hasMore) {
+    @defer(on viewport) {
+        <word-row-edit-batch [language]="language" 
+                             [lexiconId]="lexiconId" 
+                             [offset]="nextOffset" 
+                             [newWordOffsetAdjustment]="newWordOffsetAdjustment" 
+                             [currentFilters]="currentFilters"
+                             [reviewHistoryView]="reviewHistoryView"
+                             (reviewHistoryViewChange)="onReviewHistoryViewChange($event)" />
+    } @placeholder {
+        <mat-label class="loading-more">Loading...</mat-label>
+    }
+}

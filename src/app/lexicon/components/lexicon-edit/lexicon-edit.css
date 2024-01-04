@@ -1,0 +1,16 @@
+.lexicon-edit {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.lexicon-edit-body {
+    overflow-y: auto;
+    flex: 1;
+}
+.word-header-row {
+    margin: 0 0 1.375rem 0;
+}
+.view-word-history {
+    margin: 3.5rem auto 0 auto;
+    width: 48rem;
+}

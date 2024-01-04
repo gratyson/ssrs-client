@@ -1,0 +1,36 @@
+<div class="review-summary">
+    <div class="overall-summary">
+        <label class="review-summary-label">Total Word Count:</label>
+        <span class="review-summary-value">{{ totalWordCount }}</span>
+        @if(totalWordCount > 0) {
+            <label class="review-summary-label">Correct Percentage:</label>
+            <span class="review-summary-value">{{ (correctWordCount / totalWordCount) | percent: "1.0-1" }} ({{ correctWordCount }}/{{ totalWordCount }})</span>
+            <label class="review-summary-label">Session Time:</label>
+            <span class="review-summary-value">{{ totalTimeMs | duration }}</span>
+            <label class="review-summary-label">Words Reviewed:</label>
+        }
+    </div>
+    @if (language && reviewedWordResults && reviewedWordResults.length > 0) {
+        <div class="reviewed-words">
+            <div class="reviewed-word-row">
+                @for(languageElement of language.coreElements; track languageElement.id) {
+                    <div class="reviewed-word-element reviewed-word-header" [style.flex]="languageElement.weight">{{ languageElement.name }}</div>
+                }
+                <div class="header-pad"></div>
+            </div>
+            @for(reviewedWordResult of reviewedWordResults; track reviewedWordResult) {
+                <div class="reviewed-word-row">
+                    @for(languageElement of language.coreElements; track languageElement.id) {
+                        <div class="reviewed-word-element" [style.flex]="languageElement.weight">{{ reviewedWordResult.wordReview.word.elements[languageElement.id] }}</div>
+                    }
+                    @if(reviewedWordResult.wordReview.reviewType !== LEARNING_REVIEW_TYPE) {
+                        <button mat-stroked-button class="reviewed-word-button" (click)="onOverrideClick($index)" [style.border-color]="reviewedWordOverrideBorder[$index]">
+                            <mat-icon class="reviewed-word-icon icon-shadow" [class]="ALLOWED_OVERIDE_OPTIONS[reviewedWordOverrideOptions[$index]].class">{{ ALLOWED_OVERIDE_OPTIONS[reviewedWordOverrideOptions[$index]].icon }}</mat-icon>
+                        </button>
+                    }
+                    <button mat-stroked-button class="reviewed-word-button" (click)="onEditClick($index)"><mat-icon class="reviewed-word-icon">edit</mat-icon></button>
+                </div>
+            }
+        </div>
+    }
+</div>

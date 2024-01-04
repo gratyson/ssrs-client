@@ -1,0 +1,20 @@
+<div class="typing-test">
+    <input #typingTestInput matInput type="text" 
+            class="typing-test-input" 
+            [class]="resultClass"
+            [disabled]="!typingEnabled || disabled" 
+            [style.font-family]="promptFont" 
+            (keyup)="onTypingTestKeyup($event)">
+</div>
+@if(typingTestButtonValues) {
+    <div class="typing-test-buttons">
+        @for(buttonVal of typingTestButtonValues; track buttonVal) {
+            <button mat-stroked-button class="typing-test-button" 
+                    [style.font-family]="promptFont" 
+                    (click)="onTypingButtonClick(buttonVal)"
+                    [disabled]="disabled">
+                {{ buttonVal }}
+            </button>
+        }
+    </div>  
+}

@@ -1,0 +1,35 @@
+.word-overview-elements {
+    display: flex;
+    flex-direction: column;
+}
+.audio-player-pad {
+    width: 0%;
+}
+.word-overview-icons {
+    display: flex;
+    margin: 0 0 .75rem 0;
+}
+.word-overview-element-row {
+    display: flex;
+    flex-direction: row;
+    margin: 0 0 .75rem 0;
+}
+.word-overview-element-key {
+    width: 25%;
+    font-weight: bold;
+    font-size: 1rem;
+}
+.word-overview-element-value {
+    font-size: 1.375rem;
+    flex: 1;
+}
+.word-overview-attributes {
+    margin: 0 0 .75rem 0;
+}
+.word-overview-edit {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: end;
+    align-items: end;
+}

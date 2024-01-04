@@ -1,0 +1,23 @@
+<div class="lexicon-summary">
+    <div class="close-summary">
+        <button mat-icon-button [routerLink]="['/app']"><mat-icon class="close-icon">arrow_back</mat-icon></button>
+    </div>
+    <div class="lexicon-summary-row">
+        <span class="lexicon-summary-row-label">Total Words:</span>
+        <span class="lexicon-summary-row-value">{{ totalWords }}</span>
+    </div>
+    <div class="lexicon-summary-row">
+        <span class="lexicon-summary-row-label">Learned Words:</span>
+        <span class="lexicon-summary-row-value">{{ learnedWords }}</span>
+    </div>
+    <div class="lexicon-summary-row">
+        <span class="lexicon-summary-row-label">Future Review:</span>
+    </div>
+    <ngx-charts-line-chart
+            [results]="futureEventCountGraphSeries"
+            [showGridLines]="false"
+            [legend]="true"
+            [xAxis]="true"
+            [yAxis]="true"
+            [xAxisTickFormatting]="dateFormatterLC" />
+</div>

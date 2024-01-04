@@ -1,0 +1,22 @@
+.word-row {
+    display: flex;
+    flex-direction: row;
+    height: 2.75rem;
+    margin: 0 1rem .3125rem .25rem;
+}
+.word-input-field {
+    padding: 0 .3125rem 0 0;
+}
+.audio-button {
+    margin: auto .3125rem auto 0;
+    height: 2.75rem;
+}
+.learned-checkbox {
+    height: 1.75rem;
+    margin: auto 0 auto 0;
+}
+.word-label-field {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: auto 0 auto .5rem;
+}

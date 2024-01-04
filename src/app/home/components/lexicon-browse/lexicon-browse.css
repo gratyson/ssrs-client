@@ -1,0 +1,19 @@
+.lexicon-select {
+    display: flex;
+    flex-direction: column;
+    margin: 0 .3125rem 0 .3125rem;
+}
+.lexicon-browse-top-options {
+    display: flex;
+    flex-direction: row;
+    margin: 0 0 0 auto;
+}
+.lexicon-select-header-button {
+    width: 3rem;
+    height: 3rem;
+}
+.lexicon-select-header-icon {
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+}

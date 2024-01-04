@@ -1,0 +1,28 @@
+<html>
+    <head xmlns="http://www.w3.org/1999/html">
+        <title>Please sign in</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <div class="login-page">
+            <div class="login-form">
+                <form>
+                    @if(warningMessage) {
+                        <div [innerHTML]="warningMessage" class="alert alert-danger"></div>
+                    }
+                    <div class="input-entry-row">
+                        <mat-form-field class="entry-row" appearance="outline">
+                            <input matInput class="login-entry" type="text" id="username" name="username" placeholder="Username" autofocus [(ngModel)]="username">
+                        </mat-form-field>
+                    </div>
+                    <mat-form-field class="entry-row" appearance="outline">
+                        <input matInput class="login-entry" type="password" id="password" name="password" placeholder="Password" [(ngModel)]="password">
+                    </mat-form-field>
+
+                </form>
+                <button mat-flat-button class="submit-button" color="primary" (click)="onSubmit($event)">Submit</button>
+                <label><span class="register-label">New User? <a href="/app/register">Register here</a>.</span></label>
+            </div>
+        </div>
+    </body>
+</html>

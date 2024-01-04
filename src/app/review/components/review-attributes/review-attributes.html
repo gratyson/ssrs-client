@@ -1,0 +1,5 @@
+<div class="prompt-attributes">
+    @for(attribute of attributeDisplay; track attribute.attributeName) {
+        <mat-chip [class]="attribute.attributeClass">{{ attribute.attributeName }}</mat-chip>
+    }
+</div>

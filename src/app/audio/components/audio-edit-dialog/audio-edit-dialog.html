@@ -1,0 +1,14 @@
+<div #dialogContainer class="audio-edit-dialog" (window:resize)="onResize($event)">
+    @if(wordId != undefined) {
+        <div><button mat-icon-button class="upload-button" (click)="fileUpload.click()"><mat-icon>upload</mat-icon></button></div>
+        <mat-divider></mat-divider>
+        @for(audioFileName of audioFileNames; track audioFileName) {
+            <div class="audio-edit-row">
+                <word-audio-player class="audio-player-button" [wordId]="wordId" [audioFileName]="audioFileName" />
+                <button mat-icon-button class="delete-button" (click)="deleteAudioFile($index)"><mat-icon>delete</mat-icon></button>
+            </div>
+        }
+
+        <input type="file" class="audio-file-input" (change)="onAudioFileSelected($event)" #fileUpload accept="audio/*">
+    }
+</div>

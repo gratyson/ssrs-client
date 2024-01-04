@@ -1,0 +1,66 @@
+<div class="review-container">
+    <div class="review-header">
+        <word-audio-player [wordId]="audioWordId" [audioFileName]="selectedAudioPath" [hidden]="true" />
+        <div class="title-bar">
+            <div class="review-header-sidebar">
+                <div class="countdown-timer">
+                    <countdown-timer [isPaused]="isPaused" (OnCountdownComplete)="onReviewTimerComplete()" />
+                </div>
+            </div>
+            <h2 class="review-header-title">{{ reviewTitle }}</h2>
+            <div class="review-header-sidebar header-icon-buttons">
+                <div class="filler"></div>
+                @if(!reviewComplete) {
+                    <button mat-icon-button (click)="onPause()"><mat-icon>{{ pauseButtonIcon }}</mat-icon></button>
+                    <button mat-icon-button (click)="onSkip()"><mat-icon>skip_next</mat-icon></button>
+                }
+                <button mat-icon-button (click)="onClose()"><mat-icon>close</mat-icon></button>
+            </div>
+        </div>
+        <mat-progress-bar class="progress-bar" color="primary" mode="determinate" [value]="percentComplete" />
+    </div>
+
+    <div class="review-body">
+        <div class="pause-overlay" [style.height]="isPaused ? '100%' : '0%'"></div>
+        <div class="review-body-main" [style.display]="wordToEdit !== null ? 'none' : ''">
+            <div class="review-body-sidebar"></div>
+            <div class="review-prompt">
+                @if(!reviewComplete && currentWordReview) {
+                    <review-prompt [wordReview]="currentWordReview" 
+                                    (reviewResult)="onReviewResult($event)" 
+                                    (advanceToNext)="onAdvanceToNext()" 
+                                    (editWord)="onEditWord($event)" 
+                                    [disabled]="isPaused" />
+                } @else if (reviewComplete) {
+                    <review-summary [totalWordCount]="totalWordCount" 
+                                    [correctWordCount]="correctWordCount"
+                                    [totalTimeMs]="totalTimeMs"
+                                    [reviewedWordResults]="reviewedWordResults" 
+                                    (reviewedWordResultsChange)="onReviewedWordResultsChange($event)"
+                                    [language]="language"
+                                    (editWord)="onEditWord($event)" />
+                } @else {
+                    @defer(on timer(1000)) {
+                        <div class="alert alert-warning">No words to review</div>
+                    }
+                }
+            </div>
+            <div class="review-body-sidebar">
+                <button mat-raised-button 
+                        class="review-next" 
+                        color="primary" 
+                        (click)="onReviewNextClick($event)">
+                    <div class="navigate-next-div"><mat-icon class="navigate-next-icon">arrow_right</mat-icon></div>
+                </button>
+            </div>
+        </div>
+        @if(wordToEdit !== null && language !== null) {
+            <div class="single-word-edit">
+                <single-word-edit [language]="language" 
+                                    [lexiconId]="lexiconId" 
+                                    [word]="wordToEdit" 
+                                    (editComplete)="onEditComplete($event)"/>
+            </div>
+        }
+    </div>
+</div>

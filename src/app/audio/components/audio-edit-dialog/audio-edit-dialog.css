@@ -1,0 +1,20 @@
+.audio-edit-dialog {
+    display: flex;
+    flex-direction: column;
+    width: 6rem;
+}
+.audio-edit-row {
+    display: flex;
+    flex-direction: row;
+}
+.upload-button {
+    display: block;
+    margin-left: auto;
+}
+.delete-button {
+    display: block;
+    margin-left: auto;
+}
+.audio-file-input {
+    display: none;
+}

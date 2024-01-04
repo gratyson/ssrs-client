@@ -1,0 +1,12 @@
+export const environment = {
+    REST_ENDPOINT_URL: "/rest/",
+
+    CACHE_EXPIRATION_TIME_IN_MS: 60 * 60 * 1000,  // 1 hour
+
+    WORD_BATCH_LOAD_SIZE: 25,
+    
+    LOAD_AUDIO_FROM_FILES_LOAD_BATCH_SIZE: 1000,
+    LOAD_AUDIO_FROM_FILES_UPDATE_BATCH_SIZE: 10,
+
+    DEFAULT_FONT_NAME: "Roboto",
+};

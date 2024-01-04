@@ -1,0 +1,22 @@
+<div class="lexicon-select">
+    <div class="lexicon-browse-top-options">
+        <button mat-icon-button class="lexicon-select-header-button" (click)="onNewLexicon($event)"><mat-icon class="lexicon-select-header-icon">add</mat-icon></button>
+        <button mat-icon-button class="lexicon-select-header-button" (click)="onRefresh($event)"><mat-icon class="lexicon-select-header-icon">refresh</mat-icon></button>
+        <button mat-icon-button class="lexicon-select-header-button" [matMenuTriggerFor]="topMenuOptions"><mat-icon class="lexicon-select-header-icon">more_vertt</mat-icon></button>
+    </div>
+
+    <mat-menu #topMenuOptions="matMenu">
+        <button mat-menu-item (click)="onReviewTodaysWordsEarly()">
+            <mat-icon>{{ reviewTodaysWordsEarly ? "check_box" : "check_box_outline_blank" }}</mat-icon>
+            <span>Review Today's Words Early</span>
+        </button>
+    </mat-menu>
+
+    @for(lexiconMetadata of lexiconMetadatas; track lexiconMetadata.id) {
+        <lexicon-selection [lexiconMetadata]="lexiconMetadata" 
+                           [scheduledReviewCounts]="scheduledReviewCounts[$index]" 
+                           [hasWordsToLearn]="hasWordsToLearn[$index]" 
+                           [reviewToEod]="reviewTodaysWordsEarly"
+                           (OnEditLexicon)="openLexicon(lexiconMetadata.id)" />
+    }
+</div>

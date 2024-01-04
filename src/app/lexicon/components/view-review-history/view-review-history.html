@@ -1,0 +1,55 @@
+
+<div class="view-history">
+    <div class="back-button">
+        <button mat-icon-button (click)="onBackClick($event)"><mat-icon>arrow_back</mat-icon></button>
+    </div>
+    <div class="view-history-row">
+        <span class="view-history-element-name">Most Recent Test Time:</span>
+        <span class="view-history-element-value">{{ reviewHistory.mostRecentTestTime | date:'medium' }}</span>
+    </div>
+    <div class="view-history-row">
+        <span class="view-history-element-name">Current Test Delay:</span>
+        <span class="view-history-element-value">{{ reviewHistory.currentTestDelay | duration }}</span>
+    </div>
+    <div class="view-history-row">
+        <span class="view-history-element-name">Next Test Relation:</span>
+        <span class="view-history-element-value">{{ nextRelation ? nextRelation.displayName : "TBD" }}</span>
+    </div>
+    <div class="view-history-row">
+        <span class="view-history-element-name">Next Test Time:</span>
+        <span class="view-history-element-value">{{ reviewHistory.nextTestTime.valueOf() > 0 ? (reviewHistory.nextTestTime | date:"medium") : "TBD" }} </span>
+    </div>
+    <div class="view-history-row">
+        <span class="view-history-element-name">Current Boost:</span>
+        <span class="view-history-element-value">{{ reviewHistory.currentBoost == 0 ? "N/A" : reviewHistory.currentBoost }}</span>
+    </div>
+    <div class="view-history-row">
+        <span class="view-history-element-name">Boost Expiration Delay:</span>
+        <span class="view-history-element-value">{{ reviewHistory.currentBoostExpirationDelay.toMillis() === 0 ? "N/A" : reviewHistory.currentBoostExpirationDelay | duration }}</span>
+    </div>
+    <div class="view-history-row">
+        <span class="view-history-element-name">Test History:</span>
+    </div>
+    <table class="test-history-table">
+        <th>Relation</th>
+        <th>Total Tests</th>
+        <th>Correct Answers</th>
+        <th>Current Streak</th>
+        <tr>
+            <td>Overall</td>
+            <td>{{ overallTestHistory.totalTests }}</td>
+            <td>{{ overallTestHistory.correct }}</td>
+            <td>{{ overallTestHistory.correctStreak }}</td>
+        </tr>
+        @for(testRelation of language.testRelationships; track testRelation.id) {
+            @if(this.reviewHistory.testHistory[testRelation.id]) {
+                <tr>
+                    <td>{{ testRelation.displayName }}</td>
+                    <td>{{ this.reviewHistory.testHistory[testRelation.id].totalTests }}</td>
+                    <td>{{ this.reviewHistory.testHistory[testRelation.id].correct }}</td>
+                    <td>{{ this.reviewHistory.testHistory[testRelation.id].correctStreak }}</td>
+                </tr>
+            }
+        }
+    </table>
+</div>

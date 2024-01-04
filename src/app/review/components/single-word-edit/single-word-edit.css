@@ -1,0 +1,11 @@
+.single-word-edit {
+    display: flex;
+    flex-direction: column;
+}
+.edit-word-complete {
+    margin-left: auto;
+}
+.word-history {
+    width: 48rem;
+    margin: 0 auto 0 auto;
+}

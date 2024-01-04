@@ -1,0 +1,129 @@
+/* You can add global styles to this file, and also import other style files */
+
+@use "@angular/material" as mat;
+@use "./styles/typography/config" as typography;
+
+@include mat.core();
+
+$ssrs-primary: mat.define-palette(mat.$blue-palette, A200, A100, A400);
+$ssrs-accent: mat.define-palette(mat.$green-palette, A200, A100, A400);
+$ssrs-warn: mat.define-palette(mat.$red-palette, A200, A100, A400);
+
+$ssrs-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $ssrs-primary,
+      accent: $ssrs-accent,
+      warn: $ssrs-warn, 
+    ),
+    typography: mat.define-typography-config(),
+    density: -3,
+  )
+);
+
+@include mat.all-component-themes($ssrs-theme);
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", Roboto, sans-serif;
+}
+
+
+img.lexicon-image {
+    height: 7rem;
+    width: 7rem;
+    object-fit: contain;
+}
+
+
+.color-primary {
+  color: map-get($ssrs-primary, 400);
+}
+.background-color-primary {
+  background-color: map-get($ssrs-primary, 400);
+}
+.color-accent {
+  color: map-get($ssrs-accent, 100);
+}
+
+.background-color-accent-200 {
+  background-color: map-get($ssrs-accent, 200)!important;
+}
+.background-color-accent-400 {
+  background-color: map-get($ssrs-accent, 400)!important;
+}
+.background-color-accent-600 {
+  background-color: map-get($ssrs-accent, 600)!important;
+}
+.background-color-accent-800 {
+  background-color: map-get($ssrs-accent, 800)!important;
+}
+.background-color-accent-A100 {
+  background-color: map-get($ssrs-accent, A100)!important;
+}
+.background-color-accent-A200 {
+  background-color: map-get($ssrs-accent, A200)!important;
+}
+.background-color-accent-A400 {
+  background-color: map-get($ssrs-accent, A400)!important;
+}
+
+.background-color-warn-100 {
+  background-color: map-get($ssrs-warn, 100)!important;
+}
+.background-color-warn-200 {
+  background-color: map-get($ssrs-warn, 200)!important;
+}
+.background-color-warn-400 {
+  background-color: map-get($ssrs-warn, 400)!important;
+}
+.background-color-warn-600 {
+  background-color: map-get($ssrs-warn, 600)!important;
+}
+.background-color-warn-800 {
+  background-color: map-get($ssrs-warn, 800)!important;
+}
+.background-color-warn-A100 {
+  background-color: map-get($ssrs-warn, A100)!important;
+}
+.background-color-warn-A200 {
+  background-color: map-get($ssrs-warn, A200)!important;
+}
+.background-color-warn-A400 {
+  background-color: map-get($ssrs-warn, A400)!important;
+}
+
+$correct-answer-color: #48e577;
+$correct-answer-near-miss-color: #e1ee09;
+$incorrect-answer-color: #fd3534;
+$incorrect-answer-near-miss-color: #f1a91f;
+
+.correct-answer-background {
+  background-color: $correct-answer-color!important;
+}
+.correct-answer-near-miss-background {
+  background-color: $correct-answer-near-miss-color!important;
+}
+.incorrect-answer-background {
+  background-color: $incorrect-answer-color!important;
+}
+.incorrect-answer-near-miss-background {
+  background-color: $incorrect-answer-near-miss-color!important;
+}
+
+.correct-answer-color {
+  color: $correct-answer-color;
+}
+.correct-answer-near-miss-color {
+  color: $correct-answer-near-miss-color;
+}
+.incorrect-answer-color {
+  color: $incorrect-answer-color;
+}
+.incorrect-answer-near-miss-color {
+  color: $incorrect-answer-near-miss-color;
+}

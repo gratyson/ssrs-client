@@ -1,0 +1,16 @@
+@if(showHistory && reviewHistory) {
+    <div class="word-history">
+        <view-review-history [reviewHistory]="reviewHistory" [language]="language" (closeHistory)="onCloseHistory()" />
+    </div>
+}
+<div class="single-word-edit" [style.visibility]="showHistory ? 'hidden' : 'visible'">
+    <button mat-icon-button class="edit-word-complete" (click)="onEditComplete()"><mat-icon>close</mat-icon></button>
+    <word-row-header [language]="language" [lexiconId]="lexiconId" />
+    <word-row-edit [language]="language" 
+                   [lexiconId]="lexiconId" 
+                   [word]="word" 
+                   [reviewHistory]="reviewHistory"
+                   [onlyAllowWordEdit]="true" 
+                   (wordChange)="onWordChange($event)"
+                   (viewHistory)="onViewHistory($event)" />
+</div>

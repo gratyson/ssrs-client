@@ -1,0 +1,38 @@
+<form>
+    <div class="lexicon-edit-form">
+        <h2 class="lexicon-edit-title">{{ formTitle }}</h2>
+        <mat-label><span class="warning-label">{{ warningMsg }}</span></mat-label>
+        <div class="lexicon-edit-row">
+            <mat-form-field class="lexicon-edit-title-entry lexicon-edit-entry-item" >
+                <mat-label>Lexicon Title</mat-label>
+                <input matInput [value]="title" (change)="onTitleChange($event)">
+            </mat-form-field>
+            <mat-form-field class="lexicon-edit-language-entry lexicon-edit-entry-item">
+                <mat-label>Language</mat-label>
+                <mat-select matNativeControl [(value)]="languageId">
+                    @for (language of languages; track language.id) {
+                        <mat-option [value]="language.id">{{language.displayName}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <mat-form-field class="lexicon-edit-entry-item">
+            <mat-label>Lexicon Description</mat-label>
+            <textarea matInput [value]="description" (change)="onDescriptionChange($event)"></textarea>
+        </mat-form-field>
+        <input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload accept="image/*">
+        <div class="lexicon-edit-row">
+            <div class="lexicon-edit-entry-item lexicon-edit-attach-image">
+                <mat-label color="primary">Upload Image:</mat-label>
+                <button mat-mini-fab color="primary" (click)="fileUpload.click()">
+                    <mat-icon>attach_file</mat-icon>
+                </button>
+            </div>
+            <img class="lexicon-image lexicon-edit-entry-item" [src]="lexiconImagePath" />
+        </div>
+    </div>
+    <div class="lexicon-close-buttons lexicon-edit-entry-item">
+        <button mat-flat-button color="primary" (click)="onCancel()">Cancel</button>
+        <button mat-flat-button color="primary" (click)="onSave()">Save</button>
+    </div>
+</form>

@@ -1,0 +1,17 @@
+<div class="app-header">
+    <div class="header-sidebar">
+        @if( userService.username ) {
+            <button mat-button [matMenuTriggerFor]="userConfigMenu" class="settings-button" ><div><mat-icon class="settings-icon">settings</mat-icon></div></button>
+            <mat-label class="user-label">{{ userService.username }}</mat-label>
+
+            <mat-menu #userConfigMenu="matMenu">
+                <button mat-menu-item [routerLink]="['/app/config']">Edit User Config</button>
+                <button mat-menu-item (click)="onLogoutClick($event)">Logout</button>
+            </mat-menu>
+        }
+    </div>
+    <div class="header-title">
+        <h2><span class="color-primary header-title-text">SS</span><span class="header-title-text">R</span><span class="header-title-text color-primary">S</span></h2>
+    </div>
+    <div class="header-sidebar"></div>
+</div>

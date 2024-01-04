@@ -1,0 +1,42 @@
+.file-input {
+    display: none;
+}
+.lexicon-edit-form {
+    display: flex;
+    flex-direction: column;
+    padding: 5px 5px 5px 5px;
+}
+.lexicon-edit-title {
+    text-align: center;
+}
+.lexicon-edit-row {
+    display: flex;
+    flex-direction: row;
+}
+.lexicon-edit-title-entry {
+    flex: 60%;
+}
+.lexicon-edit-language-entry {
+    flex: 40%;
+}
+.lexicon-close-buttons {
+    display: flex;
+    flex-direction: row;
+    float: right;
+}
+.lexicon-close-buttons button {
+    margin: 10px 5px 0px 0px;
+}
+.lexicon-edit-entry-item {
+    margin: 5px 10px 0px 0px;
+}
+.lexicon-edit-attach-image {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    flex: 1;
+}
+.warning-label {
+    color: red;
+}

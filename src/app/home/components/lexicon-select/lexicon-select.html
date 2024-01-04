@@ -1,0 +1,41 @@
+<div class="lexicon-select-grid">
+    <div class="lexicon-header-image">
+        <img class="lexicon-image" [src]="lexiconImagePath" />
+    </div>
+    <div class="lexicon-title">
+        <mat-label class="lexicon-title-label">{{ lexiconMetadata.title }}</mat-label>
+    </div>
+    <div class="lexicon-action-buttons">
+        <div class="lexicon-action-button-row">
+            <button mat-flat-button class="lexicon-action-button" 
+                                    color="primary" 
+                                    [routerLink]="['/app/review/', lexiconMetadata.id]" 
+                                    [queryParams]="reviewToEod ? { 'cutoff': endOfDayStr() } : {}"
+                                    [disabled]="!totalReviewCount">
+                {{ reviewButtonText }}
+            </button>
+            <button mat-flat-button class="lexicon-more-menu-button" color="primary" [matMenuTriggerFor]="reviewOptions" [disabled]="!totalReviewCount">...</button>
+            <mat-menu #reviewOptions="matMenu">
+            @if(language && scheduledReviewCounts) {
+                @for(relationshipReadyForReviewCnt of relationshipReadyForReviewCnts; track relationshipReadyForReviewCnt.relationship.id) {
+                    <button mat-menu-item [routerLink]="['/app/review/', lexiconMetadata.id ]" 
+                                          [queryParams]="reviewToEod ? { 'testRelationship': relationshipReadyForReviewCnt.relationship.id, 'cutoff': endOfDayStr() } : { 'testRelationship': relationshipReadyForReviewCnt.relationship.id }" >
+                        Review {{ relationshipReadyForReviewCnt.relationship.displayName }} ({{ relationshipReadyForReviewCnt.cnt }})
+                    </button>
+                }
+            }
+            </mat-menu>
+        </div>
+        <div class="lexicon-action-button-row">
+            <button mat-flat-button class="lexicon-action-button" color="primary" [routerLink]="['/app/learn/', lexiconMetadata.id]" [disabled]="!hasWordsToLearn">Learn</button>
+            <button mat-flat-button class="lexicon-more-menu-button" color="primary" [disabled]="!hasWordsToLearn">...</button>
+        </div>
+        <div class="lexicon-action-button-row">
+            <button mat-flat-button class="lexicon-action-button" color="accent" [routerLink]="['/app/editLexicon/', lexiconMetadata.id]">Edit</button>
+            <button mat-flat-button class="lexicon-more-menu-button" color="accent"  [matMenuTriggerFor]="lexiconEditOptions"><span>...</span></button>
+        </div>
+        <mat-menu #lexiconEditOptions="matMenu">
+            <button mat-menu-item [routerLink]="['/app/summary/', lexiconMetadata.id]">View Lexicon Summary</button>
+        </mat-menu>
+    </div>
+</div>

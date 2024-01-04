@@ -1,0 +1,27 @@
+.user-settings{
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    margin: 10vh auto 0 auto;
+    overflow-y: auto;
+}
+.close-button {
+    margin: 0 0 0 auto;
+}
+.setting-row {
+    display: flex;
+    flex-direction: row;
+    height: 3rem;
+}
+.setting-prompt {
+    flex: 5;
+    margin: auto 1rem auto 0;
+}
+.setting-input-field {
+    flex: 2;
+    font-size: 1rem;
+    margin: auto 0 auto 0;
+}
+.setting-right-align {
+    text-align: right;
+}

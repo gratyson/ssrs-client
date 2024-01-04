@@ -1,0 +1,34 @@
+<div class="lexicon-edit">
+    <div class="lexicon-edit-header">
+        <lexicon-edit-header [lexiconMetadata]="lexiconMetadata" 
+            (loadWordsFromFile)="onLoadWordsFromFile($event)"
+            (loadAudioFromFiles)="onLoadAudioFromFiles($event)"
+            (exportLexicon)="onExportLexicon($event)"
+            (editLexiconMetadata)="onEditLexiconMetadata()"
+            (deleteLexicon)="onDeleteLexicon()"
+            (adjustNextReviewTime)="onAdjustNextReviewTime()"
+        />
+    </div>
+
+    @if(reviewHistoryView !== null) {
+        <div class="view-word-history">
+            <view-review-history [reviewHistory]="reviewHistoryView" [language]="language" (closeHistory)="onCloseHistory()" />
+        </div>
+    }
+    <div class="lexicon-edit-body" [style.visibility]="reviewHistoryView === null ? 'visible' : 'hidden'">
+        <div class="word-header-row">
+            <word-row-filter [language]="language" [lexiconId]="lexiconId" (OnFilterWordUpdate)="onWordFilterUpdate($event)" />
+        </div>
+        <div class="word-header-row">
+            <word-row-add [language]="language" [lexiconId]="lexiconId" (OnNewWord)="onNewWord($event)" />
+        </div>
+
+        <word-row-edit-batch [language]="language" 
+                             [lexiconId]="lexiconId" 
+                             [newWordOffsetAdjustment]="newWordOffsetAdjustment" 
+                             [currentFilters]="wordFilterOptions" 
+                             [(newWords)]="newWords" 
+                             [(reviewHistoryView)]="reviewHistoryView" />
+    </div>
+    <div class="view-history-body"></div>
+</div>

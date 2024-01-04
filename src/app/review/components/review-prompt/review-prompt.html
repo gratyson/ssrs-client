@@ -1,0 +1,30 @@
+@if(wordReview) {
+    <div class="word-review">
+        @if(showOverview()) {
+            <word-overview [word]="wordReview.word" [language]="currentLanguage" (editWord)="onEditWord($event)" />
+        } @else {
+            <h1 class="review-prompt" [style.font-family]="promptWithFont">{{ wordReview.word.elements[wordReview.promptWith] }}</h1>
+            <div class="show-after-test" [style.visibility]="showAfterTestVisibiliy" [style.font-family]="showAfterTestFont">{{ wordReview.word.elements[wordReview.showAfterTest] }}</div>
+            <div class="review-attributes"><review-attributes [attributes]="wordReview.word.attributes" /></div>
+        }
+        @if(showTypingPrompt()) {
+            <typing-test-prompt [correctAnswer]="wordReview.word.elements[wordReview.testOn]"
+                                [typingTestButtons]="wordReview.typingTestButtons" 
+                                [promptFont]="testOnFont" 
+                                [reviewMode]="wordReview.reviewMode"
+                                (typingTestResult)="onTypingTestResult($event)"
+                                [disabled]="disabled" />
+        } 
+        @if(showMultipleChoice()) {
+            <multiple-choice-prompt [options]="wordReview.multipleChoiceButtons" 
+                                    [correctAnswer]="wordReview.word.elements[wordReview.testOn]" 
+                                    [optionFont]="testOnFont" 
+                                    (multipleChoiceTestResult)="onMultipleChoiceTestResult($event)" 
+                                    [disabled]="disabled" />
+        }
+    </div>
+} @else {
+    @defer(on timer(2500)) {
+        <div class="alert alert-danger">Failed to load review</div>
+    }
+}

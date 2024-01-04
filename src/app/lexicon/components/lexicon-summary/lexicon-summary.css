@@ -1,0 +1,24 @@
+.lexicon-summary {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    height: 40%;
+    margin: 5em auto 0 auto;
+}
+.close-summary {
+    margin-bottom: .5em;
+}
+.lexicon-summary-row {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: .3em;
+}
+.lexicon-summary-row-label {
+    font-weight: bold;
+    font-size: 1.2em;
+    width: 10em;
+}
+.lexicon-summary-row-value {
+    font-size: 1.2em;
+    flex: 1;
+}

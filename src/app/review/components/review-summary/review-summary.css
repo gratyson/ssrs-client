@@ -1,0 +1,64 @@
+.review-summary {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: auto;
+}
+.overall-summary {
+    display: grid;
+    grid-template-columns: auto auto;
+    row-gap: .375rem;
+}
+.review-summary-label {
+    font-size: 1.125rem;
+    font-weight: bold;
+}
+.review-summary-value {
+    font-size: 1rem;
+}
+.reviewed-words {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-top: .1875rem;
+    margin-left: 1.375rem;
+    overflow-y: auto;
+}
+.reviewed-word-row {
+    display: flex;
+    flex-direction: row;
+    margin: .2rem .625rem 0 0;
+}
+.reviewed-word-header {
+    font-style: italic;
+    margin-bottom: .1875rem;
+}
+.reviewed-word-element {
+    font-size: 1rem;
+    padding-left: .1875rem;
+    padding-right: .1875rem;
+}
+.reviewed-word-button {
+    width: 1.375rem; 
+    min-width: unset;
+    height: 1.375rem; 
+    min-height: unset;
+    padding: unset;
+    margin-left: .1875rem;
+    background-color: #dedede;
+}
+.reviewed-word-icon {
+    font-size: 1rem; 
+    margin: 1px auto 0 auto;
+}
+.icon-shadow {
+    font-weight: bolder;
+    text-shadow:
+        -1px -1px 0 #a1a1a1,
+        1px -1px 0 #a1a1a1,
+        -1px 1px 0 #a1a1a1,
+        1px 1px 0 #a1a1a1;  
+}
+.header-pad {
+    width: 3.125rem; /* width of 2 buttons incl. margins */
+}

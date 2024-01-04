@@ -1,0 +1,16 @@
+.adjustment-select {
+    display: flex;
+    flex-direction: column;
+    margin: 1em 1em 1em 1em;
+}
+.unit-select {
+    margin: 0 auto .5em auto;
+}
+.days-select-button {
+    margin-right: 1em;
+}
+.button-row {
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+}

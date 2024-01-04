@@ -1,0 +1,22 @@
+{
+	"/login":
+	{
+		"target": "https://localhost:8443",
+		"secure": false
+	},
+	"/rest":
+	{
+		"target": "https://localhost:8443",
+		"secure": false
+	},
+	"/auth":
+	{
+                "target": "https://localhost:8443",
+                "secure": false
+	},
+	"/logout":
+	{
+		"target": "https://localhost:8443",
+                "secure": false
+	}
+}

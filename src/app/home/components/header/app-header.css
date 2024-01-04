@@ -1,0 +1,34 @@
+.app-header {
+    display: flex;
+    flex-direction: row;
+    height: 3rem;
+}
+.header-title {
+    text-align: center;
+    flex: 1;
+}
+.header-title-text {
+    float: center;
+    font-weight: bold;
+    font-style: italic;
+}
+.logout-link {
+    float: right;
+}
+.header-sidebar {
+    width: 13rem;
+}
+.settings-button {
+    border: none;
+    min-width: 0!important;
+    min-height: 0!important;
+    height: 1.6rem;
+    width: 1.6rem;
+    padding: 0 0 0 0;
+}
+.settings-icon {
+    margin-top: .2rem;
+    font-size: 1.4rem;
+    height: 1.5rem;
+    width: 1.5rem;
+}

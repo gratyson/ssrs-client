@@ -1,0 +1,25 @@
+.view-history {
+    display: flex;
+    flex-direction: column;    
+}
+.back-button {
+    margin-bottom: .5em;
+}
+.view-history-row {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: .7em;
+    margin-left: .7em;
+}
+.view-history-element-name {
+    width: 15em;
+    font-weight: bold;
+    font-size: 1.4em;
+}
+.view-history-element-value {
+    font-size: 1.2em;
+}
+.test-history-table {
+    margin-left: 4em;
+    margin-right: 4em;
+}

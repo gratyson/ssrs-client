@@ -1,0 +1,52 @@
+@if(language) {
+    <form>
+        <div class="word-row">
+            <mat-checkbox name="learned-checkbox" #learnedCheckbox (click)="onLearnedCheckboxClick($event)" class="learned-checkbox" [style.visibility]="learnedCheckboxVisibility" [(ngModel)]="learnedCheckboxChecked" [(indeterminate)]="learnedCheckboxIndeterminate" [disabled]="learnedCheckboxDisabled"></mat-checkbox>
+            @for (languageElement of language.validElements; track languageElement.id) {
+                
+                @if(isInput) {
+                    <mat-form-field class="word-input-field" subscriptSizing="dynamic" appearance="outline" style.flex="{{ languageElement.weight }}">
+                        @if(applyLabels) {
+                            <mat-label>{{ labelPrefix}}{{ languageElement.name }}</mat-label>
+                        }
+
+                        <input matInput [name]="languageElement.id" 
+                                        class="word-edit-input"  
+                                        (change)="onFieldUpdate($event)" 
+                                        (keyup)="onFieldKeyup($event)" 
+                                        [style.font-family]="getFontName(languageElement)" 
+                                        [(ngModel)]="currentElementValues[languageElement.id]">
+                    </mat-form-field>
+                } @else {
+                    <mat-label class="word-label-field" style.flex="{{ languageElement.weight }}"><span>{{ currentElementValues[languageElement.id] }}</span></mat-label>
+                }
+            }
+            
+            @if(isInput) {
+                <mat-form-field class="word-input-field" subscriptSizing="dynamic" appearance="outline" [style.flex]="1.5"> 
+                    @if(applyLabels) {
+                        <mat-label>{{ labelPrefix }}Attributes</mat-label>
+                    }
+                    <input name="currentAttributes" class="currentAttributes" matInput (change)="onFieldUpdate($event)" (keyup)="onFieldKeyup($event)" [(ngModel)]="currentAttributes">
+                </mat-form-field>
+            } @else {
+                <mat-label class="word-label-field" [style.flex]="1.5">{{ currentAttributes }}</mat-label>
+            }
+
+            <button mat-stroked-button #editAudioButton class="audio-button" (click)="onAudioClick($event)" [style.visibility]="audioVisibility" [style.color]="audioButtonColor">Audio<mat-icon>{{ audioIcon }}</mat-icon></button>
+            <button mat-icon-button [style.display]="addWordButtonDisplay" (click)="onSaveNewWordClick($event)"><mat-icon>save_alt</mat-icon></button>
+            <button mat-icon-button [matMenuTriggerFor]="additionalWordOptions" [disabled]="!reviewHistory && onlyAllowWordEdit" [style.display]="additionalWordOptionsDisplay" [style.visibility]="additionalWordOptionsVisibility">
+                <mat-icon>more_horiz</mat-icon>
+            </button>
+            <mat-menu #additionalWordOptions="matMenu">
+                @if(reviewHistory && reviewHistory.learned) {
+                    <button mat-menu-item (click)="onViewHistoryClick($event)">View Word History</button>
+                }
+                @if(!onlyAllowWordEdit) {
+                    <button mat-menu-item (click)="onToggleWordLearned($event)">{{ reviewHistory && reviewHistory.learned ? "Clear learning history" : "Set as learned" }}</button>
+                    <button mat-menu-item (click)="onDeleteWordClick($event)">Delete Word</button>
+                }
+            </mat-menu>
+        </div>
+    </form>
+}
