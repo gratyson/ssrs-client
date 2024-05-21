@@ -6,6 +6,7 @@
 
             <mat-menu #userConfigMenu="matMenu">
                 <button mat-menu-item [routerLink]="['/app/config']">Edit User Config</button>
+                <button mat-menu-item [routerLink]="['/app/notepad']">Notepad</button>
                 <button mat-menu-item (click)="onLogoutClick($event)">Logout</button>
             </mat-menu>
         }

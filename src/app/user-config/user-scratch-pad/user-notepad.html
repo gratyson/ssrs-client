@@ -1,0 +1,16 @@
+<div class="user-notepad">
+    <div class="user-notepad-header">
+        <span class="notepad-title">User Notepad</span>
+        <button mat-icon-button class="close-notepad" (click)="onClose()"><mat-icon>close</mat-icon></button>
+    </div>
+    <textarea matInput 
+              class="user-notepad-text" 
+              (input)="onInput()" 
+              [(ngModel)]="notepadText"
+              [maxlength]="MAX_CHARACTER_CNT"
+              [readonly]="!canEditText">
+    </textarea>
+    <div class="notifications">
+        <span class="saved-notification" [style.visibility]="isTextSaved ? 'visible' : 'hidden'">Data saved</span>
+    </div>
+</div>

@@ -10,6 +10,7 @@ import { LearningSessionComponent } from "./review/components/session-container/
 import { ReviewSessionComponent } from "./review/components/session-container/review-session.component";
 import { LexiconSummaryComponent } from "./lexicon/components/lexicon-summary/lexicon-summary.component";
 import { EditUserSettingsComponent } from "./user-config/edit-user-settings/edit-user-settings.component";
+import { UserNotepadComponent } from "./user-config/user-scratch-pad/user-notepad.component";
 
 const loginGuardFunction: CanActivateChildFn = (
     route: ActivatedRouteSnapshot,
@@ -35,6 +36,7 @@ export const routes: Route[] = [
     { path: "app/review/:lexiconId/:testRelationship", component: ReviewSessionComponent, canActivate: [ loginGuardFunction ] },
     { path: "app/review/:lexiconId", component: ReviewSessionComponent, canActivate: [ loginGuardFunction ] },
     { path: "app/config" , component: EditUserSettingsComponent, canActivate: [loginGuardFunction] },
+    { path: "app/notepad" , component: UserNotepadComponent, canActivate: [loginGuardFunction] },
     { path: "app/login", component: LoginComponent },
     { path: "app/register", component: RegisterComponent },
     { path: '',   redirectTo: '/app', pathMatch: 'full' },

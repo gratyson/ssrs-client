@@ -1,0 +1,31 @@
+.user-notepad {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    height: 60%;
+    margin: 5% auto 0 auto;
+}
+.notepad-title {
+    margin: auto 0 auto 0;
+    font-size: 1.25rem;
+}
+.user-notepad-header {
+    display: flex;
+    flex-direction: row;
+}
+.close-notepad {
+    margin-left: auto;
+}
+.user-notepad-text {
+    width: 100%;
+    height: 100%;
+}
+.notifications {
+    display: flex;
+    flex-direction: row;
+}
+.saved-notification {
+    margin-left: auto;
+    font-size: .625rem;
+    font-style: italic;
+}
