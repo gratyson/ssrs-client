@@ -22,7 +22,6 @@ export class UserConfigClient {
     public saveUserConfig(userConfig: { [k: string]: string }): Observable<void> {
         const url = environment.REST_ENDPOINT_URL + SET_CONFIG_ENDPOINT;
 
-        console.log("posting config");
         return this.httpClient.post<void>(url, JSON.stringify(userConfig), this.httpOptions).pipe(catchError(handleError<void>("saveUserConfig")));
     }
 }

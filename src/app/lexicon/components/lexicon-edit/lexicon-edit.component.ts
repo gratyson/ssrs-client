@@ -101,7 +101,7 @@ export class LexiconEdit {
     }
 
     onLoadWordsFromFile(file: File) {
-        this.wordParse.parseFile(this.language, this.lexiconId, file).then((wordParseResult) => {
+        this.wordParse.parseFile(this.language, this.lexiconId, file).subscribe((wordParseResult) => {
             let message: string = `${wordParseResult.words.length} words saved. `;
 
             if (wordParseResult.failedValidation > 0) {

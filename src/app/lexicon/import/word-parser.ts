@@ -2,10 +2,13 @@ import { Injectable, inject } from "@angular/core";
 import { Language, WordElement } from "../../language/language";
 import { Word } from "../model/word"
 import { WordClient } from "../../client/word-client";
-import { Observable, firstValueFrom } from "rxjs";
+import { Observable, firstValueFrom, forkJoin, from, map, merge, mergeMap, mergeWith, of, switchMap } from "rxjs";
 import { EMPTY_LEXICON_REVIEW_HISTORY, LexiconReviewHistory, TestHistory } from "../model/lexicon";
 import { Duration } from "../../util/duration/duration";
 import { ReviewSessionClient } from "../../client/review-session-client";
+import { environment } from "../../../environments/environment";
+import { MatDialog } from "@angular/material/dialog";
+import { ConfirmDialog } from "../../util/confirm-dialog";
 
 const SAVE_BATCH_SIZE: number = 250;
 const HASH_ROOT: number = 44340143;
@@ -17,15 +20,41 @@ export class WordParser {
     private wordClient: WordClient = inject(WordClient);
     private reviewSessionClient: ReviewSessionClient = inject(ReviewSessionClient);
 
-    public async parseFile(language: Language, lexiconId: string, file: File): Promise<WordParseResult> {
+    constructor(private dialog: MatDialog) { }
+
+    public parseFile(language: Language, lexiconId: string, file: File): Observable<WordParseResult> {
+        return from(file.text()).pipe(switchMap((fileText) => {
+            const allLines = fileText.split(/\r\n|\n/);
+
+            if (allLines.length >= environment.LOAD_WORDS_FROM_FILE_WARN_SIZE) {
+                const dialogRef = this.dialog.open(ConfirmDialog, {
+                    data: {
+                        title: "Import Words?",
+                        message: `Attempting to import ${allLines.length} words. Continue?`,
+                        confirmAction: "Continue",
+                        cancelAction: "Cancel",
+                    },
+                });
+
+                return dialogRef.afterClosed().pipe(switchMap((result) => {
+                    if (result) {
+                        return this.parseLines(language, lexiconId, allLines);
+                    } else {
+                        return of(new WordParseResult());
+                    }
+                }));
+            }
+
+            return this.parseLines(language, lexiconId, allLines);
+        }));
+    }
+
+    private parseLines(language: Language, lexiconId: string, lines: string[]): Observable<WordParseResult> {
         let wordParseResult: WordParseResult = new WordParseResult();
         let wordsToSave: Word[] = [];
         let reviewHistoryByWordElementStr: { [k:string]: LexiconReviewHistory } = {};
 
-        const fileText: string = await file.text();
-        const allLines = fileText.split(/\r\n|\n/);
-        
-        for(const line of allLines) {
+        for(const line of lines) {
             if (line !== "") { 
                 const linePieces = line.split("\t");
                 const word: Word | null = this.parseWordFromLine(language,  linePieces);
@@ -43,17 +72,19 @@ export class WordParser {
             }
         }
 
-        wordParseResult.words = await this.saveWords(lexiconId, wordsToSave);
+        return from(this.saveWords(lexiconId, wordsToSave)).pipe(map((savedWords) => {
+            wordParseResult.words = savedWords;
 
-        wordParseResult.skipped = wordsToSave.length - wordParseResult.words.length;
-        
-        if (Object.keys(reviewHistoryByWordElementStr).length > 0) {
-            wordParseResult.reviewHistoryById = this.saveReviewHistory(language, lexiconId, wordParseResult.words, reviewHistoryByWordElementStr);
-        } else {
-            wordParseResult.reviewHistoryById = {};
-        }
+            wordParseResult.skipped = wordsToSave.length - wordParseResult.words.length;
 
-        return wordParseResult;
+            if (Object.keys(reviewHistoryByWordElementStr).length > 0) {
+                wordParseResult.reviewHistoryById = this.saveReviewHistory(language, lexiconId, wordParseResult.words, reviewHistoryByWordElementStr);
+            } else {
+                wordParseResult.reviewHistoryById = {};
+            }
+
+            return wordParseResult;
+        }));
     }
 
     private parseWordFromLine(language: Language, linePieces: string[]): Word | null {
@@ -74,8 +105,6 @@ export class WordParser {
         if (!attributes) {
             return null;  // attributes are required
         }
-
-        //const wordId = linePieces[pos++];
 
         return { id: "", elements: elements, attributes: attributes, audioFiles: [] };
     }
