@@ -19,9 +19,11 @@ export class AudioPlayerComponent {
     @Input() wordId: string;
     @Input() audioFileName: string;
     @Input() hidden: boolean = false;
+    @Input() autoplay: boolean = false;
 
     audioFilePath: string;
     audioMimeType: string;
+    hasAutoplayStarted: boolean;
 
     public ngOnChanges(simpleChanges: SimpleChanges): void {
         if (simpleChanges.hasOwnProperty("wordId") || simpleChanges.hasOwnProperty("audioFileName")) {
@@ -29,6 +31,8 @@ export class AudioPlayerComponent {
                 if(this.audioPlayer && (!this.audioPlayer.nativeElement.paused && !this.audioPlayer.nativeElement.ended)) {
                     this.audioPlayer.nativeElement.pause();
                 }
+
+                this.hasAutoplayStarted = false;
                 this.audioFilePath = this.audioClient.getAudioPath(this.wordId, this.audioFileName);
                 this.audioMimeType = "audio/" + this.audioFileName.substring(this.audioFileName.lastIndexOf(".") + 1);
             }
@@ -38,5 +42,12 @@ export class AudioPlayerComponent {
     public playAudio(): void {
         this.audioPlayer.nativeElement.currentTime = 0;
         this.audioPlayer.nativeElement.play();
+    }
+
+    onAudioLoaded(): void {
+        if (this.autoplay && !this.hasAutoplayStarted) {
+            this.hasAutoplayStarted = true;
+            this.playAudio();
+        }
     }
 }

@@ -107,7 +107,7 @@ export class ReviewContainerComponent {
             this.reviewPrompt.updateResult(this.currentResult);
         }
         
-        this.playAudio();  // don't set new audio until immediately before playing, to avoid interrupting the last word's audio
+        this.setAudio();  // don't set new audio until immediately before playing, to avoid interrupting the last word's audio
     }
 
     onAdvanceToNext(): void {
@@ -199,7 +199,7 @@ export class ReviewContainerComponent {
         }
 
         if (this.playAudioOnLoad(wordReview.reviewMode)) {
-            this.playAudio();
+            this.setAudio();
         }
     }
 
@@ -216,13 +216,6 @@ export class ReviewContainerComponent {
         } else {
             this.audioWordId = ""
             this.selectedAudioPath = "";
-        }
-    }
-
-    private playAudio(): void {
-        this.setAudio();  
-        if (this.selectedAudioPath && this.wordAudioPlayer) {
-            setTimeout(() => this.wordAudioPlayer.playAudio(), 0);
         }
     }
 
