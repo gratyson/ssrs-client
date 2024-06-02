@@ -80,9 +80,9 @@ export class TypingTestPromptComponent {
 
     onMousewheel(event: WheelEvent): void {
         if (event.deltaY > 0) {
-            this.adjustCursorPos(-1);
-        } else if (event.deltaY < 0) {
             this.adjustCursorPos(1);
+        } else if (event.deltaY < 0) {
+            this.adjustCursorPos(-1);
         }
     }
 
