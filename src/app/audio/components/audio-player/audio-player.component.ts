@@ -44,10 +44,14 @@ export class AudioPlayerComponent {
         this.audioPlayer.nativeElement.play();
     }
 
-    onAudioLoaded(): void {
+    onCanPlay(): void {
+        this.autoPlayAudio();
+    }
+
+    private autoPlayAudio(): void {
         if (this.autoplay && !this.hasAutoplayStarted) {
             this.hasAutoplayStarted = true;
-            this.playAudio();
+            this.audioPlayer.nativeElement.play();
         }
     }
 }

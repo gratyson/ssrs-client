@@ -1,4 +1,4 @@
 <button mat-icon-button [hidden]="hidden" (click)="playAudio()"><mat-icon>play_circle</mat-icon></button>
-<audio controls class="audio-player" #audioPlayer preload=false [src]="audioFilePath" (canplaythrough)="onAudioLoaded()">
+<audio controls class="audio-player" #audioPlayer preload=false [src]="audioFilePath" (canplay)="onCanPlay()">
     <source [src]="audioFilePath" [type]="audioMimeType">
 </audio>
