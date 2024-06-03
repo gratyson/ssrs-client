@@ -20,6 +20,7 @@ import { MultipleChoicePromptComponent } from "../multiple-choice-prompt.compone
 import { Word } from "../../../lexicon/model/word";
 
 const ADVANCE_TO_NEXT_TEST_WAIT_TIME_MS = 3000;
+const NON_TEST_TIME_BEFORE_PROCESS_MS = 500;
 
 @Component({
     selector: "review-prompt",
@@ -177,7 +178,10 @@ export class ReviewPromptComponent {
     }
 
     private processNonTest(): void {
-        this.advanceToNextTest();
+        // Add a small small delay before advancing to avoid accidently skipping a non-test if the enter key is held down too long
+        if ((this.getCurrentMillis() - this.testStartTime) >= NON_TEST_TIME_BEFORE_PROCESS_MS) {
+            this.advanceToNextTest();
+        }
     }
 
     private emitReviewResult(): void {
