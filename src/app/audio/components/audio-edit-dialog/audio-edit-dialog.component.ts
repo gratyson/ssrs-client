@@ -38,7 +38,6 @@ export class AudioEditDialogComponent {
     }
     
     onResize(event: Event): void {
-        console.dir(event);
         this.positionWindow();
     }
 

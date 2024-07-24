@@ -21,12 +21,6 @@ export class AppHeaderComponent {
     authClient: AuthClient = inject(AuthClient);
     router: Router = inject(Router);
 
-    logoutPath: string = "";
-
-    public ngOnInit(): void {
-        this.logoutPath = new URL("logout", document.baseURI).toString();
-    }
-
     onLogoutClick(event: Event): void {
         this.authClient.logout().subscribe(() => { 
             window.location.reload();
