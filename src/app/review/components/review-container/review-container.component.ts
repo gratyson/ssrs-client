@@ -211,8 +211,13 @@ export class ReviewContainerComponent {
     private setAudio(): void {
         if (this.currentWordReview.word.audioFiles && this.currentWordReview.word.audioFiles.length > 0) {
             const selectedAudioFileIndex = Math.floor(Math.random() * this.currentWordReview.word.audioFiles.length);
-            this.selectedAudioPath = this.currentWordReview.word.audioFiles[selectedAudioFileIndex];
-            this.audioWordId = this.currentWordReview.word.id;
+            if (this.selectedAudioPath === this.currentWordReview.word.audioFiles[selectedAudioFileIndex] && this.audioWordId === this.currentWordReview.word.id) {
+                // If the audio is not changing, just play the existing audio, no need to try and change it
+                this.wordAudioPlayer.playAudio();
+            } else {
+                this.selectedAudioPath = this.currentWordReview.word.audioFiles[selectedAudioFileIndex];
+                this.audioWordId = this.currentWordReview.word.id;
+            }
         } else {
             this.audioWordId = ""
             this.selectedAudioPath = "";

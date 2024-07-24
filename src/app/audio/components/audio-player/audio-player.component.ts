@@ -33,10 +33,16 @@ export class AudioPlayerComponent {
                 }
 
                 this.hasAutoplayStarted = false;
-                this.audioFilePath = this.audioClient.getAudioPath(this.wordId, this.audioFileName);
-                this.audioMimeType = "audio/" + this.audioFileName.substring(this.audioFileName.lastIndexOf(".") + 1);
+
+                const newAudioFilePath = this.audioClient.getAudioPath(this.wordId, this.audioFileName);
+                if (newAudioFilePath !== this.audioFilePath) {
+                    this.audioFilePath = this.audioClient.getAudioPath(this.wordId, this.audioFileName);
+                    this.audioMimeType = "audio/" + this.audioFileName.substring(this.audioFileName.lastIndexOf(".") + 1);
+                } else {
+                    this.audioPlayer.nativeElement.currentTime = 0;
+                }
             }
-        } 3
+        }
     }
 
     public playAudio(): void {
