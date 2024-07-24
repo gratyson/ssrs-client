@@ -24,6 +24,7 @@ export const ATTRIBUTE_CLASS_TABLE: { [k:string]: string } = {
     "v-adj": VERB_CLASS,
     "v-aux": VERB_CLASS,
     "v-k": VERB_CLASS,
+    "v-s": VERB_CLASS,
     "v-pre": VERB_CLASS,
     "v-vs": VERB_CLASS,
     "v1": VERB_CLASS,
@@ -77,4 +78,5 @@ export const ATTRIBUTE_CLASS_TABLE: { [k:string]: string } = {
     "exp": ASPECT_CLASS,
     "int": ASPECT_CLASS,
     "om-mim": ASPECT_CLASS,
+    "der": ASPECT_CLASS
 };
