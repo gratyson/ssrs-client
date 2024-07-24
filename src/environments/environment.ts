@@ -1,5 +1,5 @@
 export const environment = {
-    REST_ENDPOINT_URL: "/rest/",
+    REST_ENDPOINT_URL: "rest/",
 
     CACHE_EXPIRATION_TIME_IN_MS: 4 * 60 * 60 * 1000,  // 1 hour
 
