@@ -1,8 +1,8 @@
 .multiple-choice-select {
     display: grid;
-    grid-template-columns: 49.5% 49.5%;
+    grid-template-columns: 50% 50%;
     gap: .5rem;
-    margin-top: .5rem .5rem .5rem 0;
+    margin: .5rem .5rem .5rem 0;
 }
 .multiple-choice-option {
     width: 100%;
