@@ -73,6 +73,7 @@ export const ATTRIBUTE_CLASS_TABLE: { [k:string]: string } = {
     "hon": ASPECT_CLASS,
     "hum": ASPECT_CLASS,
     "pol": ASPECT_CLASS,
+    "frm": ASPECT_CLASS,
     "ctr": ASPECT_CLASS,
     "num": ASPECT_CLASS,
     "exp": ASPECT_CLASS,
