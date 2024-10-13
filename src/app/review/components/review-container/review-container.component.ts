@@ -1,6 +1,6 @@
 import { Component, Input, SimpleChanges, ViewChild, inject } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatButtonModule } from "@angular/material/button";
+import { MatButton, MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatGridListModule } from "@angular/material/grid-list";
 import { MatIconModule } from "@angular/material/icon";
@@ -9,7 +9,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { CountdownTimerComponent } from "../countdown/countdown-timer.component";
 import { ReviewPromptComponent } from "../review-prompt/review-prompt.component";
-import {  ReviewTestResult, WordReview } from "../../model/review-session";
+import { ReviewTestResult, WordReview } from "../../model/review-session";
 import { ReviewQueueManager, WordReviewResult } from "../../queue/review-queue-manager";
 import { Word } from "../../../lexicon/model/word";
 import { AudioPlayerComponent } from "../../../audio/components/audio-player/audio-player.component";
@@ -40,6 +40,9 @@ export class ReviewContainerComponent {
     @ViewChild(AudioPlayerComponent) wordAudioPlayer: AudioPlayerComponent;
     @ViewChild(ReviewSummaryComponent) reviewSummaryComponent: ReviewSummaryComponent;
     
+    @ViewChild("pauseButton") pauseButton: MatButton;
+    @ViewChild("nextButton") nextButton: MatButton;
+
     private reviewSessionClient: ReviewSessionClient = inject(ReviewSessionClient);
     private languageService: LanguageService = inject(LanguageService);
 
@@ -147,8 +150,13 @@ export class ReviewContainerComponent {
 
     onPause(): void {
         this.togglePause();
+        setTimeout(() => this.pauseButton?._elementRef?.nativeElement.blur(), 0);
     }
 
+    onNext(): void {
+        this.deferCurrentTest();
+        setTimeout(() => this.nextButton?._elementRef?.nativeElement.blur(), 0);
+    }
 
     onSkip(): void {
         if (this.isPaused) {

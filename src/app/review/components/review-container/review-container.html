@@ -11,7 +11,8 @@
             <div class="review-header-sidebar header-icon-buttons">
                 <div class="filler"></div>
                 @if(!reviewComplete) {
-                    <button mat-icon-button (click)="onPause()"><mat-icon>{{ pauseButtonIcon }}</mat-icon></button>
+                    <button #pauseButton mat-icon-button (click)="onPause()"><mat-icon>{{ pauseButtonIcon }}</mat-icon></button>
+                    <button #nextButton mat-icon-button (click)="onNext()"><mat-icon>fast_forward</mat-icon></button>
                     <button mat-icon-button (click)="onSkip()"><mat-icon>skip_next</mat-icon></button>
                 }
                 <button mat-icon-button (click)="onClose()"><mat-icon>close</mat-icon></button>
