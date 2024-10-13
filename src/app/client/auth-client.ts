@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { Observable, catchError, map, of } from "rxjs";
+import { Observable, catchError, map, of, retry } from "rxjs";
 import { Injectable } from "@angular/core";
 import { handleError } from "./client-util";
 
@@ -27,7 +27,8 @@ export class AuthClient {
     login(username: string, password: string): Observable<LoginResponse> {
         const url: string = environment.REST_ENDPOINT_URL + LOGIN_ENDPOINT; 
 
-        return this.httpClient.post<LoginResponse>(url, JSON.stringify({ "username": username, "password": password }), this.httpOptions).pipe(catchError(handleError<LoginResponse>("login", { success: false, errMsg: "Error occurred during login"})));
+        // This should always be the first POST request sent to the server so the very first call will fail due to XRSF (and will subsequently set the required token). Include a retry on error so that it will retry with the new XSRF value
+        return this.httpClient.post<LoginResponse>(url, JSON.stringify({ "username": username, "password": password }), this.httpOptions).pipe(retry(1), catchError(handleError<LoginResponse>("login", { success: false, errMsg: "Error occurred during login"})));
     }
 
     logout(): Observable<void> {
