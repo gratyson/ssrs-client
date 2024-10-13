@@ -70,6 +70,10 @@ export class ReviewContainerComponent {
     totalTimeMs: number = 0;
     reviewedWordResults: WordReviewResult[] = [];
 
+    startTimeMs: number;
+    pauseTimeStartMs: number;
+    totalPauseTimeMs: number = 0;
+
     wordToEdit: Word | null = null;
     advanceOnEditComplete: boolean = false;
 
@@ -92,6 +96,7 @@ export class ReviewContainerComponent {
 
             this.reviewComplete = false;
             this.totalTimeMs = 0;
+            this.startTimeMs = new Date().valueOf();
         }
     }
 
@@ -105,8 +110,8 @@ export class ReviewContainerComponent {
         this.currentTestTime = this.currentReviewTimeMs + (new Date().valueOf() - this.reviewStartTimeMs);
         this.countdownTimer.stop();
 
-        const totalTimeMs = this.currentTestTime + this.reviewQueueManager.getTotalTimeSoFar();
-        if (this.currentResult.isCorrect && (this.currentWordReview.allowedTimeSec > 0) && (this.currentWordReview.allowedTimeSec * 1000 * CORRECT_NEAR_MISS_MULTIPLIER) < totalTimeMs) {
+        const reviewTimeMs = this.currentTestTime + this.reviewQueueManager.getTotalTimeSoFar();
+        if (this.currentResult.isCorrect && (this.currentWordReview.allowedTimeSec > 0) && (this.currentWordReview.allowedTimeSec * 1000 * CORRECT_NEAR_MISS_MULTIPLIER) < reviewTimeMs) {
             this.currentResult.isNearMiss = true;
             this.reviewPrompt.updateResult(this.currentResult);
         }
@@ -240,6 +245,7 @@ export class ReviewContainerComponent {
         this.totalWordCount = 0;
         this.correctWordCount = 0;
         this.reviewedWordResults = [];
+        this.totalTimeMs = (new Date().valueOf() - this.startTimeMs) - this.totalPauseTimeMs;
 
         this.reviewQueueManager.getProcessedItems().forEach(wordResult => { 
             this.reviewedWordResults.push(wordResult);
@@ -277,8 +283,8 @@ export class ReviewContainerComponent {
 
     private advanceToNext(): void {
         if (this.currentWordReview.recordResult && this.currentResult) {
-            const totalTimeMs = this.currentTestTime + this.reviewQueueManager.getTotalTimeSoFar();
-            this.saveTestResult(this.currentWordReview, this.currentResult, totalTimeMs, false);
+            const reviewTimeMs = this.currentTestTime + this.reviewQueueManager.getTotalTimeSoFar();
+            this.saveTestResult(this.currentWordReview, this.currentResult, reviewTimeMs, false);
         }
 
         if (this.wordToEdit) {
@@ -298,9 +304,6 @@ export class ReviewContainerComponent {
             }
             
             this.currentResult = null;
-            if (this.currentTestTime) {
-                this.totalTimeMs += this.currentTestTime;
-            }
             this.currentTestTime = 0;
 
             if (nextWordReview !== null) {
@@ -334,6 +337,7 @@ export class ReviewContainerComponent {
             this.isPaused = false;
             this.pauseButtonIcon = PAUSE_BUTTON_ICON_RUNNING;
             this.reviewStartTimeMs = new Date().valueOf();
+            this.totalPauseTimeMs += new Date().valueOf() - this.pauseTimeStartMs;
             if (this.advanceOnUnpause) {
                 this.advanceOnUnpause = false;
                 this.advanceToNext();
@@ -343,6 +347,7 @@ export class ReviewContainerComponent {
         } else {
             this.isPaused = true;
             this.pauseButtonIcon = PAUSE_BUTTON_ICON_PAUSED;
+            this.pauseTimeStartMs = new Date().valueOf();
             this.currentReviewTimeMs += new Date().valueOf() - this.reviewStartTimeMs;
         }
     }
