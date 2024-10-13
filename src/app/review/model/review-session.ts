@@ -1,4 +1,5 @@
 import { Word } from "../../lexicon/model/word";
+import { ReviewMode } from "./review-mode";
 
 export class ReviewSession {    
     readonly reviewType: ReviewType
@@ -28,6 +29,7 @@ export enum ReviewType {
     Learn = 1,
 }
 
+/*
 export enum ReviewMode {
     WordOverview = 0,
     TypingTest = 1, 
@@ -35,6 +37,7 @@ export enum ReviewMode {
     WordOverviewWithTyping = 3,
     WordOverviewReminder = 4,
 }
+*/
 
 export interface ReviewTestResult {
     isCorrect: boolean;

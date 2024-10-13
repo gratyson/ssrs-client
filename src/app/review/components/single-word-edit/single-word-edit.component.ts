@@ -6,7 +6,6 @@ import { LexiconWordRowHeaderComponent } from "../../../lexicon/components/lexic
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { LexiconReviewHistory } from "../../../lexicon/model/lexicon";
-import { LexiconClient } from "../../../client/lexicon-client";
 import { ViewReviewHistoryComponent } from "../../../lexicon/components/view-review-history/view-review-history.component";
 import { ReviewSessionClient } from "../../../client/review-session-client";
 

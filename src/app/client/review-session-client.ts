@@ -1,11 +1,13 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, catchError, map } from "rxjs";
-import { ReviewEvent, WordReview } from "../review/model/review-session";
+import { ReviewEvent, ReviewType, WordReview } from "../review/model/review-session";
 import { environment } from "../../environments/environment";
 import { handleError } from "./client-util";
 import { FutureReviewEvent, LexiconReviewHistory, LexiconReviewSummary, TestHistory } from "../lexicon/model/lexicon";
 import { Duration } from "../util/duration/duration";
+import { Word } from "../lexicon/model/word";
+import { ReviewMode } from "../review/model/review-mode";
 
 const SAVE_EVENT_ENDPOINT: string  = "review/saveEvent";
 const GENERATE_LEARNING_SESSION_ENDPOINT: string  = "review/generateLearningSession";
@@ -32,13 +34,17 @@ export class ReviewSessionClient {
     public generateLearningSession(lexiconId: string, wordCnt: number): Observable<WordReview[][]> {
         const url: string = environment.REST_ENDPOINT_URL + GENERATE_LEARNING_SESSION_ENDPOINT;
 
-        return this.httpClient.post<WordReview[][]>(url, JSON.stringify({ lexiconId: lexiconId, wordCnt: wordCnt}), this.httpOptions).pipe(catchError(handleError<WordReview[][]>("generateLearningSession", [])));
+        return this.httpClient.post<WordReviewFromServer[][]>(url, JSON.stringify({ lexiconId: lexiconId, wordCnt: wordCnt}), this.httpOptions)
+            .pipe<WordReview[][]>(map(serverWordReviews => this.convertNestedServerWordReview(serverWordReviews)))
+            .pipe(catchError(handleError<WordReview[][]>("generateLearningSession", [])));
     }
 
     public generateReviewSession(lexiconId: string, testRelationship: string = "", maxWordCnt: number = 0, cutoff: Date | null = null): Observable<WordReview[]> {
         const url: string = environment.REST_ENDPOINT_URL + GENERATE_REVIEW_SESSION_ENDPOINT;
 
-        return this.httpClient.post<WordReview[]>(url, JSON.stringify({ lexiconId: lexiconId, testRelationship: testRelationship, maxWordCnt: maxWordCnt, cutoff: cutoff ? cutoff.toISOString() : null }), this.httpOptions).pipe(catchError(handleError<WordReview[]>("generateReviewSession", [])));
+        return this.httpClient.post<WordReviewFromServer[]>(url, JSON.stringify({ lexiconId: lexiconId, testRelationship: testRelationship, maxWordCnt: maxWordCnt, cutoff: cutoff ? cutoff.toISOString() : null }), this.httpOptions)
+            .pipe<WordReview[]>(map(serverWordReviews => this.convertServerWordReview(serverWordReviews)))
+            .pipe(catchError(handleError<WordReview[]>("generateReviewSession", [])));
     }
     
     public getLexiconReviewHistoryBatch(lexiconId: string, wordIds: string[]): Observable<LexiconReviewHistory[]> {
@@ -98,6 +104,42 @@ export class ReviewSessionClient {
             }));
     }
 
+    private convertServerWordReview(serverWordReviews: WordReviewFromServer[]): WordReview[] {
+        let wordReviews: WordReview[] = [];
+
+        for(let serverWordReview of serverWordReviews) {
+            wordReviews.push({
+                languageId: serverWordReview.languageId,
+                word: serverWordReview.word,
+                scheduledEventId: serverWordReview.scheduledEventId,
+                testOn: serverWordReview.testOn,
+                promptWith: serverWordReview.promptWith,
+                showAfterTest: serverWordReview.showAfterTest,
+
+                reviewMode: ReviewMode.fromCode(serverWordReview.reviewMode),
+                reviewType: serverWordReview.reviewType,
+                recordResult: serverWordReview.recordResult,
+
+                allowedTimeSec: serverWordReview.allowedTimeSec,
+
+                typingTestButtons: serverWordReview.typingTestButtons,
+                multipleChoiceButtons: serverWordReview.multipleChoiceButtons,
+            });
+        }
+
+        return wordReviews;
+    }
+
+    private convertNestedServerWordReview(nestedServerWordReviews: WordReviewFromServer[][]): WordReview[][] {
+        let nestedWordReviews: WordReview[][] = [];
+
+        for(let nestedServerWordReview of nestedServerWordReviews) {
+            nestedWordReviews.push(this.convertServerWordReview(nestedServerWordReview));
+        }
+
+        return nestedWordReviews;
+    }
+
     private convertServerLexiconReviewHistory(serverReviewHistories: LexiconReviewHistoryFromServer[]): LexiconReviewHistory[] {
         let lexiconReviewHistories: LexiconReviewHistory[] = []
         
@@ -139,6 +181,24 @@ export class ReviewSessionClient {
 
         return serverLexiconWordHistories;
     }
+}
+
+interface WordReviewFromServer {
+    languageId: number;
+    word: Word;
+    scheduledEventId: string;
+    testOn: string;
+    promptWith: string;
+    showAfterTest: string;
+
+    reviewMode: number;
+    reviewType: ReviewType;
+    recordResult: boolean;
+
+    allowedTimeSec: number;
+
+    typingTestButtons: string[];
+    multipleChoiceButtons: string[];
 }
 
 interface LexiconReviewHistoryFromServer {

@@ -1,9 +1,9 @@
 import { Component, ElementRef, EventEmitter, Input, Output, SimpleChanges, ViewChild } from "@angular/core";
-import { CORRECT_ANSWER_COLOR, CORRECT_ANSWER_NEAR_MISS_COLOR, INCORRECT_ANSWER_COLOR, INCORRECT_ANSWER_NEAR_MISS_COLOR } from "../../model/color-config";
-import { ReviewMode, ReviewTestResult, ReviewType } from "../../model/review-session";
+import { ReviewTestResult } from "../../model/review-session";
 import { MeasureStringDistance } from "../../../util/string-distance";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
+import { ReviewMode } from "../../model/review-mode";
 
 const ACCEPT_EMPTY_TYPING_TEST_WAIT_TIME_MS: number = 3000;
 

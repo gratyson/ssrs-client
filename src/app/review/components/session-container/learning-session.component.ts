@@ -1,11 +1,8 @@
 import { Component, Input, inject } from "@angular/core";
-import { WordClient } from "../../../client/word-client";
 import { UserConfigService } from "../../../user-config/user-config.service";
-import { ReviewMode, ReviewType, WordReview } from "../../model/review-session";
-import { Word } from "../../../lexicon/model/word";
-import { Observable, map, of, switchMap } from "rxjs";
+import { WordReview } from "../../model/review-session";
+import { Observable, switchMap } from "rxjs";
 import { LexiconClient } from "../../../client/lexicon-client";
-import { Lexicon, LexiconMetadata } from "../../../lexicon/model/lexicon";
 import { ReviewContainerComponent } from "../review-container/review-container.component";
 import { ReviewSessionClient } from "../../../client/review-session-client";
 import { WordsToLearnCount, WordsToLearnIntroductionBatchSize, WordsToLearnTestsBetweenIntroduction } from "../../../user-config/user-config-setting";
@@ -68,5 +65,4 @@ export class LearningSessionComponent {
         }
         return "Learning Lexicon";
     }
-    
 }

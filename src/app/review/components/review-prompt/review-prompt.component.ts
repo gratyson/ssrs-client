@@ -8,7 +8,7 @@ import {  MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { MatChipsModule } from "@angular/material/chips"; 
 import { CountdownTimerComponent } from "../countdown/countdown-timer.component";
-import { ReviewMode, ReviewTestResult, ReviewType, WordReview } from "../../model/review-session";
+import { ReviewTestResult, ReviewType, WordReview } from "../../model/review-session";
 import { LanguageService } from "../../../language/language-service";
 import { environment } from "../../../../environments/environment";
 import { Language, WordElement } from "../../../language/language";
@@ -16,8 +16,9 @@ import { timer } from "rxjs";
 import { TypingTestPromptComponent } from "../typing-test-prompt/typing-test-prompt.component";
 import { WordOverviewComponent } from "../word-overview/word-overview.component";
 import { ReviewAttributesComponent } from "../review-attributes/review-attributes.component";
-import { MultipleChoicePromptComponent } from "../multiple-choice-prompt.component.ts/multiple-choice-prompt.component";
+import { MultipleChoicePromptComponent } from "../multiple-choice-prompt/multiple-choice-prompt.component";
 import { Word } from "../../../lexicon/model/word";
+import { ReviewMode } from "../../model/review-mode";
 
 const ADVANCE_TO_NEXT_TEST_WAIT_TIME_MS = 3000;
 const NON_TEST_TIME_BEFORE_PROCESS_MS = 500;
@@ -109,17 +110,15 @@ export class ReviewPromptComponent {
     }
 
     showOverview(): boolean {
-        return this.wordReview && (this.wordReview.reviewMode === ReviewMode.WordOverview 
-                                || this.wordReview.reviewMode === ReviewMode.WordOverviewWithTyping
-                                || this.wordReview.reviewMode === ReviewMode.WordOverviewReminder);
+        return this.wordReview?.reviewMode.isOverview();
     }
 
     showTypingPrompt(): boolean {
-        return this.wordReview && (this.wordReview.reviewMode === ReviewMode.TypingTest || this.wordReview.reviewMode === ReviewMode.WordOverviewWithTyping);
+        return this.wordReview?.reviewMode.isTypingTest();
     }
     
     showMultipleChoice(): boolean {
-        return this.wordReview && this.wordReview.reviewMode === ReviewMode.MultipleChoiceTest;
+        return this.wordReview?.reviewMode.isMultpleChoiceTest();
     }
 
     private resetInputFields(): void {

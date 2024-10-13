@@ -1,5 +1,6 @@
 import { Word } from "../../lexicon/model/word";
-import { ReviewMode, ReviewTestResult, WordReview } from "../model/review-session";
+import { ReviewMode } from "../model/review-mode";
+import { ReviewTestResult, WordReview } from "../model/review-session";
 
 export class ReviewQueueManager {
     
@@ -112,10 +113,39 @@ export class ReviewQueueManager {
         for (let wordReviewItemQueue of this.wordReviewItemQueues) {
             for (let wordReviewItem of wordReviewItemQueue) {
                 if (wordReviewItem.wordReview?.word?.id === newWord.id) {
-                    wordReviewItem.wordReview.word = newWord;
+                    const newWordReview = this.updateWordReviewWord(wordReviewItem.wordReview, newWord);
+                    if (newWordReview) {
+                        wordReviewItem.wordReview = newWordReview;
+                    } else {
+                        wordReviewItemQueue.splice(wordReviewItemQueue.indexOf(wordReviewItem), 1);
+                    }
                 }
             }
         }
+    }
+
+    private updateWordReviewWord(wordReview: WordReview, newWord: Word): WordReview | null {
+        if (wordReview.reviewMode.isTest()) {
+            const oldTestValue = wordReview.word.elements[wordReview.testOn];
+            const newTestValue = newWord.elements[wordReview.testOn];
+
+            if (!newTestValue) {
+                // The test value was deleted, so can no longer do this test
+                return null;
+            }
+
+            if (newTestValue !== oldTestValue) {
+                if (wordReview.reviewMode.isMultpleChoiceTest()) {
+                    const idx = wordReview.multipleChoiceButtons.indexOf(oldTestValue);
+                    if (idx >= 0) {
+                        wordReview.multipleChoiceButtons[idx] = newTestValue;
+                    }
+                }
+            }
+        }
+
+        wordReview.word = newWord;
+        return wordReview;
     }
 
     private getNextWordReview(): WordReview | null {

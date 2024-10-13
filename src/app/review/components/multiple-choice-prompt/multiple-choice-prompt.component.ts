@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, QueryList, SimpleChanges, ViewChildren } from "@angular/core";
 import { MatButton, MatButtonModule } from "@angular/material/button";
-import { CORRECT_ANSWER_COLOR, CORRECT_ANSWER_NEAR_MISS_COLOR, INCORRECT_ANSWER_COLOR } from "../../model/color-config";
 import { ReviewTestResult } from "../../model/review-session";
 
 const ACCEPT_NULL_ANSWER_WAIT_TIME_MS: number = 3000;
@@ -42,7 +41,6 @@ export class MultipleChoicePromptComponent {
                 this.multipleChoiceOptions = [...this.options]; 
                 this.multipleChoiceOptionClass = Array<string>(this.options.length).fill("");
                 this.multipleChoiceBackgroundColor = Array<string>(this.options.length).fill("");
-                console.log(this.multipleChoiceOptionClass);
 
                 if(this.multipleChoiceOptions.indexOf(this.correctAnswer) < 0) {
                     this.multipleChoiceOptions.push(this.correctAnswer);
@@ -82,11 +80,12 @@ export class MultipleChoicePromptComponent {
                 this.multipleChoiceOptionClass[this.correctAnswerIndex] = "correct-answer-near-miss-background";
                 this.multipleChoiceTestResult.emit({ isCorrect: false, isNearMiss: false });
             }
-            console.log(`class should be ${this.multipleChoiceOptionClass[this.correctAnswerIndex]}`)
+
+            this.unfocusButton(selectedIndex);
         }
     }
 
-    onClick(selectedIndex: number): void {
+    onClick(selectedIndex: number): void {   
         this.processAnswer(selectedIndex);
     }
 
@@ -161,12 +160,20 @@ export class MultipleChoicePromptComponent {
         if (this.currentlySelectedIndex >= 0) {
             let buttonElement: HTMLButtonElement = this.multipleChoiceButtons.toArray()[this.currentlySelectedIndex]._elementRef.nativeElement as HTMLButtonElement;
             buttonElement.classList.remove(this.SELECTED_BUTTON_CLASS);
+            this.unfocusButton(this.currentlySelectedIndex);
         }
         
         this.currentlySelectedIndex = index;
         if (index >= 0) {
             let buttonElement: HTMLButtonElement = this.multipleChoiceButtons.toArray()[this.currentlySelectedIndex]._elementRef.nativeElement as HTMLButtonElement;
             buttonElement.classList.add(this.SELECTED_BUTTON_CLASS);
+        }
+    }
+
+    private unfocusButton(index: number) {
+        if (index > 0) {
+            let buttonElement: HTMLButtonElement = this.multipleChoiceButtons.toArray()[index]._elementRef.nativeElement as HTMLButtonElement;
+            buttonElement.blur();
         }
     }
 }

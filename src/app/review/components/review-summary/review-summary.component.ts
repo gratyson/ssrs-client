@@ -4,13 +4,9 @@ import { ReviewEvent, ReviewTestResult, ReviewType } from "../../model/review-se
 import { Language } from "../../../language/language";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
-import { CORRECT_ANSWER_COLOR, CORRECT_ANSWER_NEAR_MISS_COLOR, INCORRECT_ANSWER_COLOR, INCORRECT_ANSWER_NEAR_MISS_COLOR } from "../../model/color-config";
 import { WordReviewResult } from "../../queue/review-queue-manager";
 import { Word } from "../../../lexicon/model/word";
-import { ReviewSessionClient } from "../../../client/review-session-client";
 import { DurationPipe } from "../../../util/duration/duration.pipe";
-import { LexiconReviewHistory } from "../../../lexicon/model/lexicon";
-import { LexiconClient } from "../../../client/lexicon-client";
 
 @Component({
     selector: "review-summary",

@@ -9,7 +9,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { CountdownTimerComponent } from "../countdown/countdown-timer.component";
 import { ReviewPromptComponent } from "../review-prompt/review-prompt.component";
-import { ReviewEvent, ReviewMode, ReviewTestResult, ReviewType, WordReview } from "../../model/review-session";
+import {  ReviewTestResult, WordReview } from "../../model/review-session";
 import { ReviewQueueManager, WordReviewResult } from "../../queue/review-queue-manager";
 import { Word } from "../../../lexicon/model/word";
 import { AudioPlayerComponent } from "../../../audio/components/audio-player/audio-player.component";
@@ -19,6 +19,7 @@ import { Router, RouterLink } from "@angular/router";
 import { LanguageService } from "../../../language/language-service";
 import { Language } from "../../../language/language";
 import { SingleWordEditComponent } from "../single-word-edit/single-word-edit.component";
+import { ReviewMode } from "../../model/review-mode";
 
 const PAUSE_BUTTON_ICON_RUNNING: string = "pause";
 const PAUSE_BUTTON_ICON_PAUSED: string = "play_arrow";
