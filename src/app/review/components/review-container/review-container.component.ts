@@ -63,6 +63,7 @@ export class ReviewContainerComponent {
 
     audioWordId: string = "";
     selectedAudioPath: string = "";
+    preloadAudio: boolean = false;
 
     reviewComplete: boolean = false;
     correctWordCount: number = 0;
@@ -116,7 +117,9 @@ export class ReviewContainerComponent {
             this.reviewPrompt.updateResult(this.currentResult);
         }
         
-        this.setAudio();  // don't set new audio until immediately before playing, to avoid interrupting the last word's audio
+        if (this.selectedAudioPath) {
+            this.wordAudioPlayer.playAudio();
+        }
     }
 
     onAdvanceToNext(): void {
@@ -212,9 +215,7 @@ export class ReviewContainerComponent {
             });
         }
 
-        if (this.playAudioOnLoad(wordReview.reviewMode)) {
-            this.setAudio();
-        }
+        this.setAudio(!this.playAudioOnLoad(wordReview.reviewMode));
     }
 
     private updateProgressBar(): void {
@@ -222,19 +223,23 @@ export class ReviewContainerComponent {
         this.percentComplete = progress.completedTests / progress.totalTests * 100;
     }
 
-    private setAudio(): void {
+    private setAudio(preload: boolean): void {
         if (this.currentWordReview.word.audioFiles && this.currentWordReview.word.audioFiles.length > 0) {
             const selectedAudioFileIndex = Math.floor(Math.random() * this.currentWordReview.word.audioFiles.length);
             if (this.selectedAudioPath === this.currentWordReview.word.audioFiles[selectedAudioFileIndex] && this.audioWordId === this.currentWordReview.word.id) {
-                // If the audio is not changing, just play the existing audio, no need to try and change it
-                this.wordAudioPlayer.playAudio();
+                if (!this.preloadAudio) {
+                    // If the audio is not changing, just play the existing audio, no need to try and change it
+                    this.wordAudioPlayer.playAudio();
+                }
             } else {
                 this.selectedAudioPath = this.currentWordReview.word.audioFiles[selectedAudioFileIndex];
                 this.audioWordId = this.currentWordReview.word.id;
+                this.preloadAudio = preload;
             }
         } else {
             this.audioWordId = ""
             this.selectedAudioPath = "";
+            this.preloadAudio = false;
         }
     }
 
@@ -398,6 +403,6 @@ export class ReviewContainerComponent {
     }
 
     private playAudioOnLoad(reviewMode: ReviewMode): boolean {
-        return reviewMode === ReviewMode.WordOverview;
+        return reviewMode.isOverview();
     }
 }

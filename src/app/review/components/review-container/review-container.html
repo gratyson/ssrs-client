@@ -1,6 +1,6 @@
 <div class="review-container">
     <div class="review-header">
-        <word-audio-player [wordId]="audioWordId" [audioFileName]="selectedAudioPath" [hidden]="true" [autoplay]="true"/>
+        <word-audio-player [wordId]="audioWordId" [audioFileName]="selectedAudioPath" [hidden]="true" [autoplay]="!preloadAudio" [preload]="preloadAudio"/>
         <div class="title-bar">
             <div class="review-header-sidebar">
                 <div class="countdown-timer">

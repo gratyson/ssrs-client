@@ -29,16 +29,6 @@ export enum ReviewType {
     Learn = 1,
 }
 
-/*
-export enum ReviewMode {
-    WordOverview = 0,
-    TypingTest = 1, 
-    MultipleChoiceTest = 2,
-    WordOverviewWithTyping = 3,
-    WordOverviewReminder = 4,
-}
-*/
-
 export interface ReviewTestResult {
     isCorrect: boolean;
     isNearMiss: boolean;

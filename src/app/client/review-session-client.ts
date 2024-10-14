@@ -28,7 +28,7 @@ export class ReviewSessionClient {
     public saveReviewEvent(event: ReviewEvent): Observable<void> {
         const url: string = environment.REST_ENDPOINT_URL + SAVE_EVENT_ENDPOINT;
 
-        return this.httpClient.post<void>(url, JSON.stringify(event), this.httpOptions).pipe(catchError(handleError<void>("saveReviewEvent")));
+        return this.httpClient.post<void>(url, JSON.stringify(this.convertToServerReviewEvent(event)), this.httpOptions).pipe(catchError(handleError<void>("saveReviewEvent")));
     }
 
     public generateLearningSession(lexiconId: string, wordCnt: number): Observable<WordReview[][]> {
@@ -181,6 +181,25 @@ export class ReviewSessionClient {
 
         return serverLexiconWordHistories;
     }
+
+    private convertToServerReviewEvent(reviewEvent: ReviewEvent): ServerReviewEvent {
+        return {
+            scheduledEventId: reviewEvent.scheduledEventId,
+            lexiconId: reviewEvent.lexiconId,
+            wordId: reviewEvent.wordId,
+
+            reviewMode: reviewEvent.reviewMode.getCode(),
+            reviewType: reviewEvent.reviewType,
+            testOn: reviewEvent.testOn,
+            promptWith: reviewEvent.promptWith,
+
+            isCorrect: reviewEvent.isCorrect,
+            isNearMiss: reviewEvent.isNearMiss,
+            elapsedTimeMs: reviewEvent.elapsedTimeMs,
+
+            override: reviewEvent.override
+        }
+    }
 }
 
 interface WordReviewFromServer {
@@ -225,4 +244,21 @@ interface FutureReviewEventFromServer {
     wordId: string,
     reviewInstant: string,
     inferred: boolean
+}
+
+interface ServerReviewEvent {
+    scheduledEventId: string;
+    lexiconId: string;
+    wordId: string;
+
+    reviewMode: number;
+    reviewType: ReviewType;
+    testOn: string;
+    promptWith: string;
+
+    isCorrect: boolean;
+    isNearMiss: boolean;
+    elapsedTimeMs: number;
+
+    override: boolean;
 }
