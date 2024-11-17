@@ -9,13 +9,13 @@
             </div>
             <h2 class="review-header-title">{{ reviewTitle }}</h2>
             <div class="review-header-sidebar header-icon-buttons">
-                <div class="filler"></div>
+                
                 @if(!reviewComplete) {
-                    <button #pauseButton mat-icon-button (click)="onPause()"><mat-icon>{{ pauseButtonIcon }}</mat-icon></button>
-                    <button #nextButton mat-icon-button (click)="onNext()"><mat-icon>fast_forward</mat-icon></button>
-                    <button mat-icon-button (click)="onSkip()"><mat-icon>skip_next</mat-icon></button>
+                    <button #pauseButton mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onPause()"><mat-icon>{{ pauseButtonIcon }}</mat-icon></button>
+                    <button #nextButton mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onNext()"><mat-icon>fast_forward</mat-icon></button>
+                    <button mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onSkip()"><mat-icon>skip_next</mat-icon></button>
                 }
-                <button mat-icon-button (click)="onClose()"><mat-icon>close</mat-icon></button>
+                <button mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onClose()"><mat-icon>close</mat-icon></button>
             </div>
         </div>
         <mat-progress-bar class="progress-bar" color="primary" mode="determinate" [value]="percentComplete" />
@@ -31,7 +31,8 @@
                                     (reviewResult)="onReviewResult($event)" 
                                     (advanceToNext)="onAdvanceToNext()" 
                                     (editWord)="onEditWord($event)" 
-                                    [disabled]="isPaused" />
+                                    [disabled]="isPaused" 
+                                    [touchscreenMode]="touchscreenMode"/>
                 } @else if (reviewComplete) {
                     <review-summary [totalWordCount]="totalWordCount" 
                                     [correctWordCount]="correctWordCount"
@@ -45,10 +46,17 @@
                         <div class="alert alert-warning">No words to review</div>
                     }
                 }
+
+                <button mat-raised-button 
+                        class="review-next review-next-bottom" 
+                        color="primary" 
+                        (click)="onReviewNextClick($event)">
+                    <div class="navigate-next-div"><mat-icon class="navigate-next-icon">arrow_right</mat-icon></div>
+                </button>
             </div>
             <div class="review-body-sidebar">
                 <button mat-raised-button 
-                        class="review-next" 
+                        class="review-next review-next-right" 
                         color="primary" 
                         (click)="onReviewNextClick($event)">
                     <div class="navigate-next-div"><mat-icon class="navigate-next-icon">arrow_right</mat-icon></div>

@@ -7,10 +7,18 @@
             <span class="setting-prompt">{{ setting.displayName }}:</span>
             <mat-form-field subscriptSizing="dynamic" class="setting-input-field" appearance="outline">
 
-                <input matInput [class]="'setting-input' + setting.parser.rightAlign() ? ' setting-right-align': ''"  
-                                (change)="onFieldUpdate(setting)" 
-                                [(ngModel)]="currentSettingValues[setting.name]"
-                                [placeholder]="setting.parser.settingValueToString(setting.defaultValue)" />
+                @if(setting.selectableValues && setting.selectableValues.length > 0) {
+                    <mat-select [(value)]="currentSettingValues[setting.name]" (selectionChange)="onFieldUpdate(setting)" >
+                        @for(selectableValue of setting.selectableValues; track selectableValue.optionId) {
+                            <mat-option [value]="setting.parser.settingValueToString(selectableValue.optionId)">{{ selectableValue.displayValue }}</mat-option>
+                        }
+                    </mat-select>
+                } @else {
+                    <input matInput [class]="'setting-input' + setting.parser.rightAlign() ? ' setting-right-align': ''"  
+                                    (change)="onFieldUpdate(setting)" 
+                                    [(ngModel)]="currentSettingValues[setting.name]"
+                                    [placeholder]="setting.parser.settingValueToString(setting.defaultValue)" />
+                }
             </mat-form-field>
         </div>
     }

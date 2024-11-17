@@ -4,6 +4,7 @@ import { MeasureStringDistance } from "../../../util/string-distance";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { ReviewMode } from "../../model/review-mode";
+import { MatIconModule } from "@angular/material/icon";
 
 const ACCEPT_EMPTY_TYPING_TEST_WAIT_TIME_MS: number = 3000;
 
@@ -12,7 +13,7 @@ const ACCEPT_EMPTY_TYPING_TEST_WAIT_TIME_MS: number = 3000;
     templateUrl: "typing-test-prompt.html",
     styleUrl: "typing-test-prompt.css",
     standalone: true,
-    imports:  [MatInputModule, MatButtonModule ],
+    imports: [ MatInputModule, MatButtonModule, MatIconModule ],
     host: { ["(document:wheel)"]: "onMousewheel($event)" }
 })
 export class TypingTestPromptComponent {
@@ -24,6 +25,7 @@ export class TypingTestPromptComponent {
     @Input() promptFont: string = "";
     @Input() reviewMode: ReviewMode;
     @Input() disabled: boolean = false;
+    @Input() touchscreenMode: boolean = false;
 
     @Output() typingTestResult: EventEmitter<ReviewTestResult> = new EventEmitter<ReviewTestResult>();
 
@@ -86,6 +88,18 @@ export class TypingTestPromptComponent {
         }
     }
 
+    onCursorLeftClick(): void {
+        this.adjustCursorPos(-1);
+    }
+
+    onCursorRightClick(): void {
+        this.adjustCursorPos(1);
+    }
+
+    onDeleteClick(): void {
+        this.backspace();
+    }
+
     private adjustCursorPos(adjustment: number): void {
         const curAnswer = this.typingTestInput?.nativeElement.value;
         if (curAnswer) {
@@ -93,6 +107,7 @@ export class TypingTestPromptComponent {
             const newPos: number = Math.max(Math.min(cursorPos + adjustment, curAnswer.length), 0);
             
             this.typingTestInput.nativeElement.setSelectionRange(newPos, newPos);
+            this.typingTestInput.nativeElement.focus();
         }
     }
 
@@ -182,5 +197,18 @@ export class TypingTestPromptComponent {
             return "incorrect-answer-near-miss-background";
         }   
         return "incorrect-answer-background";
+    }
+
+    private backspace(): void {
+        if (this.typingEnabled && this.typingTestInput && this.typingTestInput.nativeElement.selectionStart != null && this.typingTestInput.nativeElement.selectionEnd != null) {
+            var deleteStart = this.typingTestInput.nativeElement.selectionStart;
+            if (deleteStart > 0 && this.typingTestInput.nativeElement.selectionEnd === this.typingTestInput.nativeElement.selectionStart) {
+                deleteStart--;   // no highlighted text, delete the character immediately before the cursor
+            }
+
+            this.typingTestInput.nativeElement.setRangeText("", deleteStart, this.typingTestInput.nativeElement.selectionEnd, "end");
+            this.typingTestInput.nativeElement.focus();
+            this.checkForCorrectAnswer();
+        }
     }
 }

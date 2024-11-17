@@ -7,13 +7,14 @@ import { MatIconModule } from "@angular/material/icon";
 import { RouterLink } from "@angular/router";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { FormsModule } from "@angular/forms";
+import { MatSelectModule } from "@angular/material/select";
 
 @Component({
     selector: "edit-user-settings",
     templateUrl: "edit-user-settings.html",
     styleUrl: "edit-user-settings.css",
     standalone: true,
-    imports: [ MatInputModule, FormsModule, MatFormFieldModule, MatButtonModule, MatIconModule, RouterLink ],
+    imports: [ MatInputModule, FormsModule, MatFormFieldModule, MatButtonModule, MatIconModule, MatSelectModule, RouterLink ],
 })
 export class EditUserSettingsComponent {
 
@@ -38,6 +39,9 @@ export class EditUserSettingsComponent {
                 this.userConfigService.getCurrentConfigValue(setting).subscribe((settingValue) => {
                     if (settingValue !== setting.defaultValue) {
                         this.currentSettingValues[setting.name] = setting.parser.settingValueToString(settingValue);
+                    } else if (setting.selectableValues && setting.selectableValues.length > 0) {
+                        // pre-select the default option if the settings uses defined options
+                        this.currentSettingValues[setting.name] = setting.parser.settingValueToString(setting.defaultValue);
                     }
                 });
             }
@@ -47,8 +51,10 @@ export class EditUserSettingsComponent {
 
     onFieldUpdate<T>(setting: UserConfigSetting<T>): void {
         const settingStrValue: string = this.currentSettingValues[setting.name];
+
         if (settingStrValue) {
             const settingValue: T | null = setting.parser.parseSettingValue(settingStrValue);
+
             if (settingValue != null) {
                 this.userConfigService.setCurrentConfigValue(setting, settingValue).subscribe();
             }

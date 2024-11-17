@@ -4,12 +4,13 @@
             [class]="resultClass"
             [disabled]="!typingEnabled || disabled" 
             [style.font-family]="promptFont" 
-            (keyup)="onTypingTestKeyup($event)">
+            (keyup)="onTypingTestKeyup($event)"
+            [inputMode]="touchscreenMode ? 'none' : ''">
 </div>
 @if(typingTestButtonValues) {
     <div class="typing-test-buttons">
         @for(buttonVal of typingTestButtonValues; track buttonVal) {
-            <button mat-stroked-button class="typing-test-button" 
+            <button mat-stroked-button [class]="'typing-test-button' + (touchscreenMode ? '-touchscreen' : '')" 
                     [style.font-family]="promptFont" 
                     (click)="onTypingButtonClick(buttonVal)"
                     [disabled]="disabled">
@@ -17,4 +18,11 @@
             </button>
         }
     </div>  
+}
+@if(touchscreenMode) {
+    <div class="touchscreen-controls">
+        <button mat-stroked-button class="touchscreen-control-button" (click)="onCursorLeftClick()"><mat-icon>arrow_back</mat-icon></button>
+        <button mat-stroked-button class="touchscreen-control-button" (click)="onDeleteClick()"><mat-icon>backspace</mat-icon></button>
+        <button mat-stroked-button class="touchscreen-control-button" (click)="onCursorRightClick()"><mat-icon>arrow_forward</mat-icon></button>
+    </div>
 }

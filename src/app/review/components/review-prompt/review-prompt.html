@@ -13,7 +13,8 @@
                                 [promptFont]="testOnFont" 
                                 [reviewMode]="wordReview.reviewMode"
                                 (typingTestResult)="onTypingTestResult($event)"
-                                [disabled]="disabled" />
+                                [disabled]="disabled" 
+                                [touchscreenMode]="touchscreenMode" />
         } 
         @if(showMultipleChoice()) {
             <multiple-choice-prompt [options]="wordReview.multipleChoiceButtons" 

@@ -20,6 +20,8 @@ import { LanguageService } from "../../../language/language-service";
 import { Language } from "../../../language/language";
 import { SingleWordEditComponent } from "../single-word-edit/single-word-edit.component";
 import { ReviewMode } from "../../model/review-mode";
+import { UserConfigService } from "../../../user-config/user-config.service";
+import { TouchscreenModeSetting } from "../../../user-config/user-config-setting";
 
 const PAUSE_BUTTON_ICON_RUNNING: string = "pause";
 const PAUSE_BUTTON_ICON_PAUSED: string = "play_arrow";
@@ -45,6 +47,7 @@ export class ReviewContainerComponent {
 
     private reviewSessionClient: ReviewSessionClient = inject(ReviewSessionClient);
     private languageService: LanguageService = inject(LanguageService);
+    private userConfigService: UserConfigService = inject(UserConfigService);
 
     constructor(private router: Router) { }
 
@@ -77,12 +80,20 @@ export class ReviewContainerComponent {
 
     wordToEdit: Word | null = null;
     advanceOnEditComplete: boolean = false;
+    touchscreenMode: boolean = false;
 
     private reviewQueueManager: ReviewQueueManager;
     private reviewStartTimeMs: number = 0;
     private currentReviewTimeMs: number = 0;
     private currentResult: ReviewTestResult | null;
     private currentTestTime: number;
+
+    public ngOnInit() {
+        this.userConfigService.getCurrentConfigValue(TouchscreenModeSetting).subscribe(touchscreenModeSetting => {
+            // "pointer: coarse" should detect if the primary input is a touchscreen. If detecting if touchscreen input exists at all would be "any-pointer: coarse"
+            this.touchscreenMode = (touchscreenModeSetting === 1) || (touchscreenModeSetting === 0 && window.matchMedia("(pointer: coarse)").matches);
+        });
+    }
 
     public ngOnChanges(simpleChanges: SimpleChanges): void {
         

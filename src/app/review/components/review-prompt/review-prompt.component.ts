@@ -41,6 +41,7 @@ export class ReviewPromptComponent {
     @Input() wordReview: WordReview;
     @Input() disabled: boolean = false;
     @Input() previouslyDelayedTestTimeMs: number = 0;
+    @Input() touchscreenMode: boolean = false;
 
     @Output() reviewResult: EventEmitter<ReviewTestResult> = new EventEmitter<ReviewTestResult>();
     @Output() advanceToNext: EventEmitter<void> = new EventEmitter<void>();

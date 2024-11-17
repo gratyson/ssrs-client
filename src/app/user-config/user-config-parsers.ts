@@ -33,7 +33,7 @@ export class IntegerSettingParser extends SettingParser<number> {
 
     public override parseSettingValue(value: string): number | null {
         const numericValue = Number.parseInt(value);
-        if (numericValue && numericValue >= this.minValue && numericValue <= this.maxValue) {
+        if (Number.isInteger(numericValue) && numericValue >= this.minValue && numericValue <= this.maxValue) {
             return numericValue;
         }
 
