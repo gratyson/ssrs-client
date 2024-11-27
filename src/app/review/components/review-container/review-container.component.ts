@@ -32,7 +32,7 @@ const CORRECT_NEAR_MISS_MULTIPLIER: number = 1.5;
     templateUrl: "review-container.html",
     styleUrl: "review-container.css",
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, CountdownTimerComponent, ReviewPromptComponent, AudioPlayerComponent, MatProgressBarModule, ReviewSummaryComponent, RouterLink, SingleWordEditComponent],
+    imports: [FormsModule, ReactiveFormsModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, CountdownTimerComponent, ReviewPromptComponent, AudioPlayerComponent, MatProgressBarModule, ReviewSummaryComponent, SingleWordEditComponent],
     host: { ["(document:keypress)"]: "onKeypress($event)", ["(document:keydown)"]: "onKeydown($event)" },
 })
 export class ReviewContainerComponent {
@@ -81,6 +81,7 @@ export class ReviewContainerComponent {
     wordToEdit: Word | null = null;
     advanceOnEditComplete: boolean = false;
     touchscreenMode: boolean = false;
+    timeModifier: number = 1;
 
     private reviewQueueManager: ReviewQueueManager;
     private reviewStartTimeMs: number = 0;
@@ -93,6 +94,10 @@ export class ReviewContainerComponent {
             // "pointer: coarse" should detect if the primary input is a touchscreen. If detecting if touchscreen input exists at all would be "any-pointer: coarse"
             this.touchscreenMode = (touchscreenModeSetting === 1) || (touchscreenModeSetting === 0 && window.matchMedia("(pointer: coarse)").matches);
         });
+
+        if (this.touchscreenMode) {
+            this.timeModifier = 1.5;
+        }
     }
 
     public ngOnChanges(simpleChanges: SimpleChanges): void {
@@ -123,7 +128,7 @@ export class ReviewContainerComponent {
         this.countdownTimer.stop();
 
         const reviewTimeMs = this.currentTestTime + this.reviewQueueManager.getTotalTimeSoFar();
-        if (this.currentResult.isCorrect && (this.currentWordReview.allowedTimeSec > 0) && (this.currentWordReview.allowedTimeSec * 1000 * CORRECT_NEAR_MISS_MULTIPLIER) < reviewTimeMs) {
+        if (this.currentResult.isCorrect && (this.getAllowedTimeSec() > 0) && (this.getAllowedTimeSec() * 1000 * CORRECT_NEAR_MISS_MULTIPLIER) < reviewTimeMs) {
             this.currentResult.isNearMiss = true;
             this.reviewPrompt.updateResult(this.currentResult);
         }
@@ -213,7 +218,7 @@ export class ReviewContainerComponent {
         this.reviewStartTimeMs = new Date().valueOf();
         this.currentReviewTimeMs = 0;
         this.currentWordReview = wordReview;
-        this.countdownTimer.start(this.currentWordReview.allowedTimeSec);
+        this.countdownTimer.start(this.getAllowedTimeSec());
         this.updateProgressBar();
 
         if (!this.language) {
@@ -415,5 +420,13 @@ export class ReviewContainerComponent {
 
     private playAudioOnLoad(reviewMode: ReviewMode): boolean {
         return reviewMode.isOverview();
+    }
+
+    private getAllowedTimeSec(): number {
+        if (this.currentWordReview && this.currentWordReview.allowedTimeSec) {
+            return this.currentWordReview.allowedTimeSec * this.timeModifier;
+        }
+
+        return 0;
     }
 }
