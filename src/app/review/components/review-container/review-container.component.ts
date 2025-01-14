@@ -295,8 +295,14 @@ export class ReviewContainerComponent {
 
     private deferCurrentTest(): void {
         if (this.currentWordReview && this.reviewPrompt && this.reviewPrompt.canDefer()) {
-            const nextWordReview = this.reviewQueueManager.deferAndGetNext(this.currentReviewTimeMs + (new Date().valueOf() - this.reviewStartTimeMs));
+            const nextWordReview: WordReview | null = this.reviewQueueManager.deferAndGetNext(this.currentReviewTimeMs + (new Date().valueOf() - this.reviewStartTimeMs));
+
             if (nextWordReview !== null) {
+                if (this.currentWordReview === nextWordReview) {   // Need to manually reset the fields if the test is not changing
+                    this.reviewPrompt.resetFields()
+                }
+
+                this.wordAudioPlayer.stopAudio();
                 this.setCurrentWordReview(nextWordReview);
             }
         }

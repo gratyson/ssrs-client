@@ -68,6 +68,14 @@ export class AudioPlayerComponent {
         }
     }
 
+    public stopAudio(): void {
+        const activePlayer = this.getActiveAudioPlayer();
+        if (activePlayer) {
+            this.pauseAudio();
+            activePlayer.nativeElement.currentTime = 0;
+        }
+    }
+
     onCanPlay(): void {
         this.autoPlayAudio();
     }

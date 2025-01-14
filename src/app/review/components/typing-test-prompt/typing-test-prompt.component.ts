@@ -68,6 +68,10 @@ export class TypingTestPromptComponent {
         this.resultClass = this.getResultClass(result);
     }
 
+    public resetFields(): void {
+        this.initializeFields();
+    }
+
     onTypingTestKeyup(event: KeyboardEvent): void {
         this.checkForCorrectAnswer();
     }

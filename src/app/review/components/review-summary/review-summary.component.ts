@@ -13,7 +13,7 @@ import { DurationPipe } from "../../../util/duration/duration.pipe";
     templateUrl: "review-summary.html",
     styleUrl: "review-summary.css",
     standalone: true,
-    imports: [ PercentPipe, DatePipe, MatIconModule, MatButtonModule, DurationPipe ],
+    imports: [ PercentPipe, MatIconModule, MatButtonModule, DurationPipe ],
 })
 export class ReviewSummaryComponent {
 
