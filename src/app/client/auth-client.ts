@@ -6,7 +6,8 @@ import { handleError } from "./client-util";
 
 const USERNAME_ENDPOINT: string = "auth/username";
 const LOGIN_ENDPOINT: string = "auth/login";  
-const LOGOUT_ENDPOINT: string = "auth/logout"; 
+const LOGOUT_ENDPOINT: string = "auth/logout";
+const CAN_REGISTER_ENDPOINT: string = "auth/canRegister";
 const REGISTER_ENDPOINT: string = "auth/register";
 
 @Injectable({providedIn: "root"})
@@ -15,7 +16,7 @@ export class AuthClient {
 
     constructor(private httpClient: HttpClient) {}
 
-    getLoggedInUsername(): Observable<string> {
+    public getLoggedInUsername(): Observable<string> {
         
         const url: string = environment.REST_ENDPOINT_URL + USERNAME_ENDPOINT;
         const requestOptions: any = { headers: new HttpHeaders({ "Content-Type": "application/json", "Accept": "text/plain" }), responseType: "text" };
@@ -24,20 +25,26 @@ export class AuthClient {
         return this.httpClient.get<any>(`${url}`, requestOptions).pipe(map<any, string>(resp => String(resp))).pipe(catchError(handleError<string>("getLoggedInUsername", "")));
     }
 
-    login(username: string, password: string): Observable<LoginResponse> {
+    public login(username: string, password: string): Observable<LoginResponse> {
         const url: string = environment.REST_ENDPOINT_URL + LOGIN_ENDPOINT; 
 
         // This should always be the first POST request sent to the server so the very first call will fail due to XRSF (and will subsequently set the required token). Include a retry on error so that it will retry with the new XSRF value
         return this.httpClient.post<LoginResponse>(url, JSON.stringify({ "username": username, "password": password }), this.httpOptions).pipe(retry(1), catchError(handleError<LoginResponse>("login", { success: false, errMsg: "Error occurred during login"})));
     }
 
-    logout(): Observable<void> {
+    public logout(): Observable<void> {
         const url: string = environment.REST_ENDPOINT_URL + LOGOUT_ENDPOINT; 
 
         return this.httpClient.post<void>(url, this.httpOptions).pipe(catchError(handleError<void>("logout")));
     }
+
+    public canRegister(): Observable<boolean> {
+        const url: string = environment.REST_ENDPOINT_URL + CAN_REGISTER_ENDPOINT;
+
+        return this.httpClient.get<boolean>(url, this.httpOptions).pipe(catchError(handleError<boolean>("canRegister", false)));
+    }
     
-    register(username: string, password: string, reenterPassword: string): Observable<RegisterResponse> {
+    public register(username: string, password: string, reenterPassword: string): Observable<RegisterResponse> {
         const url: string = environment.REST_ENDPOINT_URL + REGISTER_ENDPOINT;
 
         return this.httpClient.post<RegisterResponse>(url, JSON.stringify({ "username": username, "password": password, "reenterPassword": reenterPassword}), this.httpOptions).pipe(catchError(handleError<RegisterResponse>("register", { success: false, errMsg: "Error occurred during registration" })));

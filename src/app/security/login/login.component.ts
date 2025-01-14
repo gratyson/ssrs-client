@@ -27,10 +27,16 @@ export class LoginComponent {
     private cacheService: CacheService = inject(CacheService);
     private router: Router = inject(Router);
 
+    canRegister = false;
+
     warningMessage: string = "";
 
     username: string = "";
     password: string = "";
+
+    public ngOnInit(): void {
+        this.authClient.canRegister().subscribe(response => this.canRegister = response);
+    }
 
     onKeypress(event: KeyboardEvent): void {
         if (event.key === "Enter") {

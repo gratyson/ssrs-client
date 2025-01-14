@@ -21,11 +21,17 @@ export class RegisterComponent {
     private authClient: AuthClient = inject(AuthClient);
     private router: Router = inject(Router);
 
+    canRegister: boolean = true;
+
     warningMessage: string = "";
 
     username: string = "";
     password: string = ""; 
     reenterPassword: string = "";
+
+    public ngOnInit(): void {
+        this.authClient.canRegister().subscribe(result => this.canRegister = result);
+    }
 
     onKeypress(event: KeyboardEvent): void {
         if (event.key === "Enter") {
