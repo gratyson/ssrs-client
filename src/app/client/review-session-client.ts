@@ -10,6 +10,7 @@ import { Word } from "../lexicon/model/word";
 import { ReviewMode } from "../review/model/review-mode";
 
 const SAVE_EVENT_ENDPOINT: string  = "review/saveEvent";
+const PROCESS_MANUAL_EVENT_ENDPOINT: string  = "review/processManualEvent";
 const GENERATE_LEARNING_SESSION_ENDPOINT: string  = "review/generateLearningSession";
 const GENERATE_REVIEW_SESSION_ENDPOINT: string  = "review/generateReviewSession";
 const GET_REVIEW_HISTORY_BATCH_ENDPOINT: string  = "review/lexiconReviewHistoryBatch";
@@ -29,6 +30,12 @@ export class ReviewSessionClient {
         const url: string = environment.REST_ENDPOINT_URL + SAVE_EVENT_ENDPOINT;
 
         return this.httpClient.post<void>(url, JSON.stringify(this.convertToServerReviewEvent(event)), this.httpOptions).pipe(catchError(handleError<void>("saveReviewEvent")));
+    }
+
+    public processManualEvent(event: ReviewEvent): Observable<void> {
+        const url: string = environment.REST_ENDPOINT_URL + PROCESS_MANUAL_EVENT_ENDPOINT;
+
+        return this.httpClient.post<void>(url, JSON.stringify(this.convertToServerReviewEvent(event)), this.httpOptions).pipe(catchError(handleError<void>("processManualEvent")));
     }
 
     public generateLearningSession(lexiconId: string, wordCnt: number): Observable<WordReview[][]> {
@@ -247,7 +254,7 @@ interface FutureReviewEventFromServer {
 }
 
 interface ServerReviewEvent {
-    scheduledEventId: string;
+    scheduledEventId: string | null;
     lexiconId: string;
     wordId: string;
 

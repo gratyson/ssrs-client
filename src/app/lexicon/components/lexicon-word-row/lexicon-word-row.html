@@ -41,11 +41,17 @@
             <mat-menu #additionalWordOptions="matMenu">
                 @if(reviewHistory && reviewHistory.learned) {
                     <button mat-menu-item (click)="onViewHistoryClick($event)">View Word History</button>
+                    <button mat-menu-item [matMenuTriggerFor]="manuallyRecordEvent" class="audio-button">Manually Record Event</button>
                 }
                 @if(!onlyAllowWordEdit) {
                     <button mat-menu-item (click)="onToggleWordLearned($event)">{{ reviewHistory && reviewHistory.learned ? "Clear learning history" : "Set as learned" }}</button>
                     <button mat-menu-item (click)="onDeleteWordClick($event)">Delete Word</button>
                 }
+            </mat-menu>
+            <mat-menu #manuallyRecordEvent="matMenu">
+                <button mat-menu-item (click)="onRecordEventIncorrect($event)">Incorrect</button>
+                <button mat-menu-item (click)="onRecordEventIncorrectNearMiss($event)">Incorrect - Near Miss</button>
+                <button mat-menu-item (click)="onRecordEventIncorrectCorrectTimeElapsed($event)">Correct - Time Elapsed</button>
             </mat-menu>
         </div>
     </form>

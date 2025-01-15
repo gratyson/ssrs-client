@@ -10,6 +10,7 @@ import { Language, WordElement } from "../../../language/language";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { LexiconReviewHistory } from "../../model/lexicon";
 import { MatDialog } from "@angular/material/dialog";
+import { ReviewTestResult } from "../../../review/model/review-session";
 
 const HAS_AUDIO_COLOR: string = "black";
 const NO_AUDIO_COLOR: string = "#d9d9d9";
@@ -95,6 +96,22 @@ export class LexiconWordRowBaseComponent {
     }
     
     onToggleWordLearned(event: Event): void {
+
+    }
+
+    onRecordEventIncorrect(event: Event): void {
+        this.recordEvent(event, { isCorrect: false, isNearMiss: false});
+    }
+
+    onRecordEventIncorrectNearMiss(event: Event): void {
+        this.recordEvent(event, { isCorrect: false, isNearMiss: true});
+    }
+
+    onRecordEventIncorrectCorrectTimeElapsed(event: Event): void {
+        this.recordEvent(event, { isCorrect: true, isNearMiss: true});
+    }
+
+    recordEvent(event: Event, result: ReviewTestResult): void {
 
     }
 }

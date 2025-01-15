@@ -35,7 +35,7 @@ export interface ReviewTestResult {
 }
 
 export interface ReviewEvent {
-    scheduledEventId: string;
+    scheduledEventId: string | null;
     lexiconId: string;
     wordId: string;
     

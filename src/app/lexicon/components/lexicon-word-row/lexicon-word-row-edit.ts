@@ -14,12 +14,14 @@ import { AudioEditDialogComponent, AudioEditDialogData } from "../../../audio/co
 import { LexiconWordRowBaseComponent } from "./lexicon-word-row-base";
 import { AudioClient } from "../../../client/audio-client";
 import { EMPTY_LEXICON_REVIEW_HISTORY, LexiconReviewHistory } from "../../model/lexicon";
-import { ReviewSession } from "../../../review/model/review-session";
+import { ReviewEvent, ReviewSession, ReviewTestResult, ReviewType } from "../../../review/model/review-session";
 import { ReviewSessionClient } from "../../../client/review-session-client";
 import { Duration } from "../../../util/duration/duration";
 import { UserConfigService } from "../../../user-config/user-config.service";
 import { InitialTestDelay } from "../../../user-config/user-config-setting";
 import { ConfirmDialog } from "../../../util/confirm-dialog";
+import { WordReviewResult } from "../../../review/queue/review-queue-manager";
+import { ReviewMode } from "../../../review/model/review-mode";
 
 const HAS_AUDIO_COLOR: string = "black";
 const NO_AUDIO_COLOR: string = "#d9d9d9";
@@ -139,6 +141,49 @@ export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
             this.deleteReviewHistory();
         } else {
             this.createReviewHistory();
+        }
+    }
+
+    override recordEvent(event: Event, eventResult: ReviewTestResult): void {
+        const dialogRef = this.dialog.open(ConfirmDialog, {
+            data: {
+                title: "Record Event?",
+                message: `This action will affect learning history and future review times. Record this event?`,
+                confirmAction: "Record",
+                cancelAction: "Cancel",
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.reviewSessionClient.processManualEvent(this.generateReviewEvent(eventResult)).subscribe(() => {
+                    this.reviewSessionClient.getLexiconReviewHistoryBatch(this.lexiconId, [this.word.id]).subscribe(wordHistories => {
+                        if (wordHistories && wordHistories.length > 0) {
+                            this.reviewHistory = wordHistories[0];
+                            this.reviewHistoryChange.emit(wordHistories[0]);
+                        }
+                    })
+                });
+            }
+        });
+    }
+
+    private generateReviewEvent(result: ReviewTestResult): ReviewEvent {
+        return {
+            scheduledEventId: null,
+            lexiconId: this.lexiconId,
+            wordId: this.word.id,
+
+            reviewMode: ReviewMode.TypingTest,
+            reviewType: ReviewType.Review,
+            testOn: this.language.testRelationships[0].testOn,
+            promptWith: this.language.testRelationships[0].promptWith,
+
+            isCorrect: result.isCorrect,
+            isNearMiss: result.isNearMiss,
+            elapsedTimeMs: 0,
+
+            override: false,
         }
     }
 
