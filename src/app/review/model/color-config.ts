@@ -79,5 +79,8 @@ export const ATTRIBUTE_CLASS_TABLE: { [k:string]: string } = {
     "exp": ASPECT_CLASS,
     "int": ASPECT_CLASS,
     "om-mim": ASPECT_CLASS,
-    "der": ASPECT_CLASS
+    "der": ASPECT_CLASS,
+    "kana": ASPECT_CLASS,
+    "arc": ASPECT_CLASS,
+    "form": ASPECT_CLASS
 };
