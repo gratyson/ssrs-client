@@ -43,6 +43,7 @@ export class LexiconWordRowAddComponent extends LexiconWordRowBaseComponent {
                     this.OnNewWord.emit(savedWord);
                 }
                 this.currentElementValues = {};
+                this.currentAttributes = "";
             });
         }
     }

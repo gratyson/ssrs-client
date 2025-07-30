@@ -22,6 +22,7 @@
     flex-direction: column;
     margin-top: .1875rem;
     margin-left: 1.375rem;
+    padding-right: .1875rem;
     overflow-y: auto;
 }
 .reviewed-word-row {

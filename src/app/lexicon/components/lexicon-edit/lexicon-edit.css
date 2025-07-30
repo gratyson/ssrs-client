@@ -6,6 +6,7 @@
 .lexicon-edit-body {
     overflow-y: auto;
     flex: 1;
+    padding-top: .375rem;
 }
 .word-header-row {
     margin: 0 0 1.375rem 0;
