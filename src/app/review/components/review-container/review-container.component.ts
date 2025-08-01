@@ -68,6 +68,7 @@ export class ReviewContainerComponent {
     selectedAudioPath: string = "";
     preloadAudio: boolean = false;
 
+    showSummary: boolean = false;
     reviewComplete: boolean = false;
     correctWordCount: number = 0;
     totalWordCount: number = 0;
@@ -111,6 +112,7 @@ export class ReviewContainerComponent {
                 
             }
 
+            this.showSummary = false;
             this.reviewComplete = false;
             this.totalTimeMs = 0;
             this.startTimeMs = new Date().valueOf();
@@ -183,10 +185,17 @@ export class ReviewContainerComponent {
     }
 
     onSkip(): void {
-        if (this.isPaused) {
+        if (!this.isPaused) {
             this.togglePause();
         }
         this.showReviewSummary()
+    }
+
+    onResumeReview(): void {
+        this.showSummary = false;
+        if (this.isPaused) {
+            this.togglePause();
+        }
     }
     
     onClose(): void {
@@ -260,7 +269,6 @@ export class ReviewContainerComponent {
     }
 
     private showReviewSummary(): void {
-        this.countdownTimer.stop();
         this.updateProgressBar();
 
         this.totalWordCount = 0;
@@ -276,7 +284,7 @@ export class ReviewContainerComponent {
             }
         });
 
-        this.reviewComplete = true;
+        this.showSummary = true;
 
         if (this.reviewedWordResults.length === 0) {
             this.closeReviewContainer();
@@ -285,7 +293,7 @@ export class ReviewContainerComponent {
 
     private processCurrentReviewPrompt(): void {
         if (!this.isPaused) {
-            if (this.reviewComplete || !this.currentWordReview) {
+            if (this.showSummary || !this.currentWordReview) {
                 this.closeReviewContainer();
             } else if (this.reviewPrompt) {
                 this.reviewPrompt.processNext();
@@ -336,6 +344,7 @@ export class ReviewContainerComponent {
             if (nextWordReview !== null) {
                 this.setCurrentWordReview(nextWordReview);
             } else {
+                this.reviewComplete = true;
                 this.showReviewSummary();
             }
             this.advanceOnUnpause = false;

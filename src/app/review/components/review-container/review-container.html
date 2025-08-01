@@ -3,17 +3,19 @@
         <word-audio-player [wordId]="audioWordId" [audioFileName]="selectedAudioPath" [hidden]="true" [autoplay]="!preloadAudio" [preload]="preloadAudio"/>
         <div class="title-bar">
             <div class="review-header-sidebar">
-                <div class="countdown-timer">
+                <div class="countdown-timer" [style.visibility]="showSummary ? 'hidden' : 'visible'">
                     <countdown-timer [isPaused]="isPaused" (OnCountdownComplete)="onReviewTimerComplete()" />
                 </div>
             </div>
             <h2 class="review-header-title">{{ reviewTitle }}</h2>
             <div class="review-header-sidebar header-icon-buttons">
                 
-                @if(!reviewComplete) {
+                @if(!showSummary) {
                     <button #pauseButton mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onPause()"><mat-icon>{{ pauseButtonIcon }}</mat-icon></button>
                     <button #nextButton mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onNext()"><mat-icon>fast_forward</mat-icon></button>
                     <button mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onSkip()"><mat-icon>skip_next</mat-icon></button>
+                } @else if (!reviewComplete) {
+                    <button mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onResumeReview()"><mat-icon>skip_previous</mat-icon></button>
                 }
                 <button mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onClose()"><mat-icon>close</mat-icon></button>
             </div>
@@ -22,18 +24,18 @@
     </div>
 
     <div class="review-body">
-        <div class="pause-overlay" [style.height]="isPaused ? '100%' : '0%'"></div>
+        <div class="pause-overlay" [style.height]="isPaused && !showSummary ? '100%' : '0%'"></div>
         <div class="review-body-main" [style.display]="wordToEdit !== null ? 'none' : ''">
             <div class="review-body-sidebar"></div>
             <div class="review-prompt">
-                @if(!reviewComplete && currentWordReview) {
+                @if(!showSummary && currentWordReview) {
                     <review-prompt [wordReview]="currentWordReview" 
                                     (reviewResult)="onReviewResult($event)" 
                                     (advanceToNext)="onAdvanceToNext()" 
                                     (editWord)="onEditWord($event)" 
                                     [disabled]="isPaused" 
                                     [touchscreenMode]="touchscreenMode"/>
-                } @else if (reviewComplete) {
+                } @else if (showSummary) {
                     <review-summary [totalWordCount]="totalWordCount" 
                                     [correctWordCount]="correctWordCount"
                                     [totalTimeMs]="totalTimeMs"
