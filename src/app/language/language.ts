@@ -1,4 +1,3 @@
-
 export interface Language {
     id: number;
     displayName: string;
@@ -9,6 +8,7 @@ export interface Language {
     requiredElements: WordElement[];
     coreElements: WordElement[];
     dedupeElements: WordElement[];
+    overviewElements: WordElement[];
     testRelationships: TestRelationship[];
 }
 
@@ -19,6 +19,8 @@ export interface WordElement {
     weight: number;
     applyLanguageFont: boolean;
     testTimeMultiplier: number;
+    validationRegex: string;
+    description: string;
 }
 
 export interface TestRelationship {

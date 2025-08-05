@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -14,7 +14,7 @@ import { WordElement } from "../../../language/language";
     templateUrl: "lexicon-word-row.html",
     styleUrl: "lexicon-word-row.css",
     standalone: true,
-    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule ]
+    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule ]
 })
 export class LexiconWordRowHeaderComponent extends LexiconWordRowBaseComponent {
 
@@ -33,11 +33,11 @@ export class LexiconWordRowHeaderComponent extends LexiconWordRowBaseComponent {
 
     private initFields(): void {
         if (this.language) {
-            this.currentElementValues = {};
+            this.clearElementValues();
             for(let languageElement of this.language.validElements) {
-                this.currentElementValues[languageElement.id] = languageElement.name;
+                this.elementFormControls[languageElement.id].setValue(languageElement.name);
             }
-            this.currentAttributes = "Attributes";
+            this.attributeFormControl.setValue("Attributes");
         }
     }
 }

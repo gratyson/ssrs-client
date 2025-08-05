@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output, SimpleChange, SimpleChanges, ViewChild, inject } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormControl, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from "@angular/forms";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -31,7 +31,7 @@ const NO_AUDIO_COLOR: string = "#d9d9d9";
     templateUrl: "lexicon-word-row.html",
     styleUrl: "lexicon-word-row.css",
     standalone: true,
-    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule ]
+    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule ]
 })
 export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
 
@@ -50,7 +50,7 @@ export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
         this.learnedCheckboxDisabled = true;
     }
 
-    public ngOnChanges(changes: SimpleChanges): void {
+    public override ngOnChanges(changes: SimpleChanges): void {
         if (changes.hasOwnProperty("word") || changes.hasOwnProperty("language")) {
             this.updateWordFields();
             this.updateAudioButton();
@@ -62,15 +62,31 @@ export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
 
     private updateWordFields(): void {
         if (this.word && this.language) {
-            this.currentElementValues = {};
+            this.clearElementValues();
+
+            let requiredElementIds: Set<string> = new Set<string>();
+            for (let languageElement of this.language.requiredElements) {
+                requiredElementIds.add(languageElement.id);
+            }
+
             for(let languageElement of this.language.validElements) {
                 let elementValue = this.word.elements[languageElement.id];
                 if (!elementValue) {
                     elementValue = "";
                 }
-                this.currentElementValues[languageElement.id] = elementValue;
-            }            
-            this.currentAttributes = this.word.attributes;
+
+                let validators = [];
+                if (requiredElementIds.has(languageElement.id)) {
+                    validators.push(Validators.required);
+                }
+                if (languageElement.validationRegex) {
+                    validators.push(Validators.pattern(new RegExp(languageElement.validationRegex)));
+                }
+
+                this.elementFormControls[languageElement.id] = new FormControl(elementValue, validators);
+            }
+
+            this.attributeFormControl = new FormControl(this.word.attributes, [Validators.required]);
         }
     }
 
@@ -95,14 +111,12 @@ export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
         }
     }
 
-    override onFieldUpdate(event: Event): void {
-        let updatedWord: Word = { id: this.word.id, elements: this.currentElementValues, attributes: this.currentAttributes, audioFiles: this.word.audioFiles };
-        this.wordClient.updateWord(updatedWord).subscribe((savedWord) => {
-            if (savedWord != null) {
-                this.word = savedWord;
-            }
-        });
-        this.wordChange.emit(updatedWord);
+    override onElementUpdate(event: Event, elementId: string): void {
+        this.saveWord();
+    }
+
+    override onAttributeUpdate(event: Event): void {
+        this.saveWord();
     }
 
     override onAudioClick(event: Event): void {        
@@ -168,6 +182,18 @@ export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
         });
     }
 
+    private saveWord(): void {
+        if (this.validateWord(false)) {
+            let updatedWord: Word = { id: this.word.id, elements: this.getElementValues(), attributes: this.attributeFormControl.value, audioFiles: this.word.audioFiles };
+            this.wordClient.updateWord(updatedWord).subscribe((savedWord) => {
+                if (savedWord != null) {
+                    this.word = savedWord;
+                }
+            });
+            this.wordChange.emit(updatedWord);
+        }
+    }
+
     private generateReviewEvent(result: ReviewTestResult): ReviewEvent {
         return {
             scheduledEventId: null,
@@ -230,4 +256,6 @@ export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
             });
         });
     }
+
+
 }

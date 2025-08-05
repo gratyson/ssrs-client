@@ -11,8 +11,6 @@ import { MatDialog } from "@angular/material/dialog";
 import { ConfirmDialog } from "../../util/confirm-dialog";
 
 const SAVE_BATCH_SIZE: number = 250;
-const HASH_ROOT: number = 44340143;
-const HASH_SEED: number = 226272509;
 
 @Injectable({ providedIn: "root" })
 export class WordParser {
@@ -53,11 +51,12 @@ export class WordParser {
         let wordParseResult: WordParseResult = new WordParseResult();
         let wordsToSave: Word[] = [];
         let reviewHistoryByWordElementStr: { [k:string]: LexiconReviewHistory } = {};
+        const validationRegExpDict: { [k:string]: RegExp } = this.getValidationRegExpForLanguage(language);
 
         for(const line of lines) {
             if (line !== "") { 
                 const linePieces = line.split("\t");
-                const word: Word | null = this.parseWordFromLine(language,  linePieces);
+                const word: Word | null = this.parseWordFromLine(language,  linePieces, validationRegExpDict);
                 if (word === null) {
                     console.log(`Line ${line} failed validation and was skipped.`);
                     wordParseResult.failedValidation++;
@@ -87,7 +86,7 @@ export class WordParser {
         }));
     }
 
-    private parseWordFromLine(language: Language, linePieces: string[]): Word | null {
+    private parseWordFromLine(language: Language, linePieces: string[], validationRegExpDict: { [k:string]: RegExp }): Word | null {
         let elements: {[k:string]: string} = {};
         let pos: number = 0;
 
@@ -96,6 +95,10 @@ export class WordParser {
 
             if (language.requiredElements.includes(element) && !elementValue) {
                 return null;  // missing required value
+            }
+
+            if (elementValue && validationRegExpDict[element.id] && !validationRegExpDict[element.id].test(elementValue)) {
+                return null;  // failed validation
             }
 
             elements[element.id] = elementValue;
@@ -220,6 +223,18 @@ export class WordParser {
         }
 
         return wordStr;
+    }
+
+    private getValidationRegExpForLanguage(language: Language): { [k:string]: RegExp } {
+        let regExpDict: { [k:string]: RegExp } = {};
+
+        for (let element of language.validElements) {
+            if (element.validationRegex) {
+                regExpDict[element.id] = new RegExp(element.validationRegex);
+            }
+        }
+
+        return regExpDict;
     }
 }
 

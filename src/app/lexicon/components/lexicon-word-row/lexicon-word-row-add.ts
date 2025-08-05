@@ -1,6 +1,6 @@
 import { LexiconWordRowBaseComponent } from "./lexicon-word-row-base";
 import { Component, ElementRef, EventEmitter, Input, Output, SimpleChange, SimpleChanges, ViewChild, inject } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatCheckbox, MatCheckboxModule } from "@angular/material/checkbox";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -18,7 +18,7 @@ import { WordClient } from "../../../client/word-client";
     templateUrl: "lexicon-word-row.html",
     styleUrl: "lexicon-word-row.css",
     standalone: true,
-    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule ]
+    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule ]
 })
 export class LexiconWordRowAddComponent extends LexiconWordRowBaseComponent {
 
@@ -36,35 +36,16 @@ export class LexiconWordRowAddComponent extends LexiconWordRowBaseComponent {
     }
 
     override onSaveNewWordClick(event: Event): void {
-        if (this.validateRequiredElements()) {
-            let newWord: Word = { id: "", elements: this.currentElementValues, attributes: this.currentAttributes, audioFiles: [] };
+        if (this.validateWord(true)) {
+            let newWord: Word = { id: "", elements: this.getElementValues(), attributes: this.attributeFormControl.value, audioFiles: [] };
             this.wordClient.saveWord(newWord, this.lexiconId).subscribe((savedWord) => {
                 if(savedWord != null) {
                     this.OnNewWord.emit(savedWord);
                 }
-                this.currentElementValues = {};
-                this.currentAttributes = "";
+
+                this.clearElementValues();
+                this.attributeFormControl.setValue("");
             });
         }
-    }
-
-    private validateRequiredElements(): boolean {
-        let errorMsg: string = "";
-
-        for(let languageElement of this.language.requiredElements) { 
-            if (!this.currentElementValues[languageElement.id]) {
-                errorMsg += `${languageElement.name} is required. `;
-            }
-        }
-
-        if (!this.currentAttributes) {
-            errorMsg += "Attributes are required. ";
-        }
-
-        if (errorMsg) {
-            this.snackBar.open(errorMsg, "", { duration: 5000 });
-        }
-
-        return (!errorMsg);
     }
 }

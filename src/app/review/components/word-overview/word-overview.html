@@ -10,7 +10,7 @@
                 <button mat-icon-button class="word-overview-edit-button" (click)="onEditWord()"><mat-icon>edit</mat-icon></button>
             </div>
         </div>
-        @for(element of language.validElements; track element.id) {
+        @for(element of language.overviewElements; track element.id) {
             @if(word.elements[element.id]) {
                 <div class="word-overview-element-row">
                     <span class="word-overview-element-key">{{ element.name }}</span>

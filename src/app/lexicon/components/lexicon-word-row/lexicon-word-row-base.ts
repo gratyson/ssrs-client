@@ -1,5 +1,5 @@
-import { Component, ElementRef, Input, SimpleChange, SimpleChanges, ViewChild, inject } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { Component, Input, SimpleChanges, ViewChild } from "@angular/core";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatCheckbox, MatCheckboxModule } from "@angular/material/checkbox";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -20,7 +20,7 @@ const NO_AUDIO_COLOR: string = "#d9d9d9";
     templateUrl: "lexicon-word-row.html",
     styleUrl: "lexicon-word-row.css",
     standalone: true,
-    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule ]
+    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule, ReactiveFormsModule ]
 })
 export class LexiconWordRowBaseComponent {
 
@@ -33,10 +33,10 @@ export class LexiconWordRowBaseComponent {
     @ViewChild("editAudioButton") editAudioButton: MatButton;
     @ViewChild("additionalWordOptions") additionalWordOptions: MatMenu;
 
-    learnedCheckboxVisibility: string  = "inherited";
-    audioVisibility: string  = "inherited";
+    learnedCheckboxVisibility: string  = "inherit";
+    audioVisibility: string  = "inherit";
     
-    additionalWordOptionsVisibility: string  = "inherited";
+    additionalWordOptionsVisibility: string  = "inherit";
     additionalWordOptionsDisplay: string  = "inline";
     
     addWordButtonDisplay: string  = "none";
@@ -56,8 +56,14 @@ export class LexiconWordRowBaseComponent {
                 public snackBar: MatSnackBar) {}
     
 
-    currentElementValues: {[k:string]: string} = {};
-    currentAttributes: string = "";
+    elementFormControls: {[k:string]: FormControl} = {};
+    attributeFormControl: FormControl = new FormControl("", []);
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        if (changes.hasOwnProperty("language")) {
+            this.initializeFormControls();
+        }
+    }
 
     getFontName(languageElement: WordElement): string {
         if (languageElement.applyLanguageFont) { 
@@ -67,7 +73,19 @@ export class LexiconWordRowBaseComponent {
         return "";
     }
 
-    onFieldUpdate(event: Event): void {
+    onElementUpdate(event: Event, elementId: string): void {
+
+    }
+
+    onElementKeyup(event: Event, elementId: string): void {
+
+    }
+
+    onAttributeUpdate(event: Event) {
+
+    }
+
+    onAttributeKeyup(event: Event) {
 
     }
 
@@ -80,10 +98,6 @@ export class LexiconWordRowBaseComponent {
     }
 
     onSaveNewWordClick(event: Event): void {
-
-    }
-
-    onFieldKeyup(event: Event): void {
 
     }
 
@@ -113,5 +127,60 @@ export class LexiconWordRowBaseComponent {
 
     recordEvent(event: Event, result: ReviewTestResult): void {
 
+    }
+
+    validateWord(showErrorInSnackbar: boolean): boolean {
+        let errorMsg: string = "";
+
+        for (let languageElement of this.language.validElements) {
+            const elementValue = this.elementFormControls[languageElement.id].value;
+            if (elementValue && languageElement.validationRegex && !(new RegExp(languageElement.validationRegex)).test(elementValue)) {
+                errorMsg += `${languageElement.name} is invalid. `;
+            }
+        }
+        
+        for (let requiredElement of this.language.requiredElements) {
+            if (!this.elementFormControls[requiredElement.id].value) {
+                errorMsg += `${requiredElement.name} is required. `;
+            }
+        }
+
+        if (!this.attributeFormControl.value) {
+            errorMsg += "Attributes are required. ";
+        }
+
+        if (errorMsg && showErrorInSnackbar) {
+            this.snackBar.open(errorMsg, "", { duration: 5000 });
+        }
+
+        return (!errorMsg);
+    }
+
+    getElementValues(): {[k:string]: string} {
+        let elementValues: {[k:string]: string} = {};
+
+        for (let languageElement of this.language.validElements) {
+            elementValues[languageElement.id] = this.elementFormControls[languageElement.id].value;
+        }
+
+        return elementValues;
+    }
+
+    clearElementValues(): void {
+        for (let languageElement of this.language.validElements) {
+            if (this.elementFormControls[languageElement.id]) {
+            this.elementFormControls[languageElement.id].setValue("");
+            }
+        }
+    }
+
+    private initializeFormControls(): void {
+        if (this.language) {
+            this.elementFormControls = {};
+
+            for (let languageElement of this.language.validElements) {
+                this.elementFormControls[languageElement.id] = new FormControl("", []);
+            }
+        }
     }
 }

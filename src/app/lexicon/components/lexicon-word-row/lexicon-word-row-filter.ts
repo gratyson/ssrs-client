@@ -1,6 +1,6 @@
 import { LexiconWordRowBaseComponent } from "./lexicon-word-row-base";
 import { Component, ElementRef, EventEmitter, Input, Output, SimpleChange, SimpleChanges, ViewChild, inject } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatCheckbox, MatCheckboxModule } from "@angular/material/checkbox";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -24,7 +24,7 @@ const NO_AUDTIO_FILTER_ICON = "filter_none";
     templateUrl: "lexicon-word-row.html",
     styleUrl: "lexicon-word-row.css",
     standalone: true,
-    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule ]
+    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule ]
 })
 export class LexiconWordRowFilterComponent extends LexiconWordRowBaseComponent {
 
@@ -52,7 +52,11 @@ export class LexiconWordRowFilterComponent extends LexiconWordRowBaseComponent {
         this.filterResult.subscribe(value => this.onFilterUpdate());
     }
 
-    override onFieldKeyup(event: Event): void {
+    override onElementKeyup(event: Event, elementId: string): void {
+        this.subject.next();
+    }
+
+    override onAttributeKeyup(event: Event): void {
         this.subject.next();
     }
 
@@ -90,7 +94,7 @@ export class LexiconWordRowFilterComponent extends LexiconWordRowBaseComponent {
     }
 
     private onFilterUpdate(): void {
-        const filter: WordFilterOptions = { elements: this.currentElementValues, attributes: this.currentAttributes, learned: this.currentLearnedFilter, hasAudio: this.currentAudioFilter };
+        const filter: WordFilterOptions = { elements: this.getElementValues(), attributes: this.attributeFormControl.value, learned: this.currentLearnedFilter, hasAudio: this.currentAudioFilter };
         this.OnFilterWordUpdate.emit(filter);
     }
 }
