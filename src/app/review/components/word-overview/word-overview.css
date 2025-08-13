@@ -9,7 +9,7 @@
     display: flex;
     margin: 0 0 .75rem 0;
 }
-.word-overview-element-row {
+.word-overview-element-row  {
     display: flex;
     flex-direction: row;
     margin: 0 0 .75rem 0;
@@ -18,6 +18,7 @@
     width: 25%;
     font-weight: bold;
     font-size: 1rem;
+    margin-top: auto;
 }
 .word-overview-element-value {
     font-size: 1.375rem;

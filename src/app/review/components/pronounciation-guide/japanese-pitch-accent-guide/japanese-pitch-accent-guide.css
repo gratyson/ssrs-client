@@ -1,0 +1,67 @@
+.accent-guide {
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+}
+.inflection {
+    position: relative;
+}
+.word-chars {
+    margin: .5em 0 0 0;
+    overflow: hidden;
+    line-height: 1em;
+}
+.inflection-chars {
+    text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff, 
+                 1px 1px #fff, 1px -1px #fff, -1px 1px #fff, -1px -1px #fff;
+}
+.overlay-line {
+    position: absolute;
+    container-type: size;
+    top: .125em;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.pitch-line {
+    border-top-style: solid;
+    border-top-width: 0.1875em;
+}
+.flat-chars-underline {
+    border-bottom-style: solid;
+    border-bottom-width: 0.1875em;
+}
+.flat-chars-overline {
+    border-top-style: solid;
+    border-top-width: 0.1875em;
+    transform: translateX(-1px);
+}
+.spacer-line {
+    border-top-style: solid;
+    border-top-width: .25em;
+}
+.accent {
+    width: fit-content;
+    height: fit-content;
+    position: relative;
+    display: inline-block;
+}
+.accent-dot {
+    border-width: .1875em;
+    border-style: solid;
+    border-radius: 50%;
+
+    position: absolute;
+    container-type: size;
+    top: .0625em;
+    left: calc(50% - .1875em);
+    width: .3125em;
+    height: .3125em;
+    z-index: -1;
+}
+.pitch-spacer {
+    position: relative;
+    width: .25em;
+}

@@ -19,6 +19,7 @@ import { ReviewAttributesComponent } from "../review-attributes/review-attribute
 import { MultipleChoicePromptComponent } from "../multiple-choice-prompt/multiple-choice-prompt.component";
 import { Word } from "../../../lexicon/model/word";
 import { ReviewMode } from "../../model/review-mode";
+import { PronuncationGuide } from "../pronounciation-guide/pronunciation-guide.component";
 
 const ADVANCE_TO_NEXT_TEST_WAIT_TIME_MS = 3000;
 const NON_TEST_TIME_BEFORE_PROCESS_MS = 500;
@@ -28,7 +29,7 @@ const NON_TEST_TIME_BEFORE_PROCESS_MS = 500;
     templateUrl: "review-prompt.html",
     styleUrl: "review-prompt.css",
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, MatChipsModule, TypingTestPromptComponent, WordOverviewComponent, ReviewAttributesComponent, MultipleChoicePromptComponent],
+    imports: [FormsModule, ReactiveFormsModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, MatChipsModule, TypingTestPromptComponent, WordOverviewComponent, ReviewAttributesComponent, MultipleChoicePromptComponent, PronuncationGuide],
 })
 export class ReviewPromptComponent {
 

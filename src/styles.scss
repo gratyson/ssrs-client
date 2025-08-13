@@ -48,6 +48,42 @@ img.lexicon-image {
   color: map-get($ssrs-accent, 100);
 }
 
+.border-color-primary-100 {
+    border-color: map-get($ssrs-primary, 100);
+}
+.border-color-primary-200 {
+    border-color: map-get($ssrs-primary, 200);
+}
+.border-color-primary-400 {
+    border-color: map-get($ssrs-primary, 400);
+}
+.border-color-primary-600 {
+    border-color: map-get($ssrs-primary, 600);
+}
+
+.border-color-accent-100 {
+    border-color: map-get($ssrs-accent, 100);
+}
+.border-color-accent-200 {
+    border-color: map-get($ssrs-accent, 200);
+}
+.border-color-accent-400 {
+    border-color: map-get($ssrs-accent, 400);
+}
+.border-color-accent-600 {
+    border-color: map-get($ssrs-accent, 600);
+}
+
+.border-color-warn-100 {
+    border-color: map-get($ssrs-warn, 100);
+}
+.border-color-warn-200 {
+    border-color: map-get($ssrs-warn, 200);
+}
+.border-color-warn-400 {
+    border-color: map-get($ssrs-warn, 400);
+}
+
 .background-color-accent-200 {
   background-color: map-get($ssrs-accent, 200)!important;
 }

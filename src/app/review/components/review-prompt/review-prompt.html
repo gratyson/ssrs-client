@@ -4,7 +4,12 @@
             <word-overview [word]="wordReview.word" [language]="currentLanguage" (editWord)="onEditWord($event)" />
         } @else {
             <h1 class="review-prompt" [style.font-family]="promptWithFont">{{ wordReview.word.elements[wordReview.promptWith] }}</h1>
-            <div class="show-after-test" [style.visibility]="showAfterTestVisibiliy" [style.font-family]="showAfterTestFont">{{ wordReview.word.elements[wordReview.showAfterTest] }}</div>
+            <div class="show-after-test" [style.visibility]="showAfterTestVisibiliy">
+                <div class="pronunciation-guide">
+                    <pronunciation-guide [word]="wordReview.word" [language]="currentLanguage" />
+                </div>
+                <div class="show-after-test-text" [style.font-family]="showAfterTestFont">{{ wordReview.word.elements[wordReview.showAfterTest] }}</div>
+            </div>
             <div class="review-attributes"><review-attributes [attributes]="wordReview.word.attributes" /></div>
         }
         @if(showTypingPrompt()) {

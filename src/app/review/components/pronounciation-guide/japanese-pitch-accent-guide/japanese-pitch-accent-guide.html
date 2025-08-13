@@ -1,0 +1,32 @@
+<div class="accent-guide" [style.font-family]="languageFont">
+    @if(accentType === eAccentType.Heiban) {
+        <div [class]="'word-chars flat-chars-underline ' + accentLineColorClass" [style.border-bottom-width]="BASE_LINE_WIDTH_EM + 'em'">{{ flatCharsUnderline }}</div>
+        <div class="pitch-spacer">
+            <div #risingInflectionDiv [class]="'overlay-line spacer-line ' + accentLineColorClass" [style.transform]="risingInflectionTransform"></div>
+        </div>
+        <div class="inflection">
+            <div class="word-chars">{{ flatCharsOverline }}</div>
+            <div [class]="'overlay-line flat-chars-overline ' + accentLineColorClass"></div>
+        </div>
+    } @else {
+        <div class="inflection">
+            <div class="word-chars inflection-chars">{{ risingInflectionChars }}</div>
+            <div #risingInflectionDiv [class]="'overlay-line pitch-line ' + accentLineColorClass" [style.transform]="risingInflectionTransform"></div>
+        </div>
+        <div class="accent">
+            <div class="word-chars inflection-chars accent-char">{{ accentChar }}</div>
+            <div #accentDiv [class]="'overlay-line pitch-line ' + accentLineColorClass" [style.transform]="accentTransform"></div>
+            <div [class]="'overlay-line accent-dot ' + accentLineColorClass"></div>
+        </div>
+        @if(accentType === eAccentType.ODaka) {
+            <div class="pitch-spacer">
+                <div #fallingInflectionDiv [class]="'overlay-line spacer-line ' + accentLineColorClass" [style.transform]="fallingInflectionTransform"></div>
+            </div>
+        } @else {
+            <div class="inflection">
+                <div class="word-chars inflection-chars">{{ fallingInflectionChars }}</div>
+                <div #fallingInflectionDiv [class]="'overlay-line pitch-line ' + accentLineColorClass" [style.transform]="fallingInflectionTransform"></div>
+            </div>
+        }
+    }
+</div>

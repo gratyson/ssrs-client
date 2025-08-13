@@ -56,7 +56,6 @@ export class LearningSessionComponent {
     }
 
     private buildTitle(): string {
-        console.log(this.lexiconName);
         if (this.lexiconName) {
             if (this.wordCnt) {
                 return `Learning ${this.lexiconName} (${this.wordCnt} words)`;

@@ -18,6 +18,14 @@
                 </div>
             }
         }
+        <div [style.display]="pronunciationGuideDisplay">
+            <div class="word-overview-element-row">
+                <span class="word-overview-element-key">Pronunciation</span>
+                <span class="word-overview-element-value">
+                    <pronunciation-guide #pronunciationGuide [word]="word" [language]="language" (hasPronunciationGuide)="onHasPronunciationGuideChange($event)"></pronunciation-guide>
+                </span>
+            </div>
+        </div>
         <div class="word-overview-attributes">
             <review-attributes [attributes]="word.attributes" />
         </div>
