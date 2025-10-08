@@ -22,6 +22,7 @@ import { SingleWordEditComponent } from "../single-word-edit/single-word-edit.co
 import { ReviewMode } from "../../model/review-mode";
 import { UserConfigService } from "../../../user-config/user-config.service";
 import { TouchscreenModeSetting } from "../../../user-config/user-config-setting";
+import { WordOverviewComponent } from "../word-overview/word-overview.component";
 
 const PAUSE_BUTTON_ICON_RUNNING: string = "pause";
 const PAUSE_BUTTON_ICON_PAUSED: string = "play_arrow";
@@ -32,7 +33,7 @@ const CORRECT_NEAR_MISS_MULTIPLIER: number = 1.5;
     templateUrl: "review-container.html",
     styleUrl: "review-container.css",
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, CountdownTimerComponent, ReviewPromptComponent, AudioPlayerComponent, MatProgressBarModule, ReviewSummaryComponent, SingleWordEditComponent],
+    imports: [FormsModule, ReactiveFormsModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, CountdownTimerComponent, ReviewPromptComponent, AudioPlayerComponent, MatProgressBarModule, ReviewSummaryComponent, SingleWordEditComponent, WordOverviewComponent],
     host: { ["(document:keypress)"]: "onKeypress($event)", ["(document:keydown)"]: "onKeydown($event)" },
 })
 export class ReviewContainerComponent {
@@ -69,6 +70,7 @@ export class ReviewContainerComponent {
     preloadAudio: boolean = false;
 
     showSummary: boolean = false;
+    showOveviewWordFromSummary: Word | null = null;
     reviewComplete: boolean = false;
     correctWordCount: number = 0;
     totalWordCount: number = 0;
@@ -181,18 +183,26 @@ export class ReviewContainerComponent {
 
     onNext(): void {
         this.deferCurrentTest();
-        setTimeout(() => this.nextButton?._elementRef?.nativeElement.blur(), 0);
     }
 
     onSkip(): void {
-        if (!this.isPaused) {
-            this.togglePause();
+        if (this.currentResult) {        // make sure current test is included if result was already determined
+           this.advanceToNext();
         }
-        this.showReviewSummary()
+
+        if (this.currentWordReview) {    // No need to do anything if queue was exhausted as it will automatically show summary
+            if (!this.isPaused) {
+                this.togglePause();
+            }
+            this.showReviewSummary();
+        }
     }
 
     onResumeReview(): void {
         this.showSummary = false;
+        this.showOveviewWordFromSummary = null;
+        this.wordToEdit = null;
+
         if (this.isPaused) {
             this.togglePause();
         }
@@ -206,10 +216,17 @@ export class ReviewContainerComponent {
         this.wordToEdit = wordToEdit;
     }
 
+    onViewSummary(word: Word): void {
+        this.showOveviewWordFromSummary = word;
+    }
+
     onEditComplete(newWord: Word): void {
         this.updateReviewedWordResultsWord(newWord);
         this.updateCurrentReviewWordIfNecessary(newWord);
         this.reviewQueueManager.updateWord(newWord);
+        if (this.showOveviewWordFromSummary) {
+            this.showOveviewWordFromSummary = newWord;
+        }
 
         this.wordToEdit = null;
 
@@ -292,8 +309,16 @@ export class ReviewContainerComponent {
     }
 
     private processCurrentReviewPrompt(): void {
+        if (this.showSummary) {
+            if (this.showOveviewWordFromSummary) {
+                this.showOveviewWordFromSummary = null;
+            } else {
+                this.closeReviewContainer();
+            }
+        }
+
         if (!this.isPaused) {
-            if (this.showSummary || !this.currentWordReview) {
+            if (!this.currentWordReview) {
                 this.closeReviewContainer();
             } else if (this.reviewPrompt) {
                 this.reviewPrompt.processNext();
@@ -302,7 +327,7 @@ export class ReviewContainerComponent {
     }
 
     private deferCurrentTest(): void {
-        if (this.currentWordReview && this.reviewPrompt && this.reviewPrompt.canDefer()) {
+        if (!this.isPaused && this.currentWordReview && this.reviewPrompt && this.reviewPrompt.canDefer()) {
             const nextWordReview: WordReview | null = this.reviewQueueManager.deferAndGetNext(this.currentReviewTimeMs + (new Date().valueOf() - this.reviewStartTimeMs));
 
             if (nextWordReview !== null) {

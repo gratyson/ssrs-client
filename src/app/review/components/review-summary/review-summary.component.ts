@@ -36,6 +36,7 @@ export class ReviewSummaryComponent {
 
     @Output() reviewedWordResultsChange: EventEmitter<WordReviewResult[]> = new EventEmitter<WordReviewResult[]>();
     @Output() editWord: EventEmitter<Word> = new EventEmitter<Word>();
+    @Output() viewWordSummary: EventEmitter<Word> = new EventEmitter<Word>();
 
     reviewedWordOverrideOptions: number[] = [];
     reviewedWordOverrideBorder: string[] = [];
@@ -95,6 +96,10 @@ export class ReviewSummaryComponent {
 
     onEditClick(index: number): void {
         this.editWord.emit(this.reviewedWordResults[index].wordReview.word);
+    }
+
+    onSummaryClick(index: number): void {
+        this.viewWordSummary.emit(this.reviewedWordResults[index].wordReview.word);
     }
 
     private isReviewOverridden(index: number): boolean {

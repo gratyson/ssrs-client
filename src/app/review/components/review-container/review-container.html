@@ -12,7 +12,7 @@
                 
                 @if(!showSummary) {
                     <button #pauseButton mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onPause()"><mat-icon>{{ pauseButtonIcon }}</mat-icon></button>
-                    <button #nextButton mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onNext()"><mat-icon>fast_forward</mat-icon></button>
+                    <button #nextButton mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" [disabled]="isPaused" (click)="onNext()"><mat-icon>fast_forward</mat-icon></button>
                     <button mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onSkip()"><mat-icon>skip_next</mat-icon></button>
                 } @else if (!reviewComplete) {
                     <button mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onResumeReview()"><mat-icon>skip_previous</mat-icon></button>
@@ -36,13 +36,20 @@
                                     [disabled]="isPaused" 
                                     [touchscreenMode]="touchscreenMode"/>
                 } @else if (showSummary) {
+                    @if(showOveviewWordFromSummary) {
+                        <word-overview [word]="showOveviewWordFromSummary"
+                                       [language]="language"
+                                       (editWord)="onEditWord($event) "/>
+                    } @else {
                     <review-summary [totalWordCount]="totalWordCount" 
                                     [correctWordCount]="correctWordCount"
                                     [totalTimeMs]="totalTimeMs"
                                     [reviewedWordResults]="reviewedWordResults" 
                                     (reviewedWordResultsChange)="onReviewedWordResultsChange($event)"
                                     [language]="language"
-                                    (editWord)="onEditWord($event)" />
+                                    (editWord)="onEditWord($event)" 
+                                    (viewWordSummary)="onViewSummary($event)" />
+                    }
                 } @else {
                     @defer(on timer(1000)) {
                         <div class="alert alert-warning">No words to review</div>

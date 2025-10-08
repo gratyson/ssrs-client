@@ -17,7 +17,7 @@ export class PronuncationGuide {
 
    @ViewChild("languagePronunciationGuide") languagePronunciationGuide: LanguagePronuncationGuide;
 
-    @Input() language: Language;
+    @Input() language: Language | null;
     @Input() word: Word;
 
     @Output() hasPronunciationGuide: EventEmitter<boolean> = new EventEmitter<boolean>();

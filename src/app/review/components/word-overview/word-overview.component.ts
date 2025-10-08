@@ -18,7 +18,7 @@ import { PronuncationGuide } from "../pronounciation-guide/pronunciation-guide.c
 export class WordOverviewComponent {
     
     @Input() word: Word;
-    @Input() language: Language;
+    @Input() language: Language | null;
 
     @Output() editWord: EventEmitter<Word> = new EventEmitter<Word>();
 

@@ -7,11 +7,10 @@ import { LexiconEditHeaderComponent } from "../lexicon-edit-header/lexicon-edit-
 import { Language, WordElement } from "../../../language/language";
 import { MatDialog } from "@angular/material/dialog";
 import { LexiconMetadataEditDialogComponent } from "../../../home/components/lexicon-metadata-edit-dialog/lexicon-metadata-edit-dialog.component";
-import { LexiconWordRowEditComponent } from "../lexicon-word-row/lexicon-word-row-edit";
 import { Word } from "../../model/word";
 import { LexiconWordRowAddComponent } from "../lexicon-word-row/lexicon-word-row-add";
 import { LexiconWordRowFilterComponent } from "../lexicon-word-row/lexicon-word-row-filter";
-import { WordParseResult, WordParser } from "../../import/word-parser";
+import { WordParser } from "../../import/word-parser";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { AudioClient } from "../../../client/audio-client";
 import { environment } from "../../../../environments/environment";
@@ -30,7 +29,7 @@ import { ReviewSessionClient } from "../../../client/review-session-client";
     styleUrl: "lexicon-edit.css",
     standalone: true,
     providers: [ LexiconClient, WordClient ],
-    imports: [ LexiconEditHeaderComponent, LexiconWordRowEditComponent, LexiconWordRowAddComponent, LexiconWordRowFilterComponent, LexiconWordRowEditBatchComponent, ViewReviewHistoryComponent ],
+    imports: [ LexiconEditHeaderComponent, LexiconWordRowAddComponent, LexiconWordRowFilterComponent, LexiconWordRowEditBatchComponent, ViewReviewHistoryComponent ],
 })
 export class LexiconEdit {
     private lexiconClient: LexiconClient = inject(LexiconClient);
