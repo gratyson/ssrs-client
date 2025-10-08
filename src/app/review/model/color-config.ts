@@ -55,6 +55,7 @@ export const ATTRIBUTE_CLASS_TABLE: { [k:string]: string } = {
     "adj-t": ADJECTIVE_CLASS,
     "adj-aux": ADJECTIVE_CLASS,
     "adj-pn": ADJECTIVE_CLASS,
+    "adj-k": ADJECTIVE_CLASS,
 
     "adv": ADVERB_CLASS,
     "adv-n": ADVERB_CLASS,
@@ -67,11 +68,13 @@ export const ATTRIBUTE_CLASS_TABLE: { [k:string]: string } = {
     "prt": GRAMMAR_CLASS,
     "pre": GRAMMAR_CLASS,
     "suf": GRAMMAR_CLASS,
+    "aux": GRAMMAR_CLASS,
 
     "ateji": ASPECT_CLASS,
     "col": ASPECT_CLASS,
     "hon": ASPECT_CLASS,
     "hum": ASPECT_CLASS,
+    "fam": ASPECT_CLASS,
     "pol": ASPECT_CLASS,
     "frm": ASPECT_CLASS,
     "ctr": ASPECT_CLASS,
