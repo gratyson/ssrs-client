@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import { AppHeaderComponent } from './home/components/header/app-header-component';
 
 @Component({
@@ -27,7 +26,7 @@ import { AppHeaderComponent } from './home/components/header/app-header-componen
     }
   `,
   standalone: true,
-  imports: [ RouterOutlet, RouterLink, RouterLinkActive, HttpClientModule, AppHeaderComponent ],
+  imports: [ RouterOutlet, RouterLink, RouterLinkActive, AppHeaderComponent ],
 })
 export class AppComponent {
 }
