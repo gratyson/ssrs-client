@@ -8,7 +8,7 @@
             <div class="word-chars">{{ flatCharsOverline }}</div>
             <div [class]="'overlay-line flat-chars-overline ' + accentLineColorClass"></div>
         </div>
-    } @else {
+    } @else if (accentType !== eAccentType.None) {
         <div class="inflection">
             <div class="word-chars inflection-chars">{{ risingInflectionChars }}</div>
             <div #risingInflectionDiv [class]="'overlay-line pitch-line ' + accentLineColorClass" [style.transform]="risingInflectionTransform"></div>

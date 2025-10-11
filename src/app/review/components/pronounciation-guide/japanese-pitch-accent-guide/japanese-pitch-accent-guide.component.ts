@@ -10,7 +10,8 @@ enum AccentType {
     Heiban = 0,
     AtamaDaka = 1,
     NakaDaka = 2,
-    ODaka = 3
+    ODaka = 3,
+    None = 4
 }
 
 const ACCENT_TYPE_COLOR_CLASS: { [k:number]: string } = {
@@ -112,6 +113,7 @@ export class JapanesePitchAccentGuide extends LanguagePronuncationGuide {
                 this.processAccent(chars, accents[0]);
                 this.processTransforms();
             } else {
+                this.accentType = AccentType.None;
                 this.hasPronunciationGuide.emit(false);
             }
         }
