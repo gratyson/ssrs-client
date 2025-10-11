@@ -14,9 +14,8 @@ import { RouterLink } from "@angular/router";
     selector: "lexicon-edit-header",
     templateUrl: "lexicon-edit-header.html",
     styleUrl: "lexicon-edit-header.css",
-    standalone: true,
-    providers: [ LexiconClient ],
-    imports: [ MatMenuModule, MatIconModule, MatButtonModule, MatFormFieldModule, RouterLink ],
+    providers: [LexiconClient],
+    imports: [MatMenuModule, MatIconModule, MatButtonModule, MatFormFieldModule, RouterLink]
 })
 export class LexiconEditHeaderComponent {
     private lexiconClient: LexiconClient = inject(LexiconClient);

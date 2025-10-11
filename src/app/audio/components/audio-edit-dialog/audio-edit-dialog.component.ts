@@ -11,8 +11,7 @@ import { AudioPlayerComponent } from "../audio-player/audio-player.component";
     selector: "audio-edit-dialog",
     templateUrl: "audio-edit-dialog.html",
     styleUrl: "audio-edit-dialog.css",
-    standalone: true,
-    imports: [ MatIconModule, MatButtonModule, AudioPlayerComponent, MatDividerModule ]
+    imports: [MatIconModule, MatButtonModule, AudioPlayerComponent, MatDividerModule]
 })
 export class AudioEditDialogComponent {
 

@@ -8,8 +8,7 @@ import { LanguagePronuncationGuide } from "./language-pronuncation-guide";
     selector: "pronunciation-guide",
     templateUrl: "pronunciation-guide.html",
     styleUrl: "pronunciation-guide.css",
-    standalone: true,
-    imports: [ JapanesePitchAccentGuide ]
+    imports: [JapanesePitchAccentGuide]
 })
 export class PronuncationGuide {
 

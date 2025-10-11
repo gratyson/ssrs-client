@@ -32,9 +32,8 @@ const CORRECT_NEAR_MISS_MULTIPLIER: number = 1.5;
     selector: "review-container",
     templateUrl: "review-container.html",
     styleUrl: "review-container.css",
-    standalone: true,
     imports: [FormsModule, ReactiveFormsModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, CountdownTimerComponent, ReviewPromptComponent, AudioPlayerComponent, MatProgressBarModule, ReviewSummaryComponent, SingleWordEditComponent, WordOverviewComponent],
-    host: { ["(document:keypress)"]: "onKeypress($event)", ["(document:keydown)"]: "onKeydown($event)" },
+    host: { ["(document:keypress)"]: "onKeypress($event)", ["(document:keydown)"]: "onKeydown($event)" }
 })
 export class ReviewContainerComponent {
 

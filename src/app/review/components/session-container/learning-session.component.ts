@@ -15,8 +15,7 @@ import { WordsToLearnCount, WordsToLearnIntroductionBatchSize, WordsToLearnTests
                           [lexiconId]="lexiconId" 
                           [introductionBatchSize]="introductionBatchSize" 
                           [testsBetweenIntroduction]="testsBetweenIntroduction"/>`,
-    standalone: true,
-    imports: [ ReviewContainerComponent ]
+    imports: [ReviewContainerComponent]
 })
 export class LearningSessionComponent {
     

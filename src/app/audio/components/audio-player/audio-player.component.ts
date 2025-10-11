@@ -15,10 +15,9 @@ import { AudioClient } from "../../../client/audio-client";
  */
 @Component({
     selector: "word-audio-player",
-    standalone: true,
     templateUrl: "audio-player.html",
     styleUrl: "audio-player.css",
-    imports: [ MatIconModule, MatButtonModule ]
+    imports: [MatIconModule, MatButtonModule]
 })
 export class AudioPlayerComponent {
 

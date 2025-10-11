@@ -13,8 +13,7 @@ import { ReviewSessionClient } from "../../../client/review-session-client";
     selector: "single-word-edit",
     templateUrl: "single-word-edit.html",
     styleUrl: "single-word-edit.css",
-    standalone: true,
-    imports: [ LexiconWordRowEditComponent, LexiconWordRowHeaderComponent, MatIconModule, MatButtonModule, ViewReviewHistoryComponent ]
+    imports: [LexiconWordRowEditComponent, LexiconWordRowHeaderComponent, MatIconModule, MatButtonModule, ViewReviewHistoryComponent]
 })
 export class SingleWordEditComponent {
 

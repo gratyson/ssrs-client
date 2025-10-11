@@ -3,8 +3,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AppHeaderComponent } from './home/components/header/app-header-component';
 
 @Component({
-  selector: 'app-root',
-  template: `
+    selector: 'app-root',
+    template: `
     <div class="ssrs-app">
       <div class="ssrs-header">
         <app-header />
@@ -14,7 +14,7 @@ import { AppHeaderComponent } from './home/components/header/app-header-componen
       </div>
     <div>
   `,
-  styles: `
+    styles: `
     .ssrs-app {
       display: flex;
       flex-direction: column;
@@ -25,8 +25,7 @@ import { AppHeaderComponent } from './home/components/header/app-header-componen
       overflow: auto;
     }
   `,
-  standalone: true,
-  imports: [ RouterOutlet, RouterLink, RouterLinkActive, AppHeaderComponent ],
+    imports: [RouterOutlet, RouterLink, RouterLinkActive, AppHeaderComponent]
 })
 export class AppComponent {
 }

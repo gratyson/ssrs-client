@@ -15,8 +15,7 @@ import { getEndOfDay } from "../../../util/date-util";
     selector: "lexicon-selection",
     templateUrl: "lexicon-select.html",
     styleUrl: "lexicon-select.css",
-    standalone: true,
-    imports: [ MatMenuModule, MatIconModule, MatButtonModule, MatFormFieldModule, FormsModule, RouterLink ]
+    imports: [MatMenuModule, MatIconModule, MatButtonModule, MatFormFieldModule, FormsModule, RouterLink]
 })
 export class LexiconSelectComponent {
 

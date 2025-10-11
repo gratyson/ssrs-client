@@ -12,8 +12,7 @@ import { MatMenuModule } from "@angular/material/menu";
     selector: "app-header",
     templateUrl: "app-header.html",
     styleUrl: "app-header.css",
-    standalone: true,
-    imports: [ MatFormFieldModule, MatIconModule, MatButtonModule, MatMenuModule, RouterLink ],
+    imports: [MatFormFieldModule, MatIconModule, MatButtonModule, MatMenuModule, RouterLink]
 })
 export class AppHeaderComponent {
 

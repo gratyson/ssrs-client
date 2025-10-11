@@ -13,8 +13,7 @@ import { WordElement } from "../../../language/language";
     selector: "word-row-header",
     templateUrl: "lexicon-word-row.html",
     styleUrl: "lexicon-word-row.css",
-    standalone: true,
-    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule ]
+    imports: [MatCheckboxModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule]
 })
 export class LexiconWordRowHeaderComponent extends LexiconWordRowBaseComponent {
 

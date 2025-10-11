@@ -6,8 +6,7 @@ import { Observable, Subscription, interval, timer } from "rxjs";
     selector: "countdown-timer",
     templateUrl: "countdown-timer.html",
     styleUrl: "countdown-timer.css",
-    standalone: true,
-    imports: [ MatProgressSpinnerModule ]
+    imports: [MatProgressSpinnerModule]
 })
 export class CountdownTimerComponent {
 

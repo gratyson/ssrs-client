@@ -14,8 +14,7 @@ const DEBOUNCE_TIME_MS: number = 3000;
     selector: "user-notepad",
     templateUrl: "user-notepad.html",
     styleUrl: "user-notepad.css",
-    standalone: true,
-    imports: [ FormsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule ],
+    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule]
 })
 export class UserNotepadComponent {
 

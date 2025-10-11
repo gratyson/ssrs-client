@@ -13,8 +13,7 @@ import { LexiconClient } from "../../../client/lexicon-client";
                           [reviewWords]="reviewWordsQueues" 
                           [lexiconId]="lexiconId" />
     `,
-    standalone: true,
-    imports: [ ReviewContainerComponent ],
+    imports: [ReviewContainerComponent]
 })
 export class ReviewSessionComponent {
 

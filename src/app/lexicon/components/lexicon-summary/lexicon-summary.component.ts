@@ -14,8 +14,7 @@ import { RouterLink } from "@angular/router";
     selector: "lexicon-summary",
     templateUrl: "lexicon-summary.html",
     styleUrl: "lexicon-summary.css",
-    standalone: true,
-    imports: [ NgxChartsModule, MatButtonModule, MatIconModule, RouterLink ],
+    imports: [NgxChartsModule, MatButtonModule, MatIconModule, RouterLink]
 })
 export class LexiconSummaryComponent {
 

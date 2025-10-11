@@ -11,8 +11,7 @@ import { DurationPipe } from "../../../util/duration/duration.pipe";
     selector: "view-review-history",
     templateUrl: "view-review-history.html",
     styleUrl: "view-review-history.css",
-    standalone: true,
-    imports: [ MatIconModule, MatButtonModule, DatePipe, DurationPipe ],
+    imports: [MatIconModule, MatButtonModule, DatePipe, DurationPipe]
 })
 export class ViewReviewHistoryComponent {
 

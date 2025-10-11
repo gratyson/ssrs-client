@@ -9,11 +9,10 @@ import { LexiconReviewHistory } from "../../model/lexicon";
 import { ReviewSessionClient } from "../../../client/review-session-client";
 
 @Component({
-    selector: "word-row-edit-batch", 
+    selector: "word-row-edit-batch",
     templateUrl: "lexicon-word-row-edit-batch.html",
     styleUrl: "lexicon-word-row-edit-batch.css",
-    standalone: true,
-    imports: [ LexiconWordRowEditComponent, LexiconWordRowEditBatchComponent, MatFormFieldModule ]
+    imports: [LexiconWordRowEditComponent, LexiconWordRowEditBatchComponent, MatFormFieldModule]
 })
 export class LexiconWordRowEditBatchComponent {
 

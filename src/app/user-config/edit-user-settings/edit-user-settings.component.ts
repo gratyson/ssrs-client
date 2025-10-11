@@ -13,8 +13,7 @@ import { MatSelectModule } from "@angular/material/select";
     selector: "edit-user-settings",
     templateUrl: "edit-user-settings.html",
     styleUrl: "edit-user-settings.css",
-    standalone: true,
-    imports: [ MatInputModule, FormsModule, MatFormFieldModule, MatButtonModule, MatIconModule, MatSelectModule, RouterLink ],
+    imports: [MatInputModule, FormsModule, MatFormFieldModule, MatButtonModule, MatIconModule, MatSelectModule, RouterLink]
 })
 export class EditUserSettingsComponent {
 

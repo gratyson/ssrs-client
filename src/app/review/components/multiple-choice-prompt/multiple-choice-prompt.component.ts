@@ -8,9 +8,8 @@ const ACCEPT_NULL_ANSWER_WAIT_TIME_MS: number = 3000;
     selector: "multiple-choice-prompt",
     templateUrl: "multiple-choice-prompt.html",
     styleUrl: "multiple-choice-prompt.css",
-    standalone: true,
-    imports: [ MatButtonModule ],
-    host: { ["(document:keydown)"]: "onKeypress($event)" },
+    imports: [MatButtonModule],
+    host: { ["(document:keydown)"]: "onKeypress($event)" }
 })
 export class MultipleChoicePromptComponent {
 

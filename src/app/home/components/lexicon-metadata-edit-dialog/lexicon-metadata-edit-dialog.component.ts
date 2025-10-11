@@ -26,13 +26,11 @@ const UPDATE_LEXICON_FORM_TITLE: string = "Update Lexicon";
 const MAX_IMAGE_FILE_SIZE: number = 1024 * 1024;
 
 @Component({
-    selector: "lexicon-metadata-edit-dialog", 
+    selector: "lexicon-metadata-edit-dialog",
     templateUrl: "lexicon-metadata-edit-dialog.html",
     styleUrl: "lexicon-metadata-edit-dialog.css",
-    standalone: true,
-    providers: [ LexiconClient ],
-    imports: [ MatGridListModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule ]
-    
+    providers: [LexiconClient],
+    imports: [MatGridListModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule]
 })
 export class LexiconMetadataEditDialogComponent {
     

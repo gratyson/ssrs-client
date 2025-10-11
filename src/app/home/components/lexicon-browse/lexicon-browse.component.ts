@@ -17,8 +17,7 @@ import { getEndOfDay } from "../../../util/date-util";
     selector: "lexicon-browse",
     templateUrl: "lexicon-browse.html",
     styleUrl: "lexicon-browse.css",
-    standalone: true,
-    imports: [ LexiconSelectComponent, MatIconModule, MatButtonModule, MatMenuModule, MatCheckboxModule ],
+    imports: [LexiconSelectComponent, MatIconModule, MatButtonModule, MatMenuModule, MatCheckboxModule]
 })
 export class LexiconBrowseComponent {
 

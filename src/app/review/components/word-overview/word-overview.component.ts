@@ -12,8 +12,7 @@ import { PronuncationGuide } from "../pronounciation-guide/pronunciation-guide.c
     selector: "word-overview",
     templateUrl: "word-overview.html",
     styleUrl: "word-overview.css",
-    standalone: true,
-    imports: [AudioPlayerComponent, ReviewAttributesComponent, MatIconModule, MatButtonModule, PronuncationGuide ]
+    imports: [AudioPlayerComponent, ReviewAttributesComponent, MatIconModule, MatButtonModule, PronuncationGuide]
 })
 export class WordOverviewComponent {
     

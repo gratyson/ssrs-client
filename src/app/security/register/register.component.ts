@@ -12,8 +12,7 @@ import { Router } from "@angular/router";
     selector: "ssrs-register",
     templateUrl: "register.html",
     styleUrl: "register.css",
-    standalone: true,
-    imports: [ FormsModule, ReactiveFormsModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule ],
+    imports: [FormsModule, ReactiveFormsModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
     host: { ["(document:keypress)"]: "onKeypress($event)" }
 })
 export class RegisterComponent {

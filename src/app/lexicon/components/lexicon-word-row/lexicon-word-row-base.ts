@@ -16,11 +16,10 @@ const HAS_AUDIO_COLOR: string = "black";
 const NO_AUDIO_COLOR: string = "#d9d9d9";
 
 @Component({
-    selector: "word-row-base", 
+    selector: "word-row-base",
     templateUrl: "lexicon-word-row.html",
     styleUrl: "lexicon-word-row.css",
-    standalone: true,
-    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule, ReactiveFormsModule ]
+    imports: [MatCheckboxModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule, ReactiveFormsModule]
 })
 export class LexiconWordRowBaseComponent {
 

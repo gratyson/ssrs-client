@@ -23,8 +23,7 @@ import {
     `,
     styles: `
     `,
-    standalone: true,
-    imports: [ MatButtonModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose ],
+    imports: [MatButtonModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose]
 })
 export class ConfirmDialog {
     private static readonly DIALOG_DATA_DEFAULTS: ConfirmDialogData = {

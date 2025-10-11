@@ -27,9 +27,8 @@ import { ReviewSessionClient } from "../../../client/review-session-client";
     selector: "lexicon-edit",
     templateUrl: "lexicon-edit.html",
     styleUrl: "lexicon-edit.css",
-    standalone: true,
-    providers: [ LexiconClient, WordClient ],
-    imports: [ LexiconEditHeaderComponent, LexiconWordRowAddComponent, LexiconWordRowFilterComponent, LexiconWordRowEditBatchComponent, ViewReviewHistoryComponent ],
+    providers: [LexiconClient, WordClient],
+    imports: [LexiconEditHeaderComponent, LexiconWordRowAddComponent, LexiconWordRowFilterComponent, LexiconWordRowEditBatchComponent, ViewReviewHistoryComponent]
 })
 export class LexiconEdit {
     private lexiconClient: LexiconClient = inject(LexiconClient);

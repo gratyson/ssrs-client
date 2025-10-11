@@ -27,7 +27,6 @@ const ACCENT_LINE_OVERFLOW_PX: number = 2;
     selector: "japanese-pitch-accent-guide",
     templateUrl: "japanese-pitch-accent-guide.html",
     styleUrl: "japanese-pitch-accent-guide.css",
-    standalone: true,
     imports: []
 })
 export class JapanesePitchAccentGuide extends LanguagePronuncationGuide {

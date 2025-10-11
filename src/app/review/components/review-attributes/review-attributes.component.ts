@@ -9,8 +9,7 @@ const ATTRIBUTE_DELIMITER = "|";
     selector: "review-attributes",
     templateUrl: "review-attributes.html",
     styleUrl: "review-attributes.css",
-    standalone: true,
-    imports: [ MatChipsModule ],
+    imports: [MatChipsModule]
 })
 export class ReviewAttributesComponent {
 

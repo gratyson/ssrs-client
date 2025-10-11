@@ -12,8 +12,7 @@ const ACCEPT_EMPTY_TYPING_TEST_WAIT_TIME_MS: number = 3000;
     selector: "typing-test-prompt",
     templateUrl: "typing-test-prompt.html",
     styleUrl: "typing-test-prompt.css",
-    standalone: true,
-    imports: [ MatInputModule, MatButtonModule, MatIconModule ],
+    imports: [MatInputModule, MatButtonModule, MatIconModule],
     host: { ["(document:wheel)"]: "onMousewheel($event)" }
 })
 export class TypingTestPromptComponent {

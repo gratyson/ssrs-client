@@ -30,8 +30,7 @@ const NO_AUDIO_COLOR: string = "#d9d9d9";
     selector: "word-row-edit",
     templateUrl: "lexicon-word-row.html",
     styleUrl: "lexicon-word-row.css",
-    standalone: true,
-    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule ]
+    imports: [MatCheckboxModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule]
 })
 export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
 

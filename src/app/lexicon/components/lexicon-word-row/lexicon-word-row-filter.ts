@@ -20,11 +20,10 @@ const HAS_AUDIO_FILTER_ICON = "filter";
 const NO_AUDTIO_FILTER_ICON = "filter_none";
 
 @Component({
-    selector: "word-row-filter", 
+    selector: "word-row-filter",
     templateUrl: "lexicon-word-row.html",
     styleUrl: "lexicon-word-row.css",
-    standalone: true,
-    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule ]
+    imports: [MatCheckboxModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule]
 })
 export class LexiconWordRowFilterComponent extends LexiconWordRowBaseComponent {
 

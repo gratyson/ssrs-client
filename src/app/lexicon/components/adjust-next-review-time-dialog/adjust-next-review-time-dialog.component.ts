@@ -11,8 +11,7 @@ import { MatDialogRef } from "@angular/material/dialog";
     selector: "adjust-next-review-time-dialog",
     templateUrl: "adjust-next-review-time-dialog.html",
     styleUrl: "adjust-next-review-time-dialog.css",
-    standalone: true,
-    imports: [ MatInputModule, MatFormFieldModule, FormsModule, MatRadioModule, MatButtonModule ],
+    imports: [MatInputModule, MatFormFieldModule, FormsModule, MatRadioModule, MatButtonModule]
 })
 export class AdjustNextReviewTimeDialogComponent {
     public static readonly DEFAULT_WIDTH: string = "20em";

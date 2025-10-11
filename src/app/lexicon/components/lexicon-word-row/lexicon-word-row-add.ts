@@ -14,11 +14,10 @@ import { MatDialog } from "@angular/material/dialog";
 import { WordClient } from "../../../client/word-client";
 
 @Component({
-    selector: "word-row-add", 
+    selector: "word-row-add",
     templateUrl: "lexicon-word-row.html",
     styleUrl: "lexicon-word-row.css",
-    standalone: true,
-    imports: [ MatCheckboxModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule ]
+    imports: [MatCheckboxModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatIconModule, MatMenuModule]
 })
 export class LexiconWordRowAddComponent extends LexiconWordRowBaseComponent {
 
