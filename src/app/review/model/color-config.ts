@@ -45,6 +45,7 @@ export const ATTRIBUTE_CLASS_TABLE: { [k:string]: string } = {
     "g5s": VERB_CLASS,
     "g5t": VERB_CLASS,
     "g5u": VERB_CLASS,
+    "g5n": VERB_CLASS,
 
     "adj": ADJECTIVE_CLASS,
     "adj-f": ADJECTIVE_CLASS,
