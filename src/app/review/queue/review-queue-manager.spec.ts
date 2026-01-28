@@ -1,4 +1,6 @@
-import { ReviewMode, ReviewType, WordReview } from "../model/review-session";
+import { TestRelationship, WordElement } from "../../language/language";
+import { ReviewMode } from "../model/review-mode";
+import { ReviewType, WordReview } from "../model/review-session";
 import { ReviewProgress, ReviewQueueManager, WordReviewResult } from "./review-queue-manager";
 
 
@@ -108,11 +110,11 @@ describe("ReviewQueueManagerTests", () => {
         while(wordReview !== null) {
             const wordId: number = Number.parseInt(wordReview.word.id);
 
-            if (failedFirstTest[wordId] && wordReview.testOn === "") {
+            if (failedFirstTest[wordId] && !wordReview.testRelationship) {
                 overviewCnt++;
                 wordReview = reviewQueueManager.markCorrectAndGetNext(10, false);
             } else {
-                expect(wordReview.testOn).toBe(expectedTestOn[wordId][0]);
+                expect(wordReview.testRelationship?.testOn.id).toBe(expectedTestOn[wordId][0]);
 
                 if (failedFirstTest[wordId]) {
                     expectedTestOn[wordId].shift();
@@ -137,7 +139,7 @@ describe("ReviewQueueManagerTests", () => {
             const wordId = Number.parseInt(result.wordReview.word.id);
             
             expect(result.wordReview.word.id).toBe(`${wordId}`);
-            expect(result.wordReview.testOn).toBe(`e${(wordId) % 3 + 1}`);
+            expect(result.wordReview.testRelationship?.testOn.id).toBe(`e${(wordId) % 3 + 1}`);
             expect(result.requeueCount).toBe(0);
             expect(result.totalTime).toBe(100);
             expect(result.reviewTestResult.isCorrect).toBeFalse();
@@ -154,7 +156,7 @@ describe("ReviewQueueManagerTests", () => {
         while(wordReview !== null) {
             const wordId: number = Number.parseInt(wordReview.word.id);
 
-            expect(wordReview.testOn).toBe(expectedTestOn[wordId][0]);
+            expect(wordReview.testRelationship?.testOn.id).toBe(expectedTestOn[wordId][0]);
             expectedTestOn[wordId].shift();
 
             // Expect the first entry of the first two queues to be introduced in order,
@@ -162,19 +164,19 @@ describe("ReviewQueueManagerTests", () => {
             // followed by the introduction of the final two queues.
             if (completedCnt == 0) {
                 expect(wordId).toBe(0);
-                expect(wordReview.testOn).toBe("e1");
+                expect(wordReview.testRelationship?.testOn.id).toBe("e1");
             } else if (completedCnt == 1) {
                 expect(wordId).toBe(1);
-                expect(wordReview.testOn).toBe("e1");
+                expect(wordReview.testRelationship?.testOn.id).toBe("e1");
             } else if (completedCnt == 2) {
                 expect(wordId).toBe(1);
-                expect(wordReview.testOn).toBe("e2");
+                expect(wordReview.testRelationship?.testOn.id).toBe("e2");
             } else if (completedCnt == 3) {
                 expect(wordId).toBe(2);
-                expect(wordReview.testOn).toBe("e1");
+                expect(wordReview.testRelationship?.testOn.id).toBe("e1");
             } else if (completedCnt == 4) {
                 expect(wordId).toBe(3);
-                expect(wordReview.testOn).toBe("e1");                                                
+                expect(wordReview.testRelationship?.testOn.id).toBe("e1");                                                
             }
     
             completedCnt++;
@@ -224,9 +226,7 @@ function buildWordReview(wordId: number, wordOffset: number, wordOffsetsToRecord
         languageId: 0,
         word: { id: `${wordId}`, elements: { "e1": `w${wordId}e1`, "e2": `w${wordId}e2`, "e3": `w${wordId}e3`},  attributes: "n", audioFiles: [] },
         scheduledEventId: "eventId",
-        testOn: wordOffset >= 0 ? `e${(0 + wordOffset) % 3 + 1}` : "",
-        promptWith: wordOffset >= 0 ? `e${(1 + wordOffset) % 3 + 1}` : "",
-        showAfterTest: wordOffset >= 0 ? `e${(2 + wordOffset) % 3 + 1}` : "none",
+        testRelationship: buildTestRelationship(wordOffset),
 
         reviewMode: ReviewMode.TypingTest,
         reviewType: ReviewType.Learn,
@@ -239,6 +239,34 @@ function buildWordReview(wordId: number, wordOffset: number, wordOffsetsToRecord
     }
 }
 
+function buildTestRelationship(wordOffset: number): TestRelationship | null {
+    if (wordOffset >= 0) {
+        return {
+            id: `relationship${wordOffset % 3 + 1}`,
+            displayName: `relationship${wordOffset % 3 + 1}`,
+            testOn: buildWordElement(`e${(0 + wordOffset) % 3 + 1}`),
+            promptWith: buildWordElement(`e${(1 + wordOffset) % 3 + 1}`),
+            showAfterTest: buildWordElement(`e${(2 + wordOffset) % 3 + 1}`),
+            fallback: null
+        }
+    }
+
+    return null;
+}
+
+function buildWordElement(elementId: string): WordElement {
+    return {
+        id: elementId,
+        name: elementId,
+        abbreviation: elementId,
+        weight: 1,
+        applyLanguageFont: true,
+        testTimeMultiplier: 1,
+        validationRegex: null,
+        description: elementId
+    }
+}
+
 function testProcessAll(reviewQueueManager: ReviewQueueManager, checkResults: boolean): void {
     const expectedTestOn = [ [ "e1" ], [ "e1" , "e2" ], [ "e1", "e2", "e3" ], [ "e1", "e2", "e3", "e1" ] ];
     let expectedCompleted: number = 0;    
@@ -247,7 +275,7 @@ function testProcessAll(reviewQueueManager: ReviewQueueManager, checkResults: bo
     while(wordReview !== null) {
         const wordId: number = Number.parseInt(wordReview.word.id);
 
-        expect(wordReview.testOn).toBe(expectedTestOn[wordId][0]);
+        expect(wordReview.testRelationship?.testOn.id).toBe(expectedTestOn[wordId][0]);
         expectedTestOn[wordId].shift();
 
         expectedCompleted++;
@@ -270,7 +298,7 @@ function testProcessAll(reviewQueueManager: ReviewQueueManager, checkResults: bo
             const wordId = Number.parseInt(result.wordReview.word.id);
 
             expect(result.wordReview.word.id).toBe(`${wordId}`);
-            expect(result.wordReview.testOn).toBe(`e${(wordId) % 3 + 1}`);
+            expect(result.wordReview.testRelationship?.testOn.id).toBe(`e${(wordId) % 3 + 1}`);
             expect(result.requeueCount).toBe(0);
             expect(result.totalTime).toBe(123);
             expect(result.reviewTestResult.isCorrect).toBeTrue();

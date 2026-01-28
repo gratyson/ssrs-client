@@ -1,3 +1,4 @@
+import { TestRelationship } from "../../language/language";
 import { Word } from "../../lexicon/model/word";
 import { ReviewMode } from "./review-mode";
 
@@ -10,9 +11,7 @@ export interface WordReview {
     languageId: number;
     word: Word;
     scheduledEventId: string;
-    testOn: string;
-    promptWith: string;
-    showAfterTest: string;
+    testRelationship: TestRelationship | null;
 
     reviewMode: ReviewMode;
     reviewType: ReviewType;
@@ -41,8 +40,7 @@ export interface ReviewEvent {
     
     reviewMode: ReviewMode;
     reviewType: ReviewType;
-    testOn: string;
-    promptWith: string;
+    testRelationship: TestRelationship | null;
 
     isCorrect: boolean;
     isNearMiss: boolean;

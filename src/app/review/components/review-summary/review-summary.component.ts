@@ -114,8 +114,7 @@ export class ReviewSummaryComponent {
             
             reviewMode: this.reviewedWordResults[index].wordReview.reviewMode,
             reviewType: this.reviewedWordResults[index].wordReview.reviewType,
-            testOn: this.reviewedWordResults[index].wordReview.testOn,
-            promptWith: this.reviewedWordResults[index].wordReview.promptWith,
+            testRelationship: this.reviewedWordResults[index].wordReview.testRelationship,
         
             isCorrect: this.ALLOWED_OVERIDE_OPTIONS[this.reviewedWordOverrideOptions[index]].result.isCorrect,
             isNearMiss: this.ALLOWED_OVERIDE_OPTIONS[this.reviewedWordOverrideOptions[index]].result.isNearMiss,

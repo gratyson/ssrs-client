@@ -432,8 +432,7 @@ export class ReviewContainerComponent {
             
             reviewMode: wordReview.reviewMode,
             reviewType: wordReview.reviewType,
-            testOn: wordReview.testOn,
-            promptWith: wordReview.promptWith,
+            testRelationship: wordReview.testRelationship,
         
             isCorrect: result.isCorrect,
             isNearMiss: result.isNearMiss,

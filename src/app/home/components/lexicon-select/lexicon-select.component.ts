@@ -64,7 +64,7 @@ export class LexiconSelectComponent {
             this.relationshipReadyForReviewCnts = [];
             this.totalReviewCount = 0;
 
-            for(let testRelationship of this.language.testRelationships) {
+            for(let testRelationship of this.language.allTestRelationships) {
                 if (this.scheduledReviewCounts[testRelationship.id] > 0) {
                     this.relationshipReadyForReviewCnts.push({ relationship: testRelationship, cnt: this.scheduledReviewCounts[testRelationship.id] });
                     this.totalReviewCount += this.scheduledReviewCounts[testRelationship.id];

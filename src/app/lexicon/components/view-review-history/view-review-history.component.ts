@@ -35,7 +35,7 @@ export class ViewReviewHistoryComponent {
 
     private calcOverallTestHistory(): void {
         this.overallTestHistory = { totalTests: 0, correct: 0, correctStreak: 0 };
-        for(let testRelation of this.language.testRelationships) {
+        for(let testRelation of this.language.allTestRelationships) {
             if (this.reviewHistory.nextTestRelationId === testRelation.id) {
                 this.nextRelation = testRelation;
             }

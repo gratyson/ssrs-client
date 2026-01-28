@@ -9,26 +9,25 @@ export interface Language {
     coreElements: WordElement[];
     dedupeElements: WordElement[];
     overviewElements: WordElement[];
-    testRelationships: TestRelationship[];
+    allTestRelationships: TestRelationship[];
 }
 
 export interface WordElement {
     id: string;
     name: string;
     abbreviation: string;
+    description: string;
     weight: number;
     applyLanguageFont: boolean;
     testTimeMultiplier: number;
-    validationRegex: string;
-    description: string;
+    validationRegex: string | null;
 }
 
 export interface TestRelationship {
     id: string;
     displayName: string;
-    testOn: string;
-    promptWith: string;
-    showAfterTest: string;
-    fallbackId: string;
-    isReviewRelationship: boolean;
+    testOn: WordElement;
+    promptWith: WordElement;
+    showAfterTest: WordElement;
+    fallback: TestRelationship | null;
 }

@@ -146,19 +146,16 @@ export class ReviewPromptComponent {
     private setLanguageProperties(): void {
         const languageFont: string = this.currentLanguage.fontName;
 
-        this.languageService.getWordElementMap().subscribe((wordElementMap) => {
-            this.promptWithFont = this.getFont(this.currentLanguage, wordElementMap, this.wordReview.promptWith);
-            this.testOnFont = this.getFont(this.currentLanguage, wordElementMap, this.wordReview.testOn);
-            this.showAfterTestFont = this.getFont(this.currentLanguage, wordElementMap, this.wordReview.showAfterTest);
-        });
+        if (this.wordReview.testRelationship) {
+            this.promptWithFont = this.getFont(this.currentLanguage, this.wordReview.testRelationship.promptWith);
+            this.testOnFont = this.getFont(this.currentLanguage, this.wordReview.testRelationship.testOn);
+            this.showAfterTestFont = this.getFont(this.currentLanguage, this.wordReview.testRelationship.showAfterTest);
+        }
     }
 
-    private getFont(language: Language, wordElementMap: { [k:string]: WordElement}, elementName: string): string {
-        if (elementName) {
-            const languageElement: WordElement | undefined = wordElementMap[elementName];
-            if (languageElement && languageElement.applyLanguageFont) {
-                return language.fontName;
-            }
+    private getFont(language: Language, wordElement: WordElement): string {
+        if (wordElement && wordElement.applyLanguageFont) {
+            return language.fontName;
         }
 
         return environment.DEFAULT_FONT_NAME;

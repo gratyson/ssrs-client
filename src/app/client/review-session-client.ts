@@ -8,6 +8,7 @@ import { FutureReviewEvent, LexiconReviewHistory, LexiconReviewSummary, TestHist
 import { Duration } from "../util/duration/duration";
 import { Word } from "../lexicon/model/word";
 import { ReviewMode } from "../review/model/review-mode";
+import { TestRelationship } from "../language/language";
 
 const SAVE_EVENT_ENDPOINT: string  = "review/saveEvent";
 const PROCESS_MANUAL_EVENT_ENDPOINT: string  = "review/processManualEvent";
@@ -119,9 +120,7 @@ export class ReviewSessionClient {
                 languageId: serverWordReview.languageId,
                 word: serverWordReview.word,
                 scheduledEventId: serverWordReview.scheduledEventId,
-                testOn: serverWordReview.testOn,
-                promptWith: serverWordReview.promptWith,
-                showAfterTest: serverWordReview.showAfterTest,
+                testRelationship: serverWordReview.testRelationship,
 
                 reviewMode: ReviewMode.fromCode(serverWordReview.reviewMode),
                 reviewType: serverWordReview.reviewType,
@@ -197,8 +196,7 @@ export class ReviewSessionClient {
 
             reviewMode: reviewEvent.reviewMode.getCode(),
             reviewType: reviewEvent.reviewType,
-            testOn: reviewEvent.testOn,
-            promptWith: reviewEvent.promptWith,
+            testRelationshipId: reviewEvent.testRelationship ? reviewEvent.testRelationship.id : "",
 
             isCorrect: reviewEvent.isCorrect,
             isNearMiss: reviewEvent.isNearMiss,
@@ -213,9 +211,7 @@ interface WordReviewFromServer {
     languageId: number;
     word: Word;
     scheduledEventId: string;
-    testOn: string;
-    promptWith: string;
-    showAfterTest: string;
+    testRelationship: TestRelationship;
 
     reviewMode: number;
     reviewType: ReviewType;
@@ -260,8 +256,7 @@ interface ServerReviewEvent {
 
     reviewMode: number;
     reviewType: ReviewType;
-    testOn: string;
-    promptWith: string;
+    testRelationshipId: string;
 
     isCorrect: boolean;
     isNearMiss: boolean;

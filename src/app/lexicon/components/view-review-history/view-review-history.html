@@ -41,7 +41,7 @@
             <td>{{ overallTestHistory.correct }}</td>
             <td>{{ overallTestHistory.correctStreak }}</td>
         </tr>
-        @for(testRelation of language.testRelationships; track testRelation.id) {
+        @for(testRelation of language.allTestRelationships; track testRelation.id) {
             @if(this.reviewHistory.testHistory[testRelation.id]) {
                 <tr>
                     <td>{{ testRelation.displayName }}</td>

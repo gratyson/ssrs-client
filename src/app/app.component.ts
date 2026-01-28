@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { AppHeaderComponent } from './home/components/header/app-header-component';
 
 @Component({
@@ -25,7 +25,7 @@ import { AppHeaderComponent } from './home/components/header/app-header-componen
       overflow: auto;
     }
   `,
-    imports: [RouterOutlet, RouterLink, RouterLinkActive, AppHeaderComponent]
+    imports: [RouterOutlet, AppHeaderComponent]
 })
 export class AppComponent {
 }

@@ -125,9 +125,9 @@ export class ReviewQueueManager {
     }
 
     private updateWordReviewWord(wordReview: WordReview, newWord: Word): WordReview | null {
-        if (wordReview.reviewMode.isTest()) {
-            const oldTestValue = wordReview.word.elements[wordReview.testOn];
-            const newTestValue = newWord.elements[wordReview.testOn];
+        if (wordReview.reviewMode.isTest() && wordReview.testRelationship) {
+            const oldTestValue = wordReview.word.elements[wordReview.testRelationship.testOn.id];
+            const newTestValue = newWord.elements[wordReview.testRelationship.testOn.id];
 
             if (!newTestValue) {
                 // The test value was deleted, so can no longer do this test

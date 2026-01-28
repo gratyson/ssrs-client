@@ -2,31 +2,33 @@
     <div class="word-review">
         @if(showOverview()) {
             <word-overview [word]="wordReview.word" [language]="currentLanguage" (editWord)="onEditWord($event)" />
-        } @else {
-            <h1 class="review-prompt" [style.font-family]="promptWithFont">{{ wordReview.word.elements[wordReview.promptWith] }}</h1>
+        } @else if(wordReview.testRelationship) {
+            <h1 class="review-prompt" [style.font-family]="promptWithFont">{{ wordReview.word.elements[wordReview.testRelationship.promptWith.id] }}</h1>
             <div class="show-after-test" [style.visibility]="showAfterTestVisibiliy">
                 <div class="pronunciation-guide">
                     <pronunciation-guide [word]="wordReview.word" [language]="currentLanguage" />
                 </div>
-                <div class="show-after-test-text" [style.font-family]="showAfterTestFont">{{ wordReview.word.elements[wordReview.showAfterTest] }}</div>
+                <div class="show-after-test-text" [style.font-family]="showAfterTestFont">{{ wordReview.word.elements[wordReview.testRelationship.showAfterTest.id] }}</div>
             </div>
             <div class="review-attributes"><review-attributes [attributes]="wordReview.word.attributes" /></div>
         }
-        @if(showTypingPrompt()) {
-            <typing-test-prompt [correctAnswer]="wordReview.word.elements[wordReview.testOn]"
-                                [typingTestButtons]="wordReview.typingTestButtons" 
-                                [promptFont]="testOnFont" 
-                                [reviewMode]="wordReview.reviewMode"
-                                (typingTestResult)="onTypingTestResult($event)"
-                                [disabled]="disabled" 
-                                [touchscreenMode]="touchscreenMode" />
-        } 
-        @if(showMultipleChoice()) {
-            <multiple-choice-prompt [options]="wordReview.multipleChoiceButtons" 
-                                    [correctAnswer]="wordReview.word.elements[wordReview.testOn]" 
-                                    [optionFont]="testOnFont" 
-                                    (multipleChoiceTestResult)="onMultipleChoiceTestResult($event)" 
-                                    [disabled]="disabled" />
+        @if (wordReview.testRelationship) {
+            @if(showTypingPrompt()) {
+                <typing-test-prompt [correctAnswer]="wordReview.word.elements[wordReview.testRelationship.testOn.id]"
+                                    [typingTestButtons]="wordReview.typingTestButtons" 
+                                    [promptFont]="testOnFont" 
+                                    [reviewMode]="wordReview.reviewMode"
+                                    (typingTestResult)="onTypingTestResult($event)"
+                                    [disabled]="disabled" 
+                                    [touchscreenMode]="touchscreenMode" />
+            } 
+            @if(showMultipleChoice()) {
+                <multiple-choice-prompt [options]="wordReview.multipleChoiceButtons" 
+                                        [correctAnswer]="wordReview.word.elements[wordReview.testRelationship.testOn.id]" 
+                                        [optionFont]="testOnFont" 
+                                        (multipleChoiceTestResult)="onMultipleChoiceTestResult($event)" 
+                                        [disabled]="disabled" />
+            }
         }
     </div>
 } @else {

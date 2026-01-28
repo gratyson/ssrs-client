@@ -201,8 +201,7 @@ export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
 
             reviewMode: ReviewMode.TypingTest,
             reviewType: ReviewType.Review,
-            testOn: this.language.testRelationships[0].testOn,
-            promptWith: this.language.testRelationships[0].promptWith,
+            testRelationship: this.language.allTestRelationships[0],
 
             isCorrect: result.isCorrect,
             isNearMiss: result.isNearMiss,
@@ -240,7 +239,7 @@ export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
                 wordId: this.word.id,
                 learned: true,
                 mostRecentTestTime: new Date(),
-                nextTestRelationId: this.language.testRelationships[0].id,
+                nextTestRelationId: this.language.allTestRelationships[0].id,
                 currentTestDelay: initialTestDelay,
                 nextTestTime: new Date(new Date().valueOf() + initialTestDelay.toMillis()), 
                 currentBoost: 0,
