@@ -1,5 +1,5 @@
 import { Component, Inject, Input, inject } from "@angular/core";
-import { Lexicon, LexiconMetadata } from "../../../lexicon/model/lexicon";
+import { LexiconMetadata } from "../../../lexicon/model/lexicon";
 import { LexiconClient } from "../../../client/lexicon-client";
 import { MatGridListModule } from '@angular/material/grid-list'; 
 import { FormsModule } from "@angular/forms";
@@ -68,7 +68,7 @@ export class LexiconMetadataEditDialogComponent {
                     this.lexiconImagePath = this.lexiconClient.getImagePath(this.lexiconMetadata)
                 });
         } else {
-            this.lexiconMetadata = Lexicon.getBlankLexicon();
+            this.lexiconMetadata = LexiconMetadata.getBlankLexiconMetadata();
             this.setLexiconMetadata(this.lexiconMetadata);
             this.lexiconImagePath = this.lexiconClient.getImagePath(this.lexiconMetadata);
         }
@@ -157,7 +157,7 @@ export class LexiconMetadataEditDialogComponent {
         this.isShieldActive = true;
 
         const imageFileExtenstion: string = this.newImageFile ? this.newImageFile.name.substring(this.newImageFile.name.lastIndexOf(".")) : "";
-        const lexiconToSave: Lexicon = new Lexicon(this.lexiconId, this.lexiconMetadata.owner, this.title, this.languageId, this.description, imageFileExtenstion , []);
+        const lexiconToSave: LexiconMetadata = new LexiconMetadata(this.lexiconId, this.lexiconMetadata.owner, this.title, this.languageId, this.description, imageFileExtenstion);
         this.lexiconClient.saveLexiconMetadata(lexiconToSave, this.newImageFile).subscribe(lexicon => {
             this.isShieldActive = false;
             this.dialogRef.close(lexicon.id);

@@ -1,11 +1,8 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges, inject } from "@angular/core";
-import { Lexicon, LexiconMetadata } from "../../model/lexicon";
-import { NgOptimizedImage } from '@angular/common';
+import { LexiconMetadata } from "../../model/lexicon";
 import { MatMenuModule } from '@angular/material/menu'; 
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from "@angular/material/dialog";
-import { LexiconMetadataEditDialogComponent } from "../../../home/components/lexicon-metadata-edit-dialog/lexicon-metadata-edit-dialog.component";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { LexiconClient } from "../../../client/lexicon-client";
 import { RouterLink } from "@angular/router";

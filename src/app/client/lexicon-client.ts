@@ -1,11 +1,10 @@
 import { Injectable } from "@angular/core";
-import { Lexicon, LexiconMetadata, LexiconMetadataAndScheduledCounts, LexiconReviewHistory, TestHistory } from "../lexicon/model/lexicon";
+import { LexiconMetadata, LexiconMetadataAndScheduledCounts, LexiconReviewHistory, TestHistory } from "../lexicon/model/lexicon";
 import { environment } from "../../environments/environment";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, catchError, map, of } from "rxjs";
 import { handleError } from "./client-util";
 
-const GET_LEXICON_ENDPOINT: string = "lexicon/lexicon";
 const GET_ALL_LEXICON_METADATA_ENDPOINT = "lexicon/allLexiconMetadata";
 const GET_LEXICON_METADATA_ENDPOINT: string = "lexicon/lexiconMetadata";
 const GET_LEXICON_METADATA_AND_SCHEDULED_COUNTS_ENDPOINT: string = "lexicon/allLexiconMetadataAndScheduledCounts";
@@ -34,10 +33,6 @@ export class LexiconClient {
         return DEFAULT_IMAGE_PATH;
     }
 
-    public loadLexicon(id: string): Observable<Lexicon> {
-        return this.loadLexiconData(id, GET_LEXICON_ENDPOINT);
-    }
-
     public loadAllLexiconMetadata(): Observable<LexiconMetadata[]> {
         const url: string = environment.REST_ENDPOINT_URL + GET_ALL_LEXICON_METADATA_ENDPOINT;
 
@@ -62,9 +57,9 @@ export class LexiconClient {
         return this.loadLexiconData(id, GET_LEXICON_METADATA_ENDPOINT);
     }
 
-    public loadLexiconData(id: string, endpoint: string): Observable<Lexicon> {
+    public loadLexiconData(id: string, endpoint: string): Observable<LexiconMetadata> {
         if (!id || id ==="") {
-            return of(Lexicon.getBlankLexicon());
+            return of(LexiconMetadata.getBlankLexiconMetadata());
         }
 
         let params = new URLSearchParams();
@@ -72,10 +67,10 @@ export class LexiconClient {
 
         const url: string = environment.REST_ENDPOINT_URL + endpoint;
 
-        return this.httpClient.get<Lexicon>(`${url}?${params}`, this.jsonContentHttpOptions).pipe(catchError(handleError<Lexicon>("loadLexiconData", Lexicon.getBlankLexicon())));
+        return this.httpClient.get<LexiconMetadata>(`${url}?${params}`, this.jsonContentHttpOptions).pipe(catchError(handleError<LexiconMetadata>("loadLexiconData", LexiconMetadata.getBlankLexiconMetadata())));
     }
 
-    public saveLexiconMetadata(lexiconMetadata: LexiconMetadata, imageFile: File): Observable<Lexicon> {
+    public saveLexiconMetadata(lexiconMetadata: LexiconMetadata, imageFile: File): Observable<LexiconMetadata> {
         let headers = new Headers();
         headers.append("Accept", "application/json");
 
@@ -85,7 +80,7 @@ export class LexiconClient {
         formData.append("file", imageFile ? imageFile : EMPTY_FILE);
         formData.append("lexicon", new Blob([JSON.stringify(lexiconMetadata)], { type: "application/json" }));
 
-        return this.httpClient.put<Lexicon>(url, formData, this.formContentHttpOptions).pipe(catchError(handleError<Lexicon>("saveLexiconMetadata")));
+        return this.httpClient.put<LexiconMetadata>(url, formData, this.formContentHttpOptions).pipe(catchError(handleError<LexiconMetadata>("saveLexiconMetadata")));
     }
 
     public deleteLexicon(lexiconId: string): Observable<boolean> {

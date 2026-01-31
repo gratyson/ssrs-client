@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, inject } from "@angular/core";
 import { LexiconClient } from "../../../client/lexicon-client";
 import { EMPTY_WORD_FILTER_OPTIONS, WordClient, WordFilterOptions } from "../../../client/word-client";
-import { Lexicon, LexiconMetadata, LexiconReviewHistory } from "../../model/lexicon";
+import { LexiconMetadata, LexiconReviewHistory } from "../../model/lexicon";
 import { LanguageService } from "../../../language/language-service";
 import { LexiconEditHeaderComponent } from "../lexicon-edit-header/lexicon-edit-header.component";
 import { Language, WordElement } from "../../../language/language";
@@ -57,16 +57,16 @@ export class LexiconEdit {
                 private router: Router) {}
 
     public ngOnInit() {
-        this.LoadLexicon(this.lexiconId);
+        this.LoadLexiconMetadata(this.lexiconId);
     }
 
-    private LoadLexicon(lexiconId: string) {
-        this.lexiconClient.loadLexicon(this.lexiconId).subscribe(lexicon => this.UpdateLexicon(lexicon));
+    private LoadLexiconMetadata(lexiconId: string) {
+        this.lexiconClient.loadLexiconMetadata(this.lexiconId).subscribe(lexiconMetadata => this.UpdateLexicon(lexiconMetadata));
     }
 
-    private UpdateLexicon(lexicon: Lexicon) {
-        this.UpdateLexiconMetadata(lexicon);
-        this.languageService.getLanguage(lexicon.languageId).subscribe((language) => this.UpdateLanguage(language));
+    private UpdateLexicon(lexiconMetadata: LexiconMetadata) {
+        this.UpdateLexiconMetadata(lexiconMetadata);
+        this.languageService.getLanguage(lexiconMetadata.languageId).subscribe((language) => this.UpdateLanguage(language));
     }
 
     private UpdateLexiconMetadata(lexiconMetadata: LexiconMetadata) {
@@ -95,7 +95,7 @@ export class LexiconEdit {
             width: LexiconMetadataEditDialogComponent.DEFAULT_WIDTH
           });
 
-          dialogRef.afterClosed().subscribe(result => this.LoadLexicon(this.lexiconId))
+          dialogRef.afterClosed().subscribe(result => this.LoadLexiconMetadata(this.lexiconId))
     }
 
     onLoadWordsFromFile(file: File) {

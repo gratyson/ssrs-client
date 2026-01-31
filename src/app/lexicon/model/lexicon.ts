@@ -16,24 +16,10 @@ export class LexiconMetadata {
         this.description = description;
         this.imageFileName = imageFileName;
     }
-    
-}
 
-export class Lexicon extends LexiconMetadata {
-
-    readonly wordIds: string[];
-
-    constructor(id: string, owner: number, title: string, languageId: number, description: string, imageFileName: string, wordIds: Iterable<string>) {
-        super(id, owner, title, languageId, description, imageFileName);
-        this.wordIds = [];
-        for(let wordId of wordIds) {
-            this.wordIds.concat(wordId);
-        }
+    public static getBlankLexiconMetadata(): LexiconMetadata {
+        return new LexiconMetadata("", 0, "", 1, "", "");
     }
-
-    public static getBlankLexicon(): Lexicon {
-        return new Lexicon("", 0, "", 1, "", "", []);
-    } 
 }
 
 export interface LexiconMetadataAndScheduledCounts {
