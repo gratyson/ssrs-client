@@ -4,7 +4,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from "rxjs";
 import { catchError, map, tap } from 'rxjs/operators';
-import { handleError } from "./client-util";
+import { convertWord, convertWordFromServer, convertWordFromServerBatch, convertWordsBatch, handleError, WordFromServer } from "./client-util";
 
 const WORD_ENDPOINT: string = "lexicon/word";
 const UPDATE_WORD_ENDPOINT: string = "lexicon/updateWord";
@@ -25,13 +25,17 @@ export class WordClient {
 
         const url: string = environment.REST_ENDPOINT_URL + WORD_ENDPOINT;
         
-        return this.httpClient.get<Word>(`${url}?${params}`, this.httpOptions).pipe(catchError(handleError("LoadWord", {} as Word)));
+        return this.httpClient.get<WordFromServer>(`${url}?${params}`, this.httpOptions)
+            .pipe(map(wordFromServer => convertWordFromServer(wordFromServer)))
+            .pipe(catchError(handleError("LoadWord", {} as Word)));
     }
 
     public updateWord(word: Word): Observable<Word> {
         const url: string = environment.REST_ENDPOINT_URL + UPDATE_WORD_ENDPOINT;
 
-        return this.httpClient.post<Word>(`${url}`, JSON.stringify(word), this.httpOptions).pipe(catchError(handleError<Word>("UpdateWord")));
+        return this.httpClient.post<WordFromServer>(`${url}`, JSON.stringify(convertWord(word)), this.httpOptions)
+            .pipe(map(wordFromServer => convertWordFromServer(wordFromServer)))
+            .pipe(catchError(handleError<Word>("UpdateWord")));
     }
 
     public saveWord(word: Word, lexiconId: string =""): Observable<Word | null> {
@@ -43,10 +47,12 @@ export class WordClient {
             }));
     }
 
-    public saveWords(word: Word[], lexiconId: string): Observable<Word[]> {
+    public saveWords(words: Word[], lexiconId: string): Observable<Word[]> {
         const url: string = environment.REST_ENDPOINT_URL + SAVE_WORD_ENDPOINT;
 
-        return this.httpClient.put<Word[]>(`${url}`, JSON.stringify({ words: word, lexiconId: lexiconId}), this.httpOptions).pipe(catchError(handleError<Word[]>("SaveWords", [])));
+        return this.httpClient.put<WordFromServer[]>(`${url}`, JSON.stringify({ words: convertWordsBatch(words), lexiconId: lexiconId}), this.httpOptions)
+            .pipe(map(wordsFromServer => convertWordFromServerBatch(wordsFromServer)))
+            .pipe(catchError(handleError<Word[]>("SaveWords", [])));
     }
 
     public deleteWord(lexiconId: string, wordId: string): Observable<void> {
@@ -62,10 +68,12 @@ export class WordClient {
     public loadWordsBatch(lexiconId: string, count: number, offset: number, wordFilterOptions: WordFilterOptions = EMPTY_WORD_FILTER_OPTIONS): Observable<Word[]> {
         const url: string = environment.REST_ENDPOINT_URL + LOAD_WORDS_BATCH_ENDPOINT;
 
-        return this.httpClient.post<Word[]>(`${url}`, JSON.stringify({ "lexiconId": lexiconId, "count": count, "offset": offset, "filters": wordFilterOptions }), this.httpOptions).pipe(catchError(handleError<Word[]>("loadWordsBatch", [])));
+        return this.httpClient.post<WordFromServer[]>(`${url}`, JSON.stringify({ "lexiconId": lexiconId, "count": count, "offset": offset, "filters": wordFilterOptions }), this.httpOptions)
+            .pipe(map(wordsFromServer => convertWordFromServerBatch(wordsFromServer)))
+            .pipe(catchError(handleError<Word[]>("loadWordsBatch", [])));
     }
 
-
+    
 }
 
 export interface WordFilterOptions {
@@ -76,4 +84,3 @@ export interface WordFilterOptions {
 }
 
 export const EMPTY_WORD_FILTER_OPTIONS: WordFilterOptions = { elements: {}, attributes: "", learned: null, hasAudio: null };
-

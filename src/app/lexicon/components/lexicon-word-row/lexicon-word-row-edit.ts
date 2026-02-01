@@ -183,7 +183,15 @@ export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
 
     private saveWord(): void {
         if (this.validateWord(false)) {
-            let updatedWord: Word = { id: this.word.id, elements: this.getElementValues(), attributes: this.attributeFormControl.value, audioFiles: this.word.audioFiles };
+            let updatedWord: Word = { 
+                id: this.word.id, 
+                lexiconId: this.word.lexiconId,
+                elements: this.getElementValues(),
+                attributes: this.attributeFormControl.value, 
+                audioFiles: this.word.audioFiles, 
+                createInstant: this.word.createInstant, 
+                updateInstant: this.word.updateInstant 
+            };
             this.wordClient.updateWord(updatedWord).subscribe((savedWord) => {
                 if (savedWord != null) {
                     this.word = savedWord;

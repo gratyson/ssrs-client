@@ -36,7 +36,15 @@ export class LexiconWordRowAddComponent extends LexiconWordRowBaseComponent {
 
     override onSaveNewWordClick(event: Event): void {
         if (this.validateWord(true)) {
-            let newWord: Word = { id: "", elements: this.getElementValues(), attributes: this.attributeFormControl.value, audioFiles: [] };
+            let newWord: Word = { 
+                id: "", 
+                lexiconId: this.lexiconId, 
+                elements: this.getElementValues(), 
+                attributes: this.attributeFormControl.value, 
+                audioFiles: [], 
+                createInstant: null,
+                updateInstant: null
+            };
             this.wordClient.saveWord(newWord, this.lexiconId).subscribe((savedWord) => {
                 if(savedWord != null) {
                     this.OnNewWord.emit(savedWord);

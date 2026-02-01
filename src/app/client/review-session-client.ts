@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable, catchError, map } from "rxjs";
 import { ReviewEvent, ReviewType, WordReview } from "../review/model/review-session";
 import { environment } from "../../environments/environment";
-import { handleError } from "./client-util";
+import { convertWordFromServer, handleError, WordFromServer } from "./client-util";
 import { FutureReviewEvent, LexiconReviewHistory, LexiconReviewSummary, TestHistory } from "../lexicon/model/lexicon";
 import { Duration } from "../util/duration/duration";
 import { Word } from "../lexicon/model/word";
@@ -118,7 +118,7 @@ export class ReviewSessionClient {
         for(let serverWordReview of serverWordReviews) {
             wordReviews.push({
                 languageId: serverWordReview.languageId,
-                word: serverWordReview.word,
+                word: convertWordFromServer(serverWordReview.word),
                 scheduledEventId: serverWordReview.scheduledEventId,
                 testRelationship: serverWordReview.testRelationship,
 
@@ -209,7 +209,7 @@ export class ReviewSessionClient {
 
 interface WordReviewFromServer {
     languageId: number;
-    word: Word;
+    word: WordFromServer;
     scheduledEventId: string;
     testRelationship: TestRelationship;
 

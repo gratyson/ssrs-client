@@ -3,6 +3,7 @@ import { ReviewMode } from "../model/review-mode";
 import { ReviewType, WordReview } from "../model/review-session";
 import { ReviewProgress, ReviewQueueManager, WordReviewResult } from "./review-queue-manager";
 
+const TEST_LEXICON_ID: string = "test_lexicon_id";
 
 describe("ReviewQueueManagerTests", () => {
     let reviewQueueManager: ReviewQueueManager;
@@ -224,7 +225,7 @@ function testQueueExhaustion(reviewQueueManager: ReviewQueueManager): void {
 function buildWordReview(wordId: number, wordOffset: number, wordOffsetsToRecord: number[] = []): WordReview {
     return {
         languageId: 0,
-        word: { id: `${wordId}`, elements: { "e1": `w${wordId}e1`, "e2": `w${wordId}e2`, "e3": `w${wordId}e3`},  attributes: "n", audioFiles: [] },
+        word: { id: `${wordId}`, lexiconId: TEST_LEXICON_ID, elements: { "e1": `w${wordId}e1`, "e2": `w${wordId}e2`, "e3": `w${wordId}e3`},  attributes: "n", audioFiles: [], createInstant: new Date(), updateInstant: new Date() },
         scheduledEventId: "eventId",
         testRelationship: buildTestRelationship(wordOffset),
 

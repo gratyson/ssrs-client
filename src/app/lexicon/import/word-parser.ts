@@ -56,7 +56,7 @@ export class WordParser {
         for(const line of lines) {
             if (line !== "") { 
                 const linePieces = line.split("\t");
-                const word: Word | null = this.parseWordFromLine(language,  linePieces, validationRegExpDict);
+                const word: Word | null = this.parseWordFromLine(language, lexiconId, linePieces, validationRegExpDict);
                 if (word === null) {
                     console.log(`Line ${line} failed validation and was skipped.`);
                     wordParseResult.failedValidation++;
@@ -86,7 +86,7 @@ export class WordParser {
         }));
     }
 
-    private parseWordFromLine(language: Language, linePieces: string[], validationRegExpDict: { [k:string]: RegExp }): Word | null {
+    private parseWordFromLine(language: Language, lexiconId: string, linePieces: string[], validationRegExpDict: { [k:string]: RegExp }): Word | null {
         let elements: {[k:string]: string} = {};
         let pos: number = 0;
 
@@ -109,7 +109,7 @@ export class WordParser {
             return null;  // attributes are required
         }
 
-        return { id: "", elements: elements, attributes: attributes, audioFiles: [] };
+        return { id: "", lexiconId: lexiconId, elements: elements, attributes: attributes, audioFiles: [], createInstant: null, updateInstant: null };
     }
 
     private parseHistoryFromLine(language: Language, lexiconId: string, wordId: string, linePieces: string[]): LexiconReviewHistory | null {
