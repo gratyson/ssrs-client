@@ -12,12 +12,8 @@
         <span class="view-history-element-value">{{ reviewHistory.currentTestDelay | duration }}</span>
     </div>
     <div class="view-history-row">
-        <span class="view-history-element-name">Next Test Relation:</span>
-        <span class="view-history-element-value">{{ nextRelation ? nextRelation.displayName : "TBD" }}</span>
-    </div>
-    <div class="view-history-row">
-        <span class="view-history-element-name">Next Test Time:</span>
-        <span class="view-history-element-value">{{ reviewHistory.nextTestTime.valueOf() > 0 ? (reviewHistory.nextTestTime | date:"medium") : "TBD" }} </span>
+        <span class="view-history-element-name">Most Recent Test Relation:</span>
+        <span class="view-history-element-value">{{ mostRecentTestRelationship ? mostRecentTestRelationship.displayName : "N/A" }}</span>
     </div>
     <div class="view-history-row">
         <span class="view-history-element-name">Current Boost:</span>

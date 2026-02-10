@@ -5,8 +5,8 @@ import { environment } from "../../../../environments/environment";
 import { Word } from "../../model/word";
 import { Language } from "../../../language/language";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { LexiconReviewHistory } from "../../model/lexicon";
-import { ReviewSessionClient } from "../../../client/review-session-client";
+import { WordReviewHistory } from "../../model/lexicon";
+import { WordReviewHistoryClient } from "../../../client/word-review-history-client";
 
 @Component({
     selector: "word-row-edit-batch",
@@ -17,24 +17,25 @@ import { ReviewSessionClient } from "../../../client/review-session-client";
 export class LexiconWordRowEditBatchComponent {
 
     private wordClient: WordClient = inject(WordClient);
-    private reviewSessionClient: ReviewSessionClient = inject(ReviewSessionClient);
+    private wordReviewHistoryClient: WordReviewHistoryClient = inject(WordReviewHistoryClient);
 
     @ViewChild(LexiconWordRowEditBatchComponent) childWordRowEditBatch: LexiconWordRowEditBatchComponent;
 
     @Input() language: Language;
     @Input() lexiconId: string;
     @Input() offset: number = 0;
+    @Input() lastWord: Word | null = null;
     @Input() newWordOffsetAdjustment: number;
     @Input() currentFilters: WordFilterOptions = EMPTY_WORD_FILTER_OPTIONS;
 
     @Input() newWords: Word[] = [];
     @Output() newWordsChange: EventEmitter<Word[]> = new EventEmitter<Word[]>();
 
-    @Input() reviewHistoryView: LexiconReviewHistory | null = null;
-    @Output() reviewHistoryViewChange: EventEmitter<LexiconReviewHistory | null> = new EventEmitter<LexiconReviewHistory | null>();
+    @Input() reviewHistoryView: WordReviewHistory | null = null;
+    @Output() reviewHistoryViewChange: EventEmitter<WordReviewHistory | null> = new EventEmitter<WordReviewHistory | null>();
 
     words: Word[] = [];
-    reviewHistoryByWordId: { [k:string]: LexiconReviewHistory } = {};
+    reviewHistoryByWordId: { [k:string]: WordReviewHistory } = {};
     batchSize: number = environment.WORD_BATCH_LOAD_SIZE;
     nextOffset: number = 0;
     hasMore: boolean;
@@ -75,7 +76,7 @@ export class LexiconWordRowEditBatchComponent {
         }
     }
 
-    public mergeNewReviewHistory(newReviewHistory: { [k:string]: LexiconReviewHistory }): void {
+    public mergeNewReviewHistory(newReviewHistory: { [k:string]: WordReviewHistory }): void {
         this.reviewHistoryByWordId = { ...this.reviewHistoryByWordId, ...newReviewHistory };
     }
 
@@ -96,11 +97,11 @@ export class LexiconWordRowEditBatchComponent {
         });
     }
 
-    onViewHistory(reviewHistory: LexiconReviewHistory): void {
+    onViewHistory(reviewHistory: WordReviewHistory): void {
         this.setReviewHistoryView(reviewHistory);
     }
 
-    onReviewHistoryViewChange(reviewHistoryView: LexiconReviewHistory | null): void {
+    onReviewHistoryViewChange(reviewHistoryView: WordReviewHistory | null): void {
         this.setReviewHistoryView(reviewHistoryView);
     }
 
@@ -108,7 +109,7 @@ export class LexiconWordRowEditBatchComponent {
         if (this.batchSize) {
             this.words = [];
 
-            this.wordClient.loadWordsBatch(this.lexiconId, this.batchSize, this.offset + this.newWordOffsetAdjustment, this.currentFilters).subscribe(words => {
+            this.wordClient.loadWordsBatch(this.lexiconId, this.batchSize, this.offset + this.newWordOffsetAdjustment, this.lastWord, this.currentFilters).subscribe(words => {
                 this.words = words;
                 this.hasMore = words.length === this.batchSize;
                 this.loadReviewHistories();
@@ -136,13 +137,13 @@ export class LexiconWordRowEditBatchComponent {
         }
     }
 
-    private setReviewHistoryView(reviewHistoryView: LexiconReviewHistory | null): void {
+    private setReviewHistoryView(reviewHistoryView: WordReviewHistory | null): void {
         this.reviewHistoryView = reviewHistoryView;
         this.reviewHistoryViewChange.emit(reviewHistoryView);
     }
 
     private loadReviewHistories(): void {
-        this.reviewSessionClient.getLexiconReviewHistoryBatch(this.lexiconId, this.words.map<string>(word => word.id)).subscribe((reviewHistoryList) => {
+        this.wordReviewHistoryClient.getWordReviewHistoryBatch(this.lexiconId, this.words.map<string>(word => word.id)).subscribe((reviewHistoryList) => {
             this.reviewHistoryByWordId = {};
 
             for(let reviewHistory of reviewHistoryList) {

@@ -28,27 +28,25 @@ export interface LexiconMetadataAndScheduledCounts {
     hasWordsToLearn: boolean;
 }
 
-export interface LexiconReviewHistory {
+export interface WordReviewHistory {
     lexiconId: string;
     wordId: string;
     learned: boolean;
     mostRecentTestTime: Date;
-    nextTestRelationId: string;
+    mostRecentTestRelationshipId: string;
     currentTestDelay: Duration;
-    nextTestTime: Date;
     currentBoost: number;
     currentBoostExpirationDelay: Duration;
     testHistory: { [k:string]: TestHistory };
 }
 
-export const EMPTY_LEXICON_REVIEW_HISTORY = {
+export const EMPTY_LEXICON_REVIEW_HISTORY: WordReviewHistory = {
     lexiconId: "",
     wordId: "",
     learned: false,
     mostRecentTestTime: new Date(0),
-    nextTestRelationId: "",
+    mostRecentTestRelationshipId: "",
     currentTestDelay: Duration.fromMillis(0),
-    nextTestTime: new Date(0),
     currentBoost: 0,
     currentBoostExpirationDelay: Duration.fromMillis(0),
     testHistory: {}

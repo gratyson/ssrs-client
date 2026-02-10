@@ -65,10 +65,10 @@ export class WordClient {
         return this.httpClient.post<void>(`${url}`, JSON.stringify({ lexiconId: lexiconId, wordIds: wordIds }), this.httpOptions).pipe(catchError(handleError<void>("deleteWords")));
     }
 
-    public loadWordsBatch(lexiconId: string, count: number, offset: number, wordFilterOptions: WordFilterOptions = EMPTY_WORD_FILTER_OPTIONS): Observable<Word[]> {
+    public loadWordsBatch(lexiconId: string, count: number, offset: number, lastWord: Word | null, wordFilterOptions: WordFilterOptions = EMPTY_WORD_FILTER_OPTIONS): Observable<Word[]> {
         const url: string = environment.REST_ENDPOINT_URL + LOAD_WORDS_BATCH_ENDPOINT;
 
-        return this.httpClient.post<WordFromServer[]>(`${url}`, JSON.stringify({ "lexiconId": lexiconId, "count": count, "offset": offset, "filters": wordFilterOptions }), this.httpOptions)
+        return this.httpClient.post<WordFromServer[]>(`${url}`, JSON.stringify({ "lexiconId": lexiconId, "count": count, "offset": offset, "lastWord": lastWord, "filters": wordFilterOptions }), this.httpOptions)
             .pipe(map(wordsFromServer => convertWordFromServerBatch(wordsFromServer)))
             .pipe(catchError(handleError<Word[]>("loadWordsBatch", [])));
     }

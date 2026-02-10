@@ -1,14 +1,14 @@
 import { Injectable, inject } from "@angular/core";
-import { Language, WordElement } from "../../language/language";
+import { Language } from "../../language/language";
 import { Word } from "../model/word"
 import { WordClient } from "../../client/word-client";
-import { Observable, firstValueFrom, forkJoin, from, map, merge, mergeMap, mergeWith, of, switchMap } from "rxjs";
-import { EMPTY_LEXICON_REVIEW_HISTORY, LexiconReviewHistory, TestHistory } from "../model/lexicon";
+import { Observable, firstValueFrom, from, map, of, switchMap } from "rxjs";
+import { WordReviewHistory, TestHistory } from "../model/lexicon";
 import { Duration } from "../../util/duration/duration";
-import { ReviewSessionClient } from "../../client/review-session-client";
 import { environment } from "../../../environments/environment";
 import { MatDialog } from "@angular/material/dialog";
 import { ConfirmDialog } from "../../util/confirm-dialog";
+import { WordReviewHistoryClient } from "../../client/word-review-history-client";
 
 const SAVE_BATCH_SIZE: number = 250;
 
@@ -16,7 +16,7 @@ const SAVE_BATCH_SIZE: number = 250;
 export class WordParser {
 
     private wordClient: WordClient = inject(WordClient);
-    private reviewSessionClient: ReviewSessionClient = inject(ReviewSessionClient);
+    private wordReviewHistoryClient: WordReviewHistoryClient = inject(WordReviewHistoryClient);
 
     constructor(private dialog: MatDialog) { }
 
@@ -50,7 +50,7 @@ export class WordParser {
     private parseLines(language: Language, lexiconId: string, lines: string[]): Observable<WordParseResult> {
         let wordParseResult: WordParseResult = new WordParseResult();
         let wordsToSave: Word[] = [];
-        let reviewHistoryByWordElementStr: { [k:string]: LexiconReviewHistory } = {};
+        let reviewHistoryByWordElementStr: { [k:string]: WordReviewHistory } = {};
         const validationRegExpDict: { [k:string]: RegExp } = this.getValidationRegExpForLanguage(language);
 
         for(const line of lines) {
@@ -112,7 +112,7 @@ export class WordParser {
         return { id: "", lexiconId: lexiconId, elements: elements, attributes: attributes, audioFiles: [], createInstant: null, updateInstant: null };
     }
 
-    private parseHistoryFromLine(language: Language, lexiconId: string, wordId: string, linePieces: string[]): LexiconReviewHistory | null {
+    private parseHistoryFromLine(language: Language, lexiconId: string, wordId: string, linePieces: string[]): WordReviewHistory | null {
         let pos: number = language.validElements.length + 1;  // preceding portion of line is all elements + 1 attributes piece
 
         if (linePieces.length < pos + 6) {   
@@ -121,11 +121,10 @@ export class WordParser {
         
         const mostRecentTimeMillis: number = Number.parseInt(linePieces[pos++]);
         const currentTestDelayMillis: number = Number.parseInt(linePieces[pos++]);
-        const nextTestRelationId: string = linePieces[pos++];
-        const nextTestTimeMillis: number = Number.parseInt(linePieces[pos++]);
+        const mostRecentTestRelationshipId: string = linePieces[pos++];
 
         // required elements
-        if (!mostRecentTimeMillis || !currentTestDelayMillis || !nextTestRelationId || !nextTestTimeMillis) {
+        if (!mostRecentTimeMillis || !currentTestDelayMillis || !mostRecentTestRelationshipId) {
             return null;
         }
 
@@ -149,8 +148,7 @@ export class WordParser {
             learned: true,
             mostRecentTestTime: new Date(mostRecentTimeMillis),
             currentTestDelay: Duration.fromMillis(currentTestDelayMillis),
-            nextTestRelationId: nextTestRelationId,
-            nextTestTime: new Date(nextTestTimeMillis),
+            mostRecentTestRelationshipId: mostRecentTestRelationshipId,
             currentBoost: currentBoost,
             currentBoostExpirationDelay: Duration.fromMillis(currentBoostExpirationDelayMillis),
             testHistory: testHistoryMap,
@@ -172,12 +170,12 @@ export class WordParser {
         return savedWords;
     }
 
-    private saveReviewHistory(language: Language, lexiconId: string, savedWords: Word[], reviewHistoryByWordElements: { [k: string]: LexiconReviewHistory }): { [k: string]: LexiconReviewHistory } {
-        let reviewHistoryByWordId: { [k:string ]: LexiconReviewHistory } = {};
+    private saveReviewHistory(language: Language, lexiconId: string, savedWords: Word[], reviewHistoryByWordElements: { [k: string]: WordReviewHistory }): { [k: string]: WordReviewHistory } {
+        let reviewHistoryByWordId: { [k:string ]: WordReviewHistory } = {};
 
-        let reviewHistoryToSave: LexiconReviewHistory[] = [];
+        let reviewHistoryToSave: WordReviewHistory[] = [];
         for (let word of savedWords) {
-            const reviewHistoryWithoutWordId: LexiconReviewHistory | undefined = reviewHistoryByWordElements[this.wordElementsToString(language, word)];
+            const reviewHistoryWithoutWordId: WordReviewHistory | undefined = reviewHistoryByWordElements[this.wordElementsToString(language, word)];
             if (reviewHistoryWithoutWordId) {
                 const reviewHistory = this.withWordId(reviewHistoryWithoutWordId, word.id);
 
@@ -185,28 +183,27 @@ export class WordParser {
                 reviewHistoryToSave.push(reviewHistory);
 
                 if (reviewHistoryToSave.length >= SAVE_BATCH_SIZE) {
-                    this.reviewSessionClient.saveLexiconReviewHistoryBatch(lexiconId, reviewHistoryToSave).subscribe();
+                    this.wordReviewHistoryClient.saveWordReviewHistoryBatch(lexiconId, reviewHistoryToSave).subscribe();
                     reviewHistoryToSave = [];
                 }
             }
         }
 
         if (reviewHistoryToSave.length > 0) {
-            this.reviewSessionClient.saveLexiconReviewHistoryBatch(lexiconId, reviewHistoryToSave).subscribe();
+            this.wordReviewHistoryClient.saveWordReviewHistoryBatch(lexiconId, reviewHistoryToSave).subscribe();
         }
 
         return reviewHistoryByWordId;
     }
 
-    private withWordId(lexiconReviewHistory: LexiconReviewHistory, wordId: string): LexiconReviewHistory {
+    private withWordId(lexiconReviewHistory: WordReviewHistory, wordId: string): WordReviewHistory {
         return {
             lexiconId: lexiconReviewHistory.lexiconId,
             wordId: wordId,
             learned: lexiconReviewHistory.learned,
             mostRecentTestTime: lexiconReviewHistory.mostRecentTestTime,
-            nextTestRelationId: lexiconReviewHistory.nextTestRelationId,
+            mostRecentTestRelationshipId: lexiconReviewHistory.mostRecentTestRelationshipId,
             currentTestDelay: lexiconReviewHistory.currentTestDelay,
-            nextTestTime: lexiconReviewHistory.nextTestTime,
             currentBoost: lexiconReviewHistory.currentBoost,
             currentBoostExpirationDelay: lexiconReviewHistory.currentBoostExpirationDelay,
             testHistory: lexiconReviewHistory.testHistory
@@ -240,7 +237,7 @@ export class WordParser {
 
 export class WordParseResult {
     words: Word[] = [];
-    reviewHistoryById: { [k:string]: LexiconReviewHistory }
+    reviewHistoryById: { [k:string]: WordReviewHistory }
     failedValidation: number = 0;
     skipped: number = 0;
 }

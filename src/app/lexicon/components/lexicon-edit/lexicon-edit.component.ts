@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, inject } from "@angular/core";
 import { LexiconClient } from "../../../client/lexicon-client";
 import { EMPTY_WORD_FILTER_OPTIONS, WordClient, WordFilterOptions } from "../../../client/word-client";
-import { LexiconMetadata, LexiconReviewHistory } from "../../model/lexicon";
+import { LexiconMetadata, WordReviewHistory } from "../../model/lexicon";
 import { LanguageService } from "../../../language/language-service";
 import { LexiconEditHeaderComponent } from "../lexicon-edit-header/lexicon-edit-header.component";
 import { Language, WordElement } from "../../../language/language";
@@ -50,7 +50,7 @@ export class LexiconEdit {
     newWords: Word[] = [];
 
     wordFilterOptions: WordFilterOptions = EMPTY_WORD_FILTER_OPTIONS;
-    reviewHistoryView: LexiconReviewHistory | null = null;
+    reviewHistoryView: WordReviewHistory | null = null;
 
     constructor(private dialog: MatDialog, 
                 private snackBar: MatSnackBar,
@@ -140,13 +140,13 @@ export class LexiconEdit {
         this.reviewHistoryView = null;
     }
 
-    async LoadAllWordsWithNoAudio(offset: number = 0): Promise<Word[]> {       
+    async LoadAllWordsWithNoAudio(offset: number = 0, lastWord: Word | null = null): Promise<Word[]> {       
         
         let wordsWithoutAudio: Word[] = await lastValueFrom(this.wordClient
-            .loadWordsBatch(this.lexiconId, environment.LOAD_AUDIO_FROM_FILES_LOAD_BATCH_SIZE, offset, { elements: {}, attributes: "", learned: null, hasAudio: false }));
+            .loadWordsBatch(this.lexiconId, environment.LOAD_AUDIO_FROM_FILES_LOAD_BATCH_SIZE, offset, lastWord, { elements: {}, attributes: "", learned: null, hasAudio: false  }));
 
         if (wordsWithoutAudio.length === environment.LOAD_AUDIO_FROM_FILES_LOAD_BATCH_SIZE) {
-            return wordsWithoutAudio.concat(await this.LoadAllWordsWithNoAudio(offset + environment.LOAD_AUDIO_FROM_FILES_LOAD_BATCH_SIZE));
+            return wordsWithoutAudio.concat(await this.LoadAllWordsWithNoAudio(offset + environment.LOAD_AUDIO_FROM_FILES_LOAD_BATCH_SIZE, wordsWithoutAudio[wordsWithoutAudio.length - 1]));
         }
         return wordsWithoutAudio;
     }

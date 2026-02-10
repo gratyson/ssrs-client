@@ -5,9 +5,9 @@ import { Word } from "../../../lexicon/model/word";
 import { LexiconWordRowHeaderComponent } from "../../../lexicon/components/lexicon-word-row/lexicon-word-row-header";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
-import { LexiconReviewHistory } from "../../../lexicon/model/lexicon";
+import { WordReviewHistory } from "../../../lexicon/model/lexicon";
 import { ViewReviewHistoryComponent } from "../../../lexicon/components/view-review-history/view-review-history.component";
-import { ReviewSessionClient } from "../../../client/review-session-client";
+import { WordReviewHistoryClient } from "../../../client/word-review-history-client";
 
 @Component({
     selector: "single-word-edit",
@@ -17,7 +17,7 @@ import { ReviewSessionClient } from "../../../client/review-session-client";
 })
 export class SingleWordEditComponent {
 
-    private reviewSessionClient: ReviewSessionClient = inject(ReviewSessionClient);
+    private wordReviewHistoryClient: WordReviewHistoryClient = inject(WordReviewHistoryClient);
 
     @Input() language: Language;
     @Input() lexiconId: string;
@@ -26,11 +26,11 @@ export class SingleWordEditComponent {
     @Output() editComplete: EventEmitter<Word> = new EventEmitter<Word>();
     @Output() wordChange: EventEmitter<Word> = new EventEmitter<Word>();
 
-    reviewHistory: LexiconReviewHistory;
+    reviewHistory: WordReviewHistory;
     showHistory: boolean = false;
 
     public ngOnInit(): void {
-        this.reviewSessionClient.getLexiconReviewHistoryBatch(this.lexiconId, [this.word.id]).subscribe((reviewHistoryList) => {
+        this.wordReviewHistoryClient.getWordReviewHistoryBatch(this.lexiconId, [this.word.id]).subscribe((reviewHistoryList) => {
             if (reviewHistoryList && reviewHistoryList.length > 0) {
                 this.reviewHistory = reviewHistoryList[0];
             }
@@ -46,7 +46,7 @@ export class SingleWordEditComponent {
         this.wordChange.emit(word);
     }
 
-    onViewHistory(reviewHistory: LexiconReviewHistory): void {
+    onViewHistory(reviewHistory: WordReviewHistory): void {
         this.showHistory = true;
     }
 

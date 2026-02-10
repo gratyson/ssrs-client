@@ -2,10 +2,9 @@ import { Injectable, inject } from "@angular/core";
 import { EMPTY_WORD_FILTER_OPTIONS, WordClient, WordFilterOptions } from "../../client/word-client";
 import { Word } from "../model/word";
 import { Language } from "../../language/language";
-import { LexiconClient } from "../../client/lexicon-client";
-import { LexiconReviewHistory, TestHistory } from "../model/lexicon";
-import { Observable, concat, flatMap, map, mergeMap, of } from "rxjs";
-import { ReviewSessionClient } from "../../client/review-session-client";
+import { WordReviewHistory, TestHistory } from "../model/lexicon";
+import { Observable, map, mergeMap, of } from "rxjs";
+import { WordReviewHistoryClient } from "../../client/word-review-history-client";
 
 const LOAD_WORDS_BATCH_SIZE = 500;
 
@@ -13,17 +12,17 @@ const LOAD_WORDS_BATCH_SIZE = 500;
 export class WordWriter {
 
     private wordClient: WordClient = inject(WordClient);
-    private reviewSessionClient: ReviewSessionClient = inject(ReviewSessionClient);
+    private wordReviewHistoryClient: WordReviewHistoryClient = inject(WordReviewHistoryClient);
 
     public GenerateLexiconWordsTsvBlob(language: Language, lexiconId: string, includeHistory: boolean = false, filterOptions: WordFilterOptions = EMPTY_WORD_FILTER_OPTIONS): Observable<Blob> {
-        return this.loadWords(language, lexiconId, 0, includeHistory, filterOptions).pipe(map((lines) => {
+        return this.loadWords(language, lexiconId, 0, null, includeHistory, filterOptions).pipe(map((lines) => {
             return new Blob([lines.join("\n")], { type: "text/plain" });
         }));
     }
 
-    private loadWords(language: Language, lexiconId: string, offset: number, includeHistory: boolean, filterOptions: WordFilterOptions): Observable<string[]> {
+    private loadWords(language: Language, lexiconId: string, offset: number, lastWord: Word | null, includeHistory: boolean, filterOptions: WordFilterOptions): Observable<string[]> {
         
-        return this.wordClient.loadWordsBatch(lexiconId, LOAD_WORDS_BATCH_SIZE, offset, filterOptions).pipe(mergeMap((words) => {
+        return this.wordClient.loadWordsBatch(lexiconId, LOAD_WORDS_BATCH_SIZE, offset, lastWord, filterOptions).pipe(mergeMap((words) => {
             return this.loadReviewHistoryIfNeeded(lexiconId, words, includeHistory).pipe(mergeMap((reviewHistoryByWordId) => {
                 let lines: string[] = this.writeWords(language, words, reviewHistoryByWordId);
     
@@ -34,20 +33,20 @@ export class WordWriter {
 
     private loadAdditionalWordsIfNeeded(language: Language, lexiconId: string, lastWords: Word[], offset: number, includeHistory: boolean, filterOptions: WordFilterOptions): Observable<string[]> {
         if (lastWords.length === LOAD_WORDS_BATCH_SIZE) {
-            return this.loadWords(language, lexiconId, offset + LOAD_WORDS_BATCH_SIZE, includeHistory, filterOptions);
+            return this.loadWords(language, lexiconId, offset + LOAD_WORDS_BATCH_SIZE, lastWords[lastWords.length - 1], includeHistory, filterOptions);
         } 
         return of([]);
     }
 
-    private loadReviewHistoryIfNeeded(lexiconId: string, words: Word[], includeHistory: boolean) {
+    private loadReviewHistoryIfNeeded(lexiconId: string, words: Word[], includeHistory: boolean): Observable<{ [k:string]: WordReviewHistory }> {
         if (includeHistory) {
-            return this.reviewSessionClient.getLexiconReviewHistoryBatch(lexiconId, words.map(word => word.id)).pipe(map((reviewHistories) => this.indexByWordId(reviewHistories)));
+            return this.wordReviewHistoryClient.getWordReviewHistoryBatch(lexiconId, words.map(word => word.id)).pipe(map((reviewHistories) => this.indexByWordId(reviewHistories)));
         }
 
         return of({});
     }
 
-    private writeWords(language: Language, words: Word[], reviewHistoryByWordId: { [k:string]: LexiconReviewHistory}): string[] {
+    private writeWords(language: Language, words: Word[], reviewHistoryByWordId: { [k:string]: WordReviewHistory} ): string[] {
         let lines: string[] = [];
 
         for (let word of words) {
@@ -81,7 +80,7 @@ export class WordWriter {
         return line;
     }
 
-    private generateReviewHistoryTsv(reviewHistory: LexiconReviewHistory): string {
+    private generateReviewHistoryTsv(reviewHistory: WordReviewHistory): string {
         let line: string = "";
         
         if(reviewHistory.mostRecentTestTime) {
@@ -94,13 +93,8 @@ export class WordWriter {
         }
         line += "\t";
 
-        if(reviewHistory.nextTestRelationId) {
-            line += reviewHistory.nextTestRelationId;
-        }
-        line += "\t";
-
-        if(reviewHistory.nextTestTime) {
-            line += reviewHistory.nextTestTime.valueOf();
+        if(reviewHistory.mostRecentTestRelationshipId) {
+            line += reviewHistory.mostRecentTestRelationshipId;
         }
         line += "\t";
 
@@ -125,8 +119,8 @@ export class WordWriter {
         return testRelationId + "," + testHistory.totalTests + "," + testHistory.correct + "," + testHistory.correctStreak;
     }
 
-    private indexByWordId(reviewHistories: LexiconReviewHistory[]): { [k:string]: LexiconReviewHistory} {
-        let reviewHistoryByWordId: { [k:string]: LexiconReviewHistory} = {};
+    private indexByWordId(reviewHistories: WordReviewHistory[]): { [k:string]: WordReviewHistory} {
+        let reviewHistoryByWordId: { [k:string]: WordReviewHistory} = {};
 
         for(let reviewHistory of reviewHistories) {
             reviewHistoryByWordId[reviewHistory.wordId] = reviewHistory;

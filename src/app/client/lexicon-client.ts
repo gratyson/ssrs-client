@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { LexiconMetadata, LexiconMetadataAndScheduledCounts, LexiconReviewHistory, TestHistory } from "../lexicon/model/lexicon";
+import { LexiconMetadata, LexiconMetadataAndScheduledCounts, WordReviewHistory, TestHistory } from "../lexicon/model/lexicon";
 import { environment } from "../../environments/environment";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, catchError, map, of } from "rxjs";

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, inject } from "@angular/core";
-import { LexiconReviewHistory, TestHistory } from "../../model/lexicon";
+import { WordReviewHistory, TestHistory } from "../../model/lexicon";
 import { Language, TestRelationship } from "../../../language/language";
 import { LanguageService } from "../../../language/language-service";
 import { MatIconModule } from "@angular/material/icon";
@@ -15,15 +15,13 @@ import { DurationPipe } from "../../../util/duration/duration.pipe";
 })
 export class ViewReviewHistoryComponent {
 
-    private languageService: LanguageService = inject(LanguageService);
-
-    @Input() reviewHistory: LexiconReviewHistory;
+    @Input() reviewHistory: WordReviewHistory;
     @Input() language: Language;
 
     @Output() closeHistory: EventEmitter<void> = new EventEmitter<void>();
 
     overallTestHistory: TestHistory = { totalTests: 0, correct: 0, correctStreak: 0 };
-    nextRelation: TestRelationship | null = null;
+    mostRecentTestRelationship: TestRelationship | null = null;
 
     public ngOnInit(): void {
         this.calcOverallTestHistory();
@@ -36,8 +34,8 @@ export class ViewReviewHistoryComponent {
     private calcOverallTestHistory(): void {
         this.overallTestHistory = { totalTests: 0, correct: 0, correctStreak: 0 };
         for(let testRelation of this.language.allTestRelationships) {
-            if (this.reviewHistory.nextTestRelationId === testRelation.id) {
-                this.nextRelation = testRelation;
+            if (this.reviewHistory.mostRecentTestRelationshipId === testRelation.id) {
+                this.mostRecentTestRelationship = testRelation;
             }
 
             if (this.reviewHistory.testHistory[testRelation.id]) {

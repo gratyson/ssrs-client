@@ -8,7 +8,7 @@ import { MatButton, MatButtonModule } from "@angular/material/button";
 import { MatMenu, MatMenuModule } from '@angular/material/menu'; 
 import { Language, WordElement } from "../../../language/language";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { LexiconReviewHistory } from "../../model/lexicon";
+import { WordReviewHistory } from "../../model/lexicon";
 import { MatDialog } from "@angular/material/dialog";
 import { ReviewTestResult } from "../../../review/model/review-session";
 
@@ -25,7 +25,7 @@ export class LexiconWordRowBaseComponent {
 
     @Input() language: Language;
     @Input() lexiconId: string;
-    @Input() reviewHistory: LexiconReviewHistory;
+    @Input() reviewHistory: WordReviewHistory;
     @Input() onlyAllowWordEdit: boolean = false;
 
     @ViewChild("learnedCheckbox") learnedCheckbox: MatCheckbox;

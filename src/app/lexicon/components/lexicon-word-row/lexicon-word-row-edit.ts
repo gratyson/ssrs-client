@@ -13,7 +13,7 @@ import { DialogPosition, MatDialog } from "@angular/material/dialog";
 import { AudioEditDialogComponent, AudioEditDialogData } from "../../../audio/components/audio-edit-dialog/audio-edit-dialog.component";
 import { LexiconWordRowBaseComponent } from "./lexicon-word-row-base";
 import { AudioClient } from "../../../client/audio-client";
-import { EMPTY_LEXICON_REVIEW_HISTORY, LexiconReviewHistory } from "../../model/lexicon";
+import { EMPTY_LEXICON_REVIEW_HISTORY, WordReviewHistory } from "../../model/lexicon";
 import { ReviewEvent, ReviewSession, ReviewTestResult, ReviewType } from "../../../review/model/review-session";
 import { ReviewSessionClient } from "../../../client/review-session-client";
 import { Duration } from "../../../util/duration/duration";
@@ -22,6 +22,7 @@ import { InitialTestDelay } from "../../../user-config/user-config-setting";
 import { ConfirmDialog } from "../../../util/confirm-dialog";
 import { WordReviewResult } from "../../../review/queue/review-queue-manager";
 import { ReviewMode } from "../../../review/model/review-mode";
+import { WordReviewHistoryClient } from "../../../client/word-review-history-client";
 
 const HAS_AUDIO_COLOR: string = "black";
 const NO_AUDIO_COLOR: string = "#d9d9d9";
@@ -36,14 +37,15 @@ export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
 
     private wordClient: WordClient = inject(WordClient);
     private reviewSessionClient: ReviewSessionClient = inject(ReviewSessionClient);
+    private wordReviewHistoryClient: WordReviewHistoryClient = inject(WordReviewHistoryClient);
     private userConfigService: UserConfigService = inject(UserConfigService);
 
     @Input() word: Word;
 
     @Output() deleteWord: EventEmitter<Word> = new EventEmitter<Word>();
     @Output() wordChange: EventEmitter<Word> = new EventEmitter<Word>();
-    @Output() reviewHistoryChange: EventEmitter<LexiconReviewHistory> = new EventEmitter<LexiconReviewHistory>();
-    @Output() viewHistory: EventEmitter<LexiconReviewHistory> = new EventEmitter<LexiconReviewHistory>();
+    @Output() reviewHistoryChange: EventEmitter<WordReviewHistory> = new EventEmitter<WordReviewHistory>();
+    @Output() viewHistory: EventEmitter<WordReviewHistory> = new EventEmitter<WordReviewHistory>();
 
     public ngOnInit(): void { 
         this.learnedCheckboxDisabled = true;
@@ -170,7 +172,7 @@ export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.reviewSessionClient.processManualEvent(this.generateReviewEvent(eventResult)).subscribe(() => {
-                    this.reviewSessionClient.getLexiconReviewHistoryBatch(this.lexiconId, [this.word.id]).subscribe(wordHistories => {
+                    this.wordReviewHistoryClient.getWordReviewHistoryBatch(this.lexiconId, [this.word.id]).subscribe(wordHistories => {
                         if (wordHistories && wordHistories.length > 0) {
                             this.reviewHistory = wordHistories[0];
                             this.reviewHistoryChange.emit(wordHistories[0]);
@@ -231,7 +233,7 @@ export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
 
         dialogRef.afterClosed().subscribe(result => { 
             if (result) {
-                this.reviewSessionClient.deleteLexiconReviewHistory(this.lexiconId, this.word.id).subscribe(() => {
+                this.wordReviewHistoryClient.resetLearningHistory(this.lexiconId, this.word.id).subscribe(() => {
                     this.reviewHistory = EMPTY_LEXICON_REVIEW_HISTORY;
                     this.updateLearned();
                     this.reviewHistoryChange.emit(EMPTY_LEXICON_REVIEW_HISTORY);
@@ -242,20 +244,19 @@ export class LexiconWordRowEditComponent extends LexiconWordRowBaseComponent {
 
     private createReviewHistory(): void {
         this.userConfigService.getCurrentConfigValue(InitialTestDelay).subscribe(initialTestDelay => { 
-            const reviewHistory = {
+            const reviewHistory: WordReviewHistory = {
                 lexiconId: this.lexiconId,
                 wordId: this.word.id,
                 learned: true,
                 mostRecentTestTime: new Date(),
-                nextTestRelationId: this.language.allTestRelationships[0].id,
+                mostRecentTestRelationshipId: "",
                 currentTestDelay: initialTestDelay,
-                nextTestTime: new Date(new Date().valueOf() + initialTestDelay.toMillis()), 
                 currentBoost: 0,
                 currentBoostExpirationDelay: Duration.fromMillis(0),
                 testHistory: {}
             };
 
-            this.reviewSessionClient.saveLexiconReviewHistoryBatch(this.lexiconId, [reviewHistory]).subscribe(() => {
+            this.wordReviewHistoryClient.saveWordReviewHistoryBatch(this.lexiconId, [reviewHistory]).subscribe(() => {
                 this.reviewHistory = reviewHistory;
                 this.updateLearned();
                 this.reviewHistoryChange.emit(reviewHistory);
