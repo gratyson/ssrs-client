@@ -4,6 +4,8 @@ import { environment } from "../../environments/environment";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, catchError, map, of } from "rxjs";
 import { handleError } from "./client-util";
+import { CacheDataWithExpiration, LRUMemCache } from "../util/lru-mem-cache";
+import { BlobPath, BlobPathFromServer, convertBlobPathFromServer, toCacheDataWithExpiration } from "./client-util";
 
 const GET_ALL_LEXICON_METADATA_ENDPOINT = "lexicon/allLexiconMetadata";
 const GET_LEXICON_METADATA_ENDPOINT: string = "lexicon/lexiconMetadata";
@@ -11,7 +13,7 @@ const GET_LEXICON_METADATA_AND_SCHEDULED_COUNTS_ENDPOINT: string = "lexicon/allL
 const SAVE_LEXICON_METADATA_ENDPOINT: string = "lexicon/saveLexiconMetadata";
 const DELETE_LEXICON_ENDPOINT: string = "lexicon/deleteLexicon";
 
-const IMAGE_BLOB_PATH_PREFIX: string =  "blob/image/";
+const GET_IMAGE_PATH_URL: string = "blob/image/getPath/";
 const DEFAULT_IMAGE_PATH: string = "/assets/images/DefaultDictImage.png";
 
 const EMPTY_FILE: File = new File([""], "empty");
@@ -19,18 +21,29 @@ const EMPTY_FILE: File = new File([""], "empty");
 @Injectable({providedIn: "root"})
 export class LexiconClient {
 
+    private imagePathCache: LRUMemCache<BlobPath> = new LRUMemCache<BlobPath>();
+
     jsonContentHttpOptions = { headers: new HttpHeaders({ "Content-Type": "application/json", "Accept": "application/json" }) };
     formContentHttpOptions = { headers: new HttpHeaders({ "Accept": "application/json" }) };
 
-    constructor(private httpClient: HttpClient) {}
+    constructor(private httpClient: HttpClient) { }
 
-    public getImagePath(lexicon: LexiconMetadata): string {
+    public getImagePath(lexicon: LexiconMetadata): Observable<string> {
         if (lexicon && lexicon.imageFileName) {
-            return environment.REST_ENDPOINT_URL + IMAGE_BLOB_PATH_PREFIX + lexicon.imageFileName;
+            return this.imagePathCache.getOrCache(lexicon.imageFileName, key => this.getImagePathToCache(lexicon.imageFileName))
+                .pipe(map(blobPath => (blobPath.isRelative ? environment.REST_ENDPOINT_URL : "") + blobPath.path));
         }
         
-        console.log("No lexicon image file set. Returning default image file.")
-        return DEFAULT_IMAGE_PATH;
+        console.log("No lexicon image file set. Returning default image file. ")
+        return of(DEFAULT_IMAGE_PATH);
+    }
+
+    private getImagePathToCache(imageFileName: string): Observable<CacheDataWithExpiration<BlobPath>> {
+        const url: string = environment.REST_ENDPOINT_URL + GET_IMAGE_PATH_URL + imageFileName;
+
+        return this.httpClient.get<BlobPathFromServer>(url)
+            .pipe(map(blobPath => toCacheDataWithExpiration(blobPath)))
+            .pipe(catchError(handleError<CacheDataWithExpiration<BlobPath>>("getImagePathFromServer")));
     }
 
     public loadAllLexiconMetadata(): Observable<LexiconMetadata[]> {
@@ -89,5 +102,3 @@ export class LexiconClient {
         return this.httpClient.post<boolean>(url, lexiconId, this.jsonContentHttpOptions).pipe(catchError(handleError<boolean>("deleteLexicon", false)));
     }
 }
-
-    

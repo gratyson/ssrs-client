@@ -11,7 +11,6 @@ import { RouterLink } from "@angular/router";
     selector: "lexicon-edit-header",
     templateUrl: "lexicon-edit-header.html",
     styleUrl: "lexicon-edit-header.css",
-    providers: [LexiconClient],
     imports: [MatMenuModule, MatIconModule, MatButtonModule, MatFormFieldModule, RouterLink]
 })
 export class LexiconEditHeaderComponent {
@@ -31,7 +30,11 @@ export class LexiconEditHeaderComponent {
 
     public ngOnChanges(changes: SimpleChanges): void {
         if (changes.hasOwnProperty("lexiconMetadata")) {
-            this.lexiconImagePath = this.lexiconClient.getImagePath(this.lexiconMetadata);
+            if (this.lexiconMetadata) {
+                this.lexiconClient.getImagePath(this.lexiconMetadata).subscribe(path => {
+                    this.lexiconImagePath = path;
+                });
+            }
         }
     }
 

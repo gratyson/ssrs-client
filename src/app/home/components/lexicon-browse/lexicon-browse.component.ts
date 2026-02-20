@@ -21,7 +21,7 @@ import { getEndOfDay } from "../../../util/date-util";
 })
 export class LexiconBrowseComponent {
 
-    private lexiconClient = inject(LexiconClient);
+    private lexiconClient: LexiconClient = inject(LexiconClient);
     private userConfigService: UserConfigService = inject(UserConfigService)
     
     constructor(private dialog: MatDialog, 

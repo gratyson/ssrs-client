@@ -3,8 +3,11 @@ import { environment } from "../../environments/environment";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, catchError, map, of } from "rxjs";
 import { handleError } from "./client-util";
+import { CacheDataWithExpiration, LRUMemCache } from "../util/lru-mem-cache";
+import { BlobPath, BlobPathFromServer, toCacheDataWithExpiration } from "./client-util";
 
 const GET_AUDIO_URL: string = "audio/audio";
+const GET_AUDIO_PATH_URL: string = "audio/audioPath";
 const GET_AUDIO_FILES_FOR_WORD_URL: string = "audio/getAudioFilesForWord";
 const GET_AUDIO_FILES_FOR_WORD_BATCH_URL: string = "audio/getAudioFilesForWordBatch";
 const SAVE_AUDIO_MULTIPLE_URL: string = "audio/saveAudioBatch";
@@ -13,19 +16,27 @@ const DELETE_AUDIO_URL: string = "audio/deleteAudio";
 @Injectable({providedIn: "root"})
 export class AudioClient {
 
+    private audioPathCache: LRUMemCache<BlobPath> = new LRUMemCache<BlobPath>();
+
     httpGetOptions = { headers: new HttpHeaders({ "Content-Type": "application/json", "Accept": "application/json" }) };
     httpSaveOptions = { headers: new HttpHeaders({ "Accept": "application/json" }) };
 
-    constructor(private httpClient: HttpClient) {}
+    constructor(private httpClient: HttpClient) { }
 
-    public getAudioPath(wordId: string, audioFileName: string): string {
+    public getAudioPath(audioFileName: string): Observable<string> {
+        return this.audioPathCache.getOrCache(audioFileName, key => this.getAudioPathToCache(audioFileName))
+            .pipe(map(blobPath => (blobPath.isRelative ? environment.REST_ENDPOINT_URL : "") + blobPath.path));
+    }
+
+    private getAudioPathToCache(audioFileName: string): Observable<CacheDataWithExpiration<BlobPath>> {
         let params = new URLSearchParams();
-        params.append("wordId", wordId);
-        params.append("audioFileName" , audioFileName);
+        params.append("audioFileName", audioFileName);
 
-        const url: string = environment.REST_ENDPOINT_URL + GET_AUDIO_URL;
+        const url: string = environment.REST_ENDPOINT_URL + GET_AUDIO_PATH_URL;
         
-        return `${url}?${params}`;
+        return this.httpClient.get<BlobPathFromServer>(`${url}?${params}`)
+            .pipe(map(blobPath => toCacheDataWithExpiration(blobPath)))
+            .pipe(catchError(handleError<CacheDataWithExpiration<BlobPath>>("getAudioPathToCache")));
     }
 
     public getAudioFileNamesForWord(wordId: string): Observable<string[]> {

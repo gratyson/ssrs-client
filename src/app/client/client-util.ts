@@ -1,5 +1,6 @@
 import { Observable, of } from "rxjs";
 import { Word } from "../lexicon/model/word";
+import { CacheDataWithExpiration } from "../util/lru-mem-cache";
 
 export function handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
@@ -65,4 +66,33 @@ export function convertWordsBatch(words: Word[]): WordFromServer[] {
     }
 
     return wordsFromServer;
+}
+
+export interface BlobPath {
+    path: string;
+    isRelative: boolean;
+    expiration: Date;
+}
+
+export interface BlobPathFromServer {
+    path: string;
+    isRelative: boolean;
+    expiration: string;
+}
+
+export function convertBlobPathFromServer(blobPathFromServer: BlobPathFromServer): BlobPath {
+    return {
+        path: blobPathFromServer.path,
+        isRelative: blobPathFromServer.isRelative,
+        expiration: new Date(blobPathFromServer.expiration)
+    }
+}
+
+export function toCacheDataWithExpiration(blobPathFromServer: BlobPathFromServer): CacheDataWithExpiration<BlobPath> {
+    const blobPath: BlobPath = convertBlobPathFromServer(blobPathFromServer);
+
+    return {
+        data: blobPath,
+        expiration: blobPath.expiration
+    }
 }

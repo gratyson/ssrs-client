@@ -44,11 +44,12 @@ export class AudioPlayerComponent {
                 this.pauseAudio();
             }
 
-            const newAudioFilePath = this.audioClient.getAudioPath(this.wordId, this.audioFileName);
-            this.setAudio(newAudioFilePath, this.preload);
+            this.audioClient.getAudioPath(this.audioFileName).subscribe(path => {
+                this.setAudio(path, this.preload);
 
-            this.preloadedActive = false;
-            this.hasAutoplayStarted = false;
+                this.preloadedActive = false;
+                this.hasAutoplayStarted = false;
+            });
         }
     }
 

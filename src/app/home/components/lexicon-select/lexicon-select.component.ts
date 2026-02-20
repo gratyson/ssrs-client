@@ -38,7 +38,10 @@ export class LexiconSelectComponent {
     @Output() onEditLexicon: EventEmitter<void> = new EventEmitter<void>();
 
     public ngOnInit(): void {
-        this.lexiconImagePath = this.lexiconClient.getImagePath(this.lexiconMetadata);
+
+        this.lexiconClient.getImagePath(this.lexiconMetadata).subscribe(path => {
+            this.lexiconImagePath = path;
+        });
 
         this.languageService.getLanguage(this.lexiconMetadata.languageId).subscribe((language) => {
             if (language) {

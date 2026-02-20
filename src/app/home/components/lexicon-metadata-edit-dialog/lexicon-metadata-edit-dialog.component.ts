@@ -29,7 +29,6 @@ const MAX_IMAGE_FILE_SIZE: number = 1024 * 1024;
     selector: "lexicon-metadata-edit-dialog",
     templateUrl: "lexicon-metadata-edit-dialog.html",
     styleUrl: "lexicon-metadata-edit-dialog.css",
-    providers: [LexiconClient],
     imports: [MatGridListModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule]
 })
 export class LexiconMetadataEditDialogComponent {
@@ -65,12 +64,16 @@ export class LexiconMetadataEditDialogComponent {
             this.lexiconClient.loadLexiconMetadata(this.lexiconId)
                 .subscribe(lexiconMetadata => { 
                     this.setLexiconMetadata(lexiconMetadata)
-                    this.lexiconImagePath = this.lexiconClient.getImagePath(this.lexiconMetadata)
+                    this.lexiconClient.getImagePath(this.lexiconMetadata).subscribe(path => {
+                        this.lexiconImagePath = path;
+                    });
                 });
         } else {
             this.lexiconMetadata = LexiconMetadata.getBlankLexiconMetadata();
             this.setLexiconMetadata(this.lexiconMetadata);
-            this.lexiconImagePath = this.lexiconClient.getImagePath(this.lexiconMetadata);
+            this.lexiconClient.getImagePath(this.lexiconMetadata).subscribe(path => {
+                this.lexiconImagePath = path;
+            });
         }
         this.languageService.getAllLanguages().subscribe(languages => this.setLanguages(languages));
     }
