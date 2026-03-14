@@ -49,14 +49,8 @@ export class EditUserSettingsComponent {
 
 
     onFieldUpdate<T>(setting: UserConfigSetting<T>): void {
-        const settingStrValue: string = this.currentSettingValues[setting.name];
+        const settingValue: T | null = setting.parser.parseSettingValue(this.currentSettingValues[setting.name]);
 
-        if (settingStrValue) {
-            const settingValue: T | null = setting.parser.parseSettingValue(settingStrValue);
-
-            if (settingValue != null) {
-                this.userConfigService.setCurrentConfigValue(setting, settingValue).subscribe();
-            }
-        }
+        this.userConfigService.setCurrentConfigValue(setting, settingValue).subscribe();
     }
 }

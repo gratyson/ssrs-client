@@ -14,7 +14,7 @@ const SAVE_LEXICON_METADATA_ENDPOINT: string = "lexicon/saveLexiconMetadata";
 const DELETE_LEXICON_ENDPOINT: string = "lexicon/deleteLexicon";
 
 const GET_IMAGE_PATH_URL: string = "blob/image/getPath/";
-const DEFAULT_IMAGE_PATH: string = "/assets/images/DefaultDictImage.png";
+const DEFAULT_IMAGE_PATH: string = "assets/images/DefaultDictImage.png";
 
 const EMPTY_FILE: File = new File([""], "empty");
 
@@ -93,7 +93,7 @@ export class LexiconClient {
         formData.append("file", imageFile ? imageFile : EMPTY_FILE);
         formData.append("lexicon", new Blob([JSON.stringify(lexiconMetadata)], { type: "application/json" }));
 
-        return this.httpClient.put<LexiconMetadata>(url, formData, this.formContentHttpOptions).pipe(catchError(handleError<LexiconMetadata>("saveLexiconMetadata")));
+        return this.httpClient.post<LexiconMetadata>(url, formData, this.formContentHttpOptions).pipe(catchError(handleError<LexiconMetadata>("saveLexiconMetadata")));
     }
 
     public deleteLexicon(lexiconId: string): Observable<boolean> {

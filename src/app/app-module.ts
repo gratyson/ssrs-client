@@ -1,7 +1,9 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { HttpEvent, HttpHandler, HttpHandlerFn, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Meta } from "@angular/platform-browser";
 import { Observable, of } from "rxjs";
+import { getCookieValue } from "./util/cookie-util";
+import { environment } from "../environments/environment";
 
 @Injectable()
 export class XhrInterceptor implements HttpInterceptor {
@@ -21,4 +23,18 @@ export class XhrInterceptor implements HttpInterceptor {
 
         return next.handle(req);
     }
+}
+
+
+export function authorizationIntercept(req: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> {
+    const authToken = getCookieValue(environment.AUTH_TOKEN_COOKIE_NAME);
+
+    if (authToken) {
+        const authedReq = req.clone({
+            headers: req.headers.set("Authorization", authToken)
+        });
+        return next(authedReq);
+    }
+
+    return next(req);
 }

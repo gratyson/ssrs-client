@@ -38,14 +38,30 @@ export class UserConfigService {
         }));
     }
 
-    public setCurrentConfigValue<T>(setting: UserConfigSetting<T>, value: T): Observable<void> {
+    public setCurrentConfigValue<T>(setting: UserConfigSetting<T>, value: T | null): Observable<void> {
         if (!setting.persist) {
-            this.nonPersistantConfig[setting.name] = setting.parser.settingValueToString(value);
-            return of();
+            return this.setNonPersistantConfig(setting, value);
         }
 
+        return this.setPersistantConfig(setting, value);
+    }
+
+    private setNonPersistantConfig<T>(setting: UserConfigSetting<T>, value: T | null): Observable<void> {
+        if (value === null) {
+            delete this.nonPersistantConfig[setting.name];
+        } else {
+            this.nonPersistantConfig[setting.name] = setting.parser.settingValueToString(value);
+        }
+        return of();
+    }
+
+    private setPersistantConfig<T>(setting: UserConfigSetting<T>, value: T | null): Observable<void> {
         return this.getCurrentUserConfig(setting.persist).pipe(map<{ [k: string]: string }, void>((userConfig) => {
-            userConfig[setting.name] = setting.parser.settingValueToString(value);
+            if (value === null) {
+                delete userConfig[setting.name];
+            } else {
+                userConfig[setting.name] = setting.parser.settingValueToString(value);
+            }
             
             this.cacheService.updateValue(USER_CONFIG_CACHE_KEY, userConfig);
             return this.userConfigClient.saveUserConfig(userConfig).subscribe();

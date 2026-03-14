@@ -10,4 +10,6 @@ export const environment = {
     LOAD_AUDIO_FROM_FILES_UPDATE_BATCH_SIZE: 10,
 
     DEFAULT_FONT_NAME: "Roboto",
+
+    AUTH_TOKEN_COOKIE_NAME: "accessToken-dev"
 };

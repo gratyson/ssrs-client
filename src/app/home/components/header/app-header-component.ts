@@ -1,7 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { AuthClient } from "../../../client/auth-client";
-import { environment } from "../../../../environments/environment";
 import { UserService } from "../../../security/user-service";
 import { Router, RouterLink } from "@angular/router";
 import { MatIconModule } from "@angular/material/icon";
@@ -19,6 +18,10 @@ export class AppHeaderComponent {
     userService: UserService = inject(UserService);
     authClient: AuthClient = inject(AuthClient);
     router: Router = inject(Router);
+
+    onChangePasswordClick(event: Event) {
+        alert('Not yet implemented.');
+    }
 
     onLogoutClick(event: Event): void {
         this.authClient.logout().subscribe(() => { 

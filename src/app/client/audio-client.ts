@@ -67,7 +67,7 @@ export class AudioClient {
             formData.append("files[]", audioFiles[i]);
         }
 
-        return this.httpClient.put<{[k:string]: string[]}>(`${url}`, formData, this.httpSaveOptions).pipe(catchError(handleError<{[k:string]: string[]}>("saveAudioBatch", {})));
+        return this.httpClient.post<{[k:string]: string[]}>(`${url}`, formData, this.httpSaveOptions).pipe(catchError(handleError<{[k:string]: string[]}>("saveAudioBatch", {})));
     }
 
     public deleteAudio(wordId: string, audioFileName: string): Observable<string> {

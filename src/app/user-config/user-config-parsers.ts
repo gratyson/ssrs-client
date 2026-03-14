@@ -32,9 +32,11 @@ export class IntegerSettingParser extends SettingParser<number> {
     }
 
     public override parseSettingValue(value: string): number | null {
-        const numericValue = Number.parseInt(value);
-        if (Number.isInteger(numericValue) && numericValue >= this.minValue && numericValue <= this.maxValue) {
-            return numericValue;
+        if (value) {
+            const numericValue = Number.parseInt(value);
+            if (Number.isInteger(numericValue) && numericValue >= this.minValue && numericValue <= this.maxValue) {
+                return numericValue;
+            }
         }
 
         return null;
@@ -51,12 +53,14 @@ export class IntegerSettingParser extends SettingParser<number> {
 
 export class BooleanSettingParser extends SettingParser<boolean> {
     public override parseSettingValue(value: string): boolean | null {
-        if (value === "true") {
-            return true;
-        }
+        if (value) {
+            if (value === "true") {
+                return true;
+            }
 
-        if (value === "false") {
-            return false;
+            if (value === "false") {
+                return false;
+            }
         }
 
         return null;
@@ -79,9 +83,11 @@ export class HoursDurationSettingParser extends SettingParser<Duration> {
     }
 
     override parseSettingValue(value: string): Duration | null {
-        const hours = Number.parseInt(value);
-        if (hours && hours >= this.minHours && hours <= this.maxHours) {
-            return Duration.fromHours(hours);
+        if (value) {
+            const hours = Number.parseInt(value);
+            if (hours && hours >= this.minHours && hours <= this.maxHours) {
+                return Duration.fromHours(hours);
+            }
         }
 
         return null;

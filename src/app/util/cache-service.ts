@@ -29,7 +29,6 @@ export class CacheService {
     }
 
     public updateValue<T>(key: string, value: T) {
-        console.log(`Setting ${key}=${JSON.stringify(this.buildCacheEntry(value))}`);
         sessionStorage.setItem(this.buildCacheKey(key), JSON.stringify(this.buildCacheEntry(value)));
     }
 

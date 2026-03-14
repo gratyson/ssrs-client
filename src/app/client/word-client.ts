@@ -50,7 +50,7 @@ export class WordClient {
     public saveWords(words: Word[], lexiconId: string): Observable<Word[]> {
         const url: string = environment.REST_ENDPOINT_URL + SAVE_WORD_ENDPOINT;
 
-        return this.httpClient.put<WordFromServer[]>(`${url}`, JSON.stringify({ words: convertWordsBatch(words), lexiconId: lexiconId}), this.httpOptions)
+        return this.httpClient.post<WordFromServer[]>(`${url}`, JSON.stringify({ words: convertWordsBatch(words), lexiconId: lexiconId}), this.httpOptions)
             .pipe(map(wordsFromServer => convertWordFromServerBatch(wordsFromServer)))
             .pipe(catchError(handleError<Word[]>("SaveWords", [])));
     }
