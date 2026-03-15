@@ -71,16 +71,10 @@ export class WordParser {
             }
         }
 
-        return from(this.saveWords(lexiconId, wordsToSave)).pipe(map((savedWords) => {
-            wordParseResult.words = savedWords;
-
-            wordParseResult.skipped = wordsToSave.length - wordParseResult.words.length;
-
-            if (Object.keys(reviewHistoryByWordElementStr).length > 0) {
-                wordParseResult.reviewHistoryById = this.saveReviewHistory(language, lexiconId, wordParseResult.words, reviewHistoryByWordElementStr);
-            } else {
-                wordParseResult.reviewHistoryById = {};
-            }
+        return this.saveWordBatches(language, lexiconId, wordsToSave, reviewHistoryByWordElementStr).pipe(map(saveWordResult => {
+            wordParseResult.words = saveWordResult.savedWords;
+            wordParseResult.reviewHistoryById = saveWordResult.wordReviewHistoryByWordId;
+            wordParseResult.skipped = wordsToSave.length - saveWordResult.savedWords.length;
 
             return wordParseResult;
         }));
@@ -124,7 +118,7 @@ export class WordParser {
         const mostRecentTestRelationshipId: string = linePieces[pos++];
 
         // required elements
-        if (!mostRecentTimeMillis || !currentTestDelayMillis || !mostRecentTestRelationshipId) {
+        if (!mostRecentTimeMillis || !currentTestDelayMillis) {
             return null;
         }
 
@@ -156,21 +150,40 @@ export class WordParser {
         }
     }
 
-    private async saveWords(lexiconId: string, words: Word[]): Promise<Word[]> {
-        let saveWordsObservables: Observable<Word[]>[] = [];
-        for(let i = 0; i < words.length; i += SAVE_BATCH_SIZE) {
-            saveWordsObservables.push(this.wordClient.saveWords(words.slice(i, i + SAVE_BATCH_SIZE), lexiconId));
-        }
+    private saveWordBatches(language: Language, lexiconId: string, words: Word[], reviewHistoryByWordElements: { [k: string]: WordReviewHistory }): Observable<SaveWordResult> {
+        let wordBatches: Word[][] = this.generateWordBatches(words);
 
-        let savedWords: Word[] = [];
-        for(let saveWordsObservable of saveWordsObservables) {
-            savedWords = savedWords.concat(await firstValueFrom(saveWordsObservable));
-        }
-
-        return savedWords;
+        return this.saveWordBatchesRecurse(language, lexiconId, wordBatches, reviewHistoryByWordElements, 0);
     }
 
-    private saveReviewHistory(language: Language, lexiconId: string, savedWords: Word[], reviewHistoryByWordElements: { [k: string]: WordReviewHistory }): { [k: string]: WordReviewHistory } {
+    private generateWordBatches(words: Word[]): Word[][] {
+        let wordBatches: Word[][] = [];
+
+        for(let i = 0; i < words.length; i += SAVE_BATCH_SIZE) {
+            wordBatches.push(words.slice(i, i + SAVE_BATCH_SIZE));
+        }
+
+        return wordBatches;
+    }
+
+    private saveWordBatchesRecurse(language: Language, lexiconId: string, wordBatchs: Word[][], reviewHistoryByWordElements: { [k: string]: WordReviewHistory }, currentBatch: number): Observable<SaveWordResult> {
+        if (currentBatch >= wordBatchs.length) {
+            return of({ savedWords: [], wordReviewHistoryByWordId: {} });
+        } else {
+            return this.saveWordBatchesRecurse(language, lexiconId, wordBatchs, reviewHistoryByWordElements, currentBatch + 1).pipe(switchMap(saveWordResults => {
+                return this.wordClient.saveWords(wordBatchs[currentBatch], lexiconId).pipe(switchMap(savedWords => {
+                    return this.saveReviewHistoryBatch(language, lexiconId, savedWords, reviewHistoryByWordElements).pipe(switchMap(reviewHistoryByWordIdBatch => {
+                        return of({
+                            savedWords: saveWordResults.savedWords.concat(savedWords),
+                            wordReviewHistoryByWordId: { ...saveWordResults.wordReviewHistoryByWordId, ...reviewHistoryByWordIdBatch }
+                        });
+                    }))
+                }))
+            }))
+        }
+    }
+
+    private saveReviewHistoryBatch(language: Language, lexiconId: string, savedWords: Word[], reviewHistoryByWordElements: { [k: string]: WordReviewHistory }): Observable<{ [k: string]: WordReviewHistory }> {
         let reviewHistoryByWordId: { [k:string ]: WordReviewHistory } = {};
 
         let reviewHistoryToSave: WordReviewHistory[] = [];
@@ -181,19 +194,14 @@ export class WordParser {
 
                 reviewHistoryByWordId[word.id] = reviewHistory;
                 reviewHistoryToSave.push(reviewHistory);
-
-                if (reviewHistoryToSave.length >= SAVE_BATCH_SIZE) {
-                    this.wordReviewHistoryClient.saveWordReviewHistoryBatch(lexiconId, reviewHistoryToSave).subscribe();
-                    reviewHistoryToSave = [];
-                }
             }
         }
 
         if (reviewHistoryToSave.length > 0) {
-            this.wordReviewHistoryClient.saveWordReviewHistoryBatch(lexiconId, reviewHistoryToSave).subscribe();
+            return this.wordReviewHistoryClient.saveWordReviewHistoryBatch(lexiconId, reviewHistoryToSave).pipe(map(() => reviewHistoryByWordId));
         }
 
-        return reviewHistoryByWordId;
+        return of({});
     }
 
     private withWordId(lexiconReviewHistory: WordReviewHistory, wordId: string): WordReviewHistory {
@@ -242,3 +250,7 @@ export class WordParseResult {
     skipped: number = 0;
 }
 
+interface SaveWordResult {
+    savedWords: Word[];
+    wordReviewHistoryByWordId: { [k: string]: WordReviewHistory };
+}

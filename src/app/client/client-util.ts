@@ -46,7 +46,6 @@ export function convertWordFromServerBatch(wordsFromServer: WordFromServer[]) {
 }
 
 export function convertWord(word: Word): WordFromServer {
-    console.dir(word);
     return {
         id: word.id,
         lexiconId: word.lexiconId,

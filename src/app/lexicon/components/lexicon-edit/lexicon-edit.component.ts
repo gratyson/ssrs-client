@@ -211,7 +211,7 @@ export class LexiconEdit {
             if (result) {
                 this.lexiconClient.deleteLexicon(this.lexiconId).subscribe(deleted => {
                     if (deleted) {
-                        this.router.navigate(['/']);
+                        this.router.navigate(['/app/']);
                     } else {
                         console.log("Failed to delete lexicon");
                     }
