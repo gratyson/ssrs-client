@@ -111,7 +111,7 @@ export class LexiconWordRowEditBatchComponent {
 
             this.wordClient.loadWordsBatch(this.lexiconId, this.batchSize, this.offset + this.newWordOffsetAdjustment, this.lastWord, this.currentFilters).subscribe(words => {
                 this.words = words;
-                this.hasMore = words.length === this.batchSize;
+                this.hasMore = words.length >= this.batchSize;
                 this.loadReviewHistories();
             });
 
