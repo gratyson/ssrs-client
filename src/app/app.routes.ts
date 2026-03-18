@@ -11,6 +11,7 @@ import { ReviewSessionComponent } from "./review/components/session-container/re
 import { LexiconSummaryComponent } from "./lexicon/components/lexicon-summary/lexicon-summary.component";
 import { EditUserSettingsComponent } from "./user-config/edit-user-settings/edit-user-settings.component";
 import { UserNotepadComponent } from "./user-config/user-scratch-pad/user-notepad.component";
+import { ChangePasswordComponent } from "./security/change-password/change-password.component";
 
 const loginGuardFunction: CanActivateChildFn = (
     route: ActivatedRouteSnapshot,
@@ -39,5 +40,6 @@ export const routes: Route[] = [
     { path: "app/notepad" , component: UserNotepadComponent, canActivate: [loginGuardFunction] },
     { path: "app/login", component: LoginComponent },
     { path: "app/register", component: RegisterComponent },
+    { path: "app/changePassword", component: ChangePasswordComponent },
     { path: '',   redirectTo: '/app', pathMatch: 'full' },
 ];

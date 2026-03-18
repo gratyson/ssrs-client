@@ -19,10 +19,6 @@ export class AppHeaderComponent {
     authClient: AuthClient = inject(AuthClient);
     router: Router = inject(Router);
 
-    onChangePasswordClick(event: Event) {
-        alert('Not yet implemented.');
-    }
-
     onLogoutClick(event: Event): void {
         this.authClient.logout().subscribe(() => { 
             window.location.reload();

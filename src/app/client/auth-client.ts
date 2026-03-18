@@ -9,6 +9,7 @@ const LOGIN_ENDPOINT: string = "auth/login";
 const LOGOUT_ENDPOINT: string = "auth/logout";
 const CAN_REGISTER_ENDPOINT: string = "auth/canRegister";
 const REGISTER_ENDPOINT: string = "auth/register";
+const CHANGE_PASSWORD_ENDPOINT: string = "auth/changePassword";
 
 @Injectable({providedIn: "root"})
 export class AuthClient {
@@ -49,6 +50,13 @@ export class AuthClient {
 
         return this.httpClient.post<RegisterResponse>(url, JSON.stringify({ "username": username, "password": password, "reenterPassword": reenterPassword}), this.httpOptions).pipe(catchError(handleError<RegisterResponse>("register", { success: false, errMsg: "Error occurred during registration" })));
     }
+
+    public changePassword(oldPassword: string, newPassword: string, reEnterNewPassword: string): Observable<ChangePasswordResponse> {
+        const url: string = environment.REST_ENDPOINT_URL + CHANGE_PASSWORD_ENDPOINT;
+
+        return this.httpClient.post<ChangePasswordResponse>(url, JSON.stringify({ "oldPassword": oldPassword, "newPassword": newPassword, "reEnterNewPassword": reEnterNewPassword}), this.httpOptions)
+                .pipe(catchError(handleError("changePassword", { success: false, errMsg: "Error occurring while attempting password change" })));
+    }
 }
 
 function handleGetLoggedInUsernameError() {
@@ -74,6 +82,11 @@ export interface LoginResponse {
 }
 
 export interface RegisterResponse {
+    success: boolean,
+    errMsg: string
+}
+
+export interface ChangePasswordResponse {
     success: boolean,
     errMsg: string
 }
