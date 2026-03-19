@@ -11,5 +11,5 @@ export const environment = {
 
     DEFAULT_FONT_NAME: "Roboto",
 
-    AUTH_TOKEN_COOKIE_NAME: "accessToken-dev"
+    AUTH_TOKEN_COOKIE_NAME: "accessToken"
 };
