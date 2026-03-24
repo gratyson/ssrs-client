@@ -12,6 +12,8 @@ import { MatMenuModule } from "@angular/material/menu";
 import { UserConfigService } from "../../../user-config/user-config.service";
 import { ReviewTodaysWordsEarly } from "../../../user-config/user-config-setting";
 import { getEndOfDay } from "../../../util/date-util";
+import { AppHeaderService } from "../header/app-header-service";
+import { finalize } from "rxjs";
 
 @Component({
     selector: "lexicon-browse",
@@ -22,7 +24,8 @@ import { getEndOfDay } from "../../../util/date-util";
 export class LexiconBrowseComponent {
 
     private lexiconClient: LexiconClient = inject(LexiconClient);
-    private userConfigService: UserConfigService = inject(UserConfigService)
+    private userConfigService: UserConfigService = inject(UserConfigService);
+    private appHeaderService: AppHeaderService = inject(AppHeaderService);
     
     constructor(private dialog: MatDialog, 
                 private router: Router) { }
@@ -73,17 +76,17 @@ export class LexiconBrowseComponent {
     private loadAllLexicons(): void {
         let cutoff: Date | null = this.reviewTodaysWordsEarly ? getEndOfDay() : null;
 
-        this.lexiconClient.loadAllLexiconMetadataAndScheduledCounts(cutoff).subscribe((lexiconMetadataAndScheduledCounts) => {
+        this.appHeaderService.setShowLoadingBar(true, 250);
+        this.lexiconClient.loadAllLexiconMetadataAndScheduledCounts(cutoff).pipe(finalize(() => this.appHeaderService.setShowLoadingBar(false))).subscribe((lexiconMetadataAndScheduledCounts) => {
             this.lexiconMetadatas = [];
             this.scheduledReviewCounts = [];
             this.hasWordsToLearn = [];
-            
+
             lexiconMetadataAndScheduledCounts.forEach((lexiconMetadataAndScheduledCount) => {
                 this.lexiconMetadatas.push(lexiconMetadataAndScheduledCount.lexiconMetadata);
                 this.scheduledReviewCounts.push(lexiconMetadataAndScheduledCount.scheduledReviewCounts);
                 this.hasWordsToLearn.push(lexiconMetadataAndScheduledCount.hasWordsToLearn);
             });
-            
         });
     }
 

@@ -17,11 +17,12 @@ import { environment } from "../../../../environments/environment";
 import { LexiconWordRowEditBatchComponent } from "../lexicon-word-row-edit-batch/lexicon-word-row-edit-batch.component";
 import { ConfirmDialog } from "../../../util/confirm-dialog";
 import { Router } from "@angular/router";
-import { Observable, lastValueFrom, of } from "rxjs";
+import { Observable, finalize, lastValueFrom, of } from "rxjs";
 import { ViewReviewHistoryComponent } from "../view-review-history/view-review-history.component";
 import { WordWriter } from "../../import/word-writer";
 import { AdjustNextReviewTimeDialogComponent } from "../adjust-next-review-time-dialog/adjust-next-review-time-dialog.component";
 import { ReviewSessionClient } from "../../../client/review-session-client";
+import { AppHeaderService } from "../../../home/components/header/app-header-service";
 
 @Component({
     selector: "lexicon-edit",
@@ -37,6 +38,7 @@ export class LexiconEdit {
     private languageService: LanguageService = inject(LanguageService);
     private wordParse: WordParser = inject(WordParser);
     private wordWriter: WordWriter = inject(WordWriter);
+    private appHeaderService: AppHeaderService = inject(AppHeaderService);
 
     @ViewChild(LexiconWordRowEditBatchComponent) baseWordRowEditBatch: LexiconWordRowEditBatchComponent;
 
@@ -209,14 +211,14 @@ export class LexiconEdit {
 
         dialogRef.afterClosed().subscribe(result => { 
             if (result) {
-                this.lexiconClient.deleteLexicon(this.lexiconId).subscribe(deleted => {
+                this.appHeaderService.setShowLoadingBar(true);
+                this.lexiconClient.deleteLexicon(this.lexiconId).pipe(finalize(() => this.appHeaderService.setShowLoadingBar(false))).subscribe(deleted => {
                     if (deleted) {
                         this.router.navigate(['/app/']);
                     } else {
                         console.log("Failed to delete lexicon");
                     }
                 });
-                
             }
         });
     }

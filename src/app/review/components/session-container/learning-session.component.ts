@@ -1,7 +1,7 @@
 import { Component, Input, inject } from "@angular/core";
 import { UserConfigService } from "../../../user-config/user-config.service";
 import { WordReview } from "../../model/review-session";
-import { Observable, switchMap } from "rxjs";
+import { finalize, tap } from "rxjs";
 import { LexiconClient } from "../../../client/lexicon-client";
 import { ReviewContainerComponent } from "../review-container/review-container.component";
 import { ReviewSessionClient } from "../../../client/review-session-client";
@@ -14,7 +14,9 @@ import { WordsToLearnCount, WordsToLearnIntroductionBatchSize, WordsToLearnTests
                           [reviewWords]="reviewWords" 
                           [lexiconId]="lexiconId" 
                           [introductionBatchSize]="introductionBatchSize" 
-                          [testsBetweenIntroduction]="testsBetweenIntroduction"/>`,
+                          [testsBetweenIntroduction]="testsBetweenIntroduction"
+                          [isLoading]="isLoading" />
+    `,
     imports: [ReviewContainerComponent]
 })
 export class LearningSessionComponent {
@@ -29,6 +31,7 @@ export class LearningSessionComponent {
     title: string = "Learning Lexicon";
     introductionBatchSize: number = 0;
     testsBetweenIntroduction: number = 0;
+    isLoading: boolean = false;
 
     private lexiconName: string;
     private wordCnt: number;
@@ -38,20 +41,18 @@ export class LearningSessionComponent {
             this.lexiconName = lexiconMetadata.title;
             this.title = this.buildTitle();
         });
-        this.getReviewWords().subscribe((reviewWords) => {
-            this.reviewWords = reviewWords;
-            this.wordCnt = reviewWords.length;
-            this.title = this.buildTitle();
+
+        this.isLoading = true;
+        this.userConfigService.getCurrentConfigValue(WordsToLearnCount).pipe(tap({ error: () => this.isLoading = false })).subscribe((wordCnt) => {
+            this.reviewSessionClient.generateLearningSession(this.lexiconId, wordCnt).pipe(finalize(() => this.isLoading = false)).subscribe((reviewWords) => {
+                this.reviewWords = reviewWords;
+                this.wordCnt = reviewWords.length;
+                this.title = this.buildTitle();
+            });
         });
 
         this.userConfigService.getCurrentConfigValue(WordsToLearnIntroductionBatchSize).subscribe(introductionBatchSize => this.introductionBatchSize = introductionBatchSize);
         this.userConfigService.getCurrentConfigValue(WordsToLearnTestsBetweenIntroduction).subscribe(testsBetweenIntroduction => this.testsBetweenIntroduction = testsBetweenIntroduction);
-    }
-
-    private getReviewWords(): Observable<WordReview[][]> {
-        return this.userConfigService.getCurrentConfigValue(WordsToLearnCount).pipe(switchMap((wordCnt) =>  {
-            return this.reviewSessionClient.generateLearningSession(this.lexiconId, wordCnt)
-        }));
     }
 
     private buildTitle(): string {

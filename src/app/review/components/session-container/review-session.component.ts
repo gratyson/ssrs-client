@@ -5,13 +5,15 @@ import { MaxWordsToReviewPerSession } from "../../../user-config/user-config-set
 import { WordReview } from "../../model/review-session";
 import { ReviewContainerComponent } from "../review-container/review-container.component";
 import { LexiconClient } from "../../../client/lexicon-client";
+import { finalize, tap } from "rxjs";
 
 @Component({
     selector: "review-session",
     template: `
         <review-container [reviewTitle]="title" 
                           [reviewWords]="reviewWordsQueues" 
-                          [lexiconId]="lexiconId" />
+                          [lexiconId]="lexiconId" 
+                          [isLoading]="isLoading" />
     `,
     imports: [ReviewContainerComponent]
 })
@@ -27,6 +29,7 @@ export class ReviewSessionComponent {
 
     title: string = "Reviewing Lexicon";
     reviewWordsQueues: WordReview[][] = [];
+    isLoading = false;
 
     private lexiconName: string = "";
     private wordCnt: number = 0;
@@ -46,16 +49,16 @@ export class ReviewSessionComponent {
             this.title = this.buildTitle();
         });
 
-        this.userConfigService.getCurrentConfigValue(MaxWordsToReviewPerSession).subscribe((maxWordCnt) => {
-            this.reviewSessionClient.generateReviewSession(this.lexiconId, this.testRelationship, maxWordCnt, cutoffDate).subscribe((reviewWords) => {
+        this.isLoading = true;
+        this.userConfigService.getCurrentConfigValue(MaxWordsToReviewPerSession).pipe(tap({ error: () => this.isLoading = false })).subscribe((maxWordCnt) => {
+            this.reviewSessionClient.generateReviewSession(this.lexiconId, this.testRelationship, maxWordCnt, cutoffDate).pipe(finalize(() => this.isLoading = false)).subscribe((reviewWords) => {
                 this.wordCnt = reviewWords.length;
                 this.title = this.buildTitle();
                 
                 this.reviewWordsQueues = [];
                 reviewWords.forEach(reviewWord => this.reviewWordsQueues.push([reviewWord]));
-                
-            })
-        })
+            });
+        });
     }
 
     private buildTitle(): string {

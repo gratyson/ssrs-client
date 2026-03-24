@@ -20,7 +20,11 @@
                 <button mat-icon-button [class]="'header-icon-button' + (touchscreenMode ? ' header-icon-button-touchscreen' : '')" (click)="onClose()"><mat-icon>close</mat-icon></button>
             </div>
         </div>
-        <mat-progress-bar class="progress-bar" color="primary" mode="determinate" [value]="percentComplete" />
+        @if(isLoading) {
+            <mat-progress-bar class="progress-bar-primary-200" mode="indeterminate" />
+        } @else {
+            <mat-progress-bar class="progress-bar" color="primary" mode="determinate" [value]="percentComplete" />
+        }
     </div>
 
     <div class="review-body">
@@ -52,7 +56,9 @@
                     }
                 } @else {
                     @defer(on timer(1000)) {
-                        <div class="alert alert-warning">No words to review</div>
+                        @if (!isLoading) {
+                            <div class="alert alert-warning">No words to review</div>
+                        }
                     }
                 }
 

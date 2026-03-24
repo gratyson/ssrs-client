@@ -1,5 +1,9 @@
 .app-header {
     display: flex;
+    flex-direction: column;
+}
+.app-header-title {
+    display: flex;
     flex-direction: row;
     height: 3rem;
 }

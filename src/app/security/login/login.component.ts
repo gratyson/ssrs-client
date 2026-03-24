@@ -12,6 +12,8 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { CacheService } from "../../util/cache-service";
 import { USER_CONFIG_CACHE_KEY } from "../../user-config/user-config.service";
+import { AppHeaderService } from "../../home/components/header/app-header-service";
+import { finalize } from "rxjs";
 
 @Component({
     selector: "ssrs-login",
@@ -25,6 +27,7 @@ export class LoginComponent {
     private authClient: AuthClient = inject(AuthClient);
     private cacheService: CacheService = inject(CacheService);
     private router: Router = inject(Router);
+    private appHeaderService: AppHeaderService = inject(AppHeaderService);
 
     canRegister = false;
 
@@ -53,7 +56,8 @@ export class LoginComponent {
         } else if(!this.password) {
             this.warningMessage = "Password is required";
         } else {
-            this.authClient.login(this.username, this.password).subscribe(response => {
+            this.appHeaderService.setShowLoadingBar(true, 100);
+            this.authClient.login(this.username, this.password).pipe(finalize(() => this.appHeaderService.setShowLoadingBar(false))).subscribe(response => {
                 if (response.success) {
                     this.cacheService.clearValue(USER_CONFIG_CACHE_KEY);
                     this.router.navigate(["/"]);

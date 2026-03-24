@@ -163,3 +163,10 @@ $incorrect-answer-near-miss-color: #f1a91f;
 .incorrect-answer-near-miss-color {
   color: $incorrect-answer-near-miss-color;
 }
+
+
+.progress-bar-primary-200 {
+    @include mat.progress-bar-overrides((
+      active-indicator-color: map.get($ssrs-primary, 200),
+    ));
+  }

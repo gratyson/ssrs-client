@@ -15,7 +15,7 @@ import { Word } from "../../../lexicon/model/word";
 import { AudioPlayerComponent } from "../../../audio/components/audio-player/audio-player.component";
 import { ReviewSessionClient } from "../../../client/review-session-client";
 import { ReviewSummaryComponent } from "../review-summary/review-summary.component";
-import { Router, RouterLink } from "@angular/router";
+import { Router } from "@angular/router";
 import { LanguageService } from "../../../language/language-service";
 import { Language } from "../../../language/language";
 import { SingleWordEditComponent } from "../single-word-edit/single-word-edit.component";
@@ -23,6 +23,7 @@ import { ReviewMode } from "../../model/review-mode";
 import { UserConfigService } from "../../../user-config/user-config.service";
 import { TouchscreenModeSetting } from "../../../user-config/user-config-setting";
 import { WordOverviewComponent } from "../word-overview/word-overview.component";
+import { AppHeaderService } from "../../../home/components/header/app-header-service";
 
 const PAUSE_BUTTON_ICON_RUNNING: string = "pause";
 const PAUSE_BUTTON_ICON_PAUSED: string = "play_arrow";
@@ -56,6 +57,7 @@ export class ReviewContainerComponent {
     @Input() reviewWords: WordReview[][];
     @Input() introductionBatchSize: number = 0;
     @Input() testsBetweenIntroduction: number = 0;
+    @Input() isLoading: boolean = false;
 
     currentWordReview: WordReview;
     language: Language | null = null;
