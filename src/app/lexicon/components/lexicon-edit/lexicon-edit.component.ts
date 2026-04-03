@@ -4,7 +4,7 @@ import { EMPTY_WORD_FILTER_OPTIONS, WordClient, WordFilterOptions } from "../../
 import { LexiconMetadata, WordReviewHistory } from "../../model/lexicon";
 import { LanguageService } from "../../../language/language-service";
 import { LexiconEditHeaderComponent } from "../lexicon-edit-header/lexicon-edit-header.component";
-import { Language, WordElement } from "../../../language/language";
+import { Language } from "../../../language/language";
 import { MatDialog } from "@angular/material/dialog";
 import { LexiconMetadataEditDialogComponent } from "../../../home/components/lexicon-metadata-edit-dialog/lexicon-metadata-edit-dialog.component";
 import { Word } from "../../model/word";
@@ -22,7 +22,7 @@ import { ViewReviewHistoryComponent } from "../view-review-history/view-review-h
 import { WordWriter } from "../../import/word-writer";
 import { AdjustNextReviewTimeDialogComponent } from "../adjust-next-review-time-dialog/adjust-next-review-time-dialog.component";
 import { ReviewSessionClient } from "../../../client/review-session-client";
-import { AppHeaderService } from "../../../home/components/header/app-header-service";
+import { AppHeaderService, LoadingBarPrecedence } from "../../../home/components/header/app-header-service";
 
 @Component({
     selector: "lexicon-edit",
@@ -211,8 +211,8 @@ export class LexiconEdit {
 
         dialogRef.afterClosed().subscribe(result => { 
             if (result) {
-                this.appHeaderService.setShowLoadingBar(true);
-                this.lexiconClient.deleteLexicon(this.lexiconId).pipe(finalize(() => this.appHeaderService.setShowLoadingBar(false))).subscribe(deleted => {
+                this.appHeaderService.showLoadingBar(this);
+                this.lexiconClient.deleteLexicon(this.lexiconId).pipe(finalize(() => this.appHeaderService.clearLoadingBar(this))).subscribe(deleted => {
                     if (deleted) {
                         this.router.navigate(['/app/']);
                     } else {

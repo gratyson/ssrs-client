@@ -167,6 +167,18 @@ $incorrect-answer-near-miss-color: #f1a91f;
 
 .progress-bar-primary-200 {
     @include mat.progress-bar-overrides((
-      active-indicator-color: map.get($ssrs-primary, 200),
+        active-indicator-color: map.get($ssrs-primary, 200),
     ));
-  }
+}
+.progress-bar-accent-200 {
+    @include mat.progress-bar-overrides((
+        active-indicator-color: map.get($ssrs-accent, 200),
+        track-color: map.get($ssrs-accent, 50)
+    ));
+}
+.progress-bar-warn-200 {
+    @include mat.progress-bar-overrides((
+        active-indicator-color: map.get($ssrs-warn, 200),
+        track-color: map.get($ssrs-warn, 50)
+    ));
+}

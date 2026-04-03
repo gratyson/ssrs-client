@@ -12,7 +12,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { CacheService } from "../../util/cache-service";
 import { USER_CONFIG_CACHE_KEY } from "../../user-config/user-config.service";
-import { AppHeaderService } from "../../home/components/header/app-header-service";
+import { AppHeaderService, LoadingBarPrecedence } from "../../home/components/header/app-header-service";
 import { finalize } from "rxjs";
 
 @Component({
@@ -56,8 +56,8 @@ export class LoginComponent {
         } else if(!this.password) {
             this.warningMessage = "Password is required";
         } else {
-            this.appHeaderService.setShowLoadingBar(true, 100);
-            this.authClient.login(this.username, this.password).pipe(finalize(() => this.appHeaderService.setShowLoadingBar(false))).subscribe(response => {
+            this.appHeaderService.showLoadingBar(this, LoadingBarPrecedence.Low, 100);
+            this.authClient.login(this.username, this.password).pipe(finalize(() => this.appHeaderService.clearLoadingBar(this))).subscribe(response => {
                 if (response.success) {
                     this.cacheService.clearValue(USER_CONFIG_CACHE_KEY);
                     this.router.navigate(["/"]);

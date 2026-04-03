@@ -12,7 +12,7 @@ import { MatMenuModule } from "@angular/material/menu";
 import { UserConfigService } from "../../../user-config/user-config.service";
 import { ReviewTodaysWordsEarly } from "../../../user-config/user-config-setting";
 import { getEndOfDay } from "../../../util/date-util";
-import { AppHeaderService } from "../header/app-header-service";
+import { AppHeaderService, LoadingBarPrecedence } from "../header/app-header-service";
 import { finalize } from "rxjs";
 
 @Component({
@@ -51,8 +51,7 @@ export class LexiconBrowseComponent {
             autoFocus: true,
         });
 
-        dialogRef.afterClosed().subscribe(result =>
-            {
+        dialogRef.afterClosed().subscribe(result => {
                 if (result) {
                     this.openLexicon(result as string);
                 }
@@ -76,8 +75,8 @@ export class LexiconBrowseComponent {
     private loadAllLexicons(): void {
         let cutoff: Date | null = this.reviewTodaysWordsEarly ? getEndOfDay() : null;
 
-        this.appHeaderService.setShowLoadingBar(true, 250);
-        this.lexiconClient.loadAllLexiconMetadataAndScheduledCounts(cutoff).pipe(finalize(() => this.appHeaderService.setShowLoadingBar(false))).subscribe((lexiconMetadataAndScheduledCounts) => {
+        this.appHeaderService.showLoadingBar(this, LoadingBarPrecedence.Low, 250);
+        this.lexiconClient.loadAllLexiconMetadataAndScheduledCounts(cutoff).pipe(finalize(() => this.appHeaderService.clearLoadingBar(this))).subscribe((lexiconMetadataAndScheduledCounts) => {
             this.lexiconMetadatas = [];
             this.scheduledReviewCounts = [];
             this.hasWordsToLearn = [];
