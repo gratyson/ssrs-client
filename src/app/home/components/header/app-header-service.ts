@@ -12,25 +12,25 @@ export class AppHeaderService {
     public loadingBarStatusChange: Observable<LoadingBarStatus> = this.loadingBarStatusSource.asObservable();
 
     public showLoadingBar(source: any, precedence: LoadingBarPrecedence = LoadingBarPrecedence.Low, delayMs: number = 0): void {
-        this.loadingBarStatus[this.getSourceName(source)] = precedence;
+        this.loadingBarStatus[this.sourceToString(source)] = precedence;
         setTimeout(() => this.loadingBarStatusSource.next(this.loadingBarStatus), delayMs);
     }
 
     public clearLoadingBar(source: any): void {
-        delete this.loadingBarStatus[this.getSourceName(source)];
+        delete this.loadingBarStatus[this.sourceToString(source)];
         setTimeout(() => this.loadingBarStatusSource.next(this.loadingBarStatus), CLEAR_LOADING_BAR_DELAY_MS);
     }
 
-    private getSourceName(source: any): string {
+    private sourceToString(source: any): string {
         if (source === null || source === undefined) {
             return "null";
         }
 
         if (typeof source !== 'object' && typeof source !== 'function') {
-            return "str" + String(source);
+            return "str-" + String(source);
         }
 
-        return "obj" + (source.constructor?.name ?? "unknown");
+        return "obj-" + (source.constructor?.name ?? "unknown");
     }
 }
 

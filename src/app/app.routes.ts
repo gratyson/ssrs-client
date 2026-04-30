@@ -20,13 +20,7 @@ const loginGuardFunction: CanActivateChildFn = (
     const userService: UserService = inject(UserService);
     const router = inject(Router);
     
-    return userService.refreshLoggedIn().pipe(map(isLoggedIn => {
-        if (!isLoggedIn) {
-            router.navigate([ 'app/login' ]);
-        }
-
-        return isLoggedIn;
-    }));
+    return userService.verifyLoggedIn();
 }
 
 export const routes: Route[] = [

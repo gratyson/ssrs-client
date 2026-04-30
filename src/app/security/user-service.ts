@@ -2,10 +2,12 @@ import { Injectable, inject } from "@angular/core";
 import { AuthClient } from "../client/auth-client";
 import { Observable, finalize, map } from "rxjs";
 import { AppHeaderService, LoadingBarPrecedence } from "../home/components/header/app-header-service";
+import { Router } from "@angular/router";
 
 @Injectable({providedIn: "root"})
 export class UserService {
 
+    private router: Router = inject(Router);
     private authClient: AuthClient = inject(AuthClient);
     private appHeaderService: AppHeaderService = inject(AppHeaderService);
 
@@ -24,5 +26,15 @@ export class UserService {
 
     public isLoggedIn(): boolean {
         return !!this.username;
+    }
+
+    public verifyLoggedIn(): Observable<boolean> {
+        return this.refreshLoggedIn().pipe(map(isLoggedIn => {
+            if (!isLoggedIn) {
+                this.router.navigate([ 'app/login' ]);
+            }
+
+            return isLoggedIn;
+        }));
     }
 }

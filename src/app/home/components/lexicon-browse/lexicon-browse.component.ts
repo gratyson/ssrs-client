@@ -14,6 +14,7 @@ import { ReviewTodaysWordsEarly } from "../../../user-config/user-config-setting
 import { getEndOfDay } from "../../../util/date-util";
 import { AppHeaderService, LoadingBarPrecedence } from "../header/app-header-service";
 import { finalize } from "rxjs";
+import { UserService } from "../../../security/user-service";
 
 @Component({
     selector: "lexicon-browse",
@@ -23,6 +24,7 @@ import { finalize } from "rxjs";
 })
 export class LexiconBrowseComponent {
 
+    private userService: UserService = inject(UserService);
     private lexiconClient: LexiconClient = inject(LexiconClient);
     private userConfigService: UserConfigService = inject(UserConfigService);
     private appHeaderService: AppHeaderService = inject(AppHeaderService);
@@ -59,7 +61,11 @@ export class LexiconBrowseComponent {
     }
 
     onRefresh(event: Event): void {
-        this.loadAllLexicons();
+        this.userService.verifyLoggedIn().subscribe(isLoggedIn => {
+            if (isLoggedIn) {
+                this.loadAllLexicons();
+            }
+        });
     }
 
     onReviewTodaysWordsEarly(): void {
@@ -88,7 +94,4 @@ export class LexiconBrowseComponent {
             });
         });
     }
-
-
-
 }
