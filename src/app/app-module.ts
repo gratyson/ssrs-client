@@ -5,6 +5,8 @@ import { Observable, of } from "rxjs";
 import { getCookieValue } from "./util/cookie-util";
 import { environment } from "../environments/environment";
 
+const COOKIE_DELIMITER: string = "|";
+
 @Injectable()
 export class XhrInterceptor implements HttpInterceptor {
 
@@ -31,7 +33,7 @@ export function authorizationIntercept(req: HttpRequest<any>, next: HttpHandlerF
 
     if (authToken) {
         const authedReq = req.clone({
-            headers: req.headers.set("Authorization", authToken)
+            headers: req.headers.set("Authorization", authToken.split(COOKIE_DELIMITER)[0])
         });
         return next(authedReq);
     }
