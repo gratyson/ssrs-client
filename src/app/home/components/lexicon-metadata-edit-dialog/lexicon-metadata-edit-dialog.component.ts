@@ -159,8 +159,8 @@ export class LexiconMetadataEditDialogComponent {
     private saveLexiconAndClose(): void {
         this.isShieldActive = true;
 
-        const imageFileExtenstion: string = this.newImageFile ? this.newImageFile.name.substring(this.newImageFile.name.lastIndexOf(".")) : "";
-        const lexiconToSave: LexiconMetadata = new LexiconMetadata(this.lexiconId, this.lexiconMetadata.owner, this.title, this.languageId, this.description, imageFileExtenstion);
+        const imageFileName: string = this.newImageFile ? this.lexiconId + this.newImageFile.name.substring(this.newImageFile.name.lastIndexOf(".")) : "";
+        const lexiconToSave: LexiconMetadata = new LexiconMetadata(this.lexiconId, this.lexiconMetadata.owner, this.title, this.languageId, this.description, imageFileName);
         this.lexiconClient.saveLexiconMetadata(lexiconToSave, this.newImageFile).subscribe(lexicon => {
             this.isShieldActive = false;
             this.dialogRef.close(lexicon.id);
