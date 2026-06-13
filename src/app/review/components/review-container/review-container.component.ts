@@ -12,7 +12,6 @@ import { ReviewPromptComponent } from "../review-prompt/review-prompt.component"
 import { ReviewTestResult, WordReview } from "../../model/review-session";
 import { ReviewQueueManager, WordReviewResult } from "../../queue/review-queue-manager";
 import { Word } from "../../../lexicon/model/word";
-import { AudioPlayerComponent } from "../../../audio/components/audio-player/audio-player.component";
 import { ReviewSessionClient } from "../../../client/review-session-client";
 import { ReviewSummaryComponent } from "../review-summary/review-summary.component";
 import { Router } from "@angular/router";
@@ -23,7 +22,7 @@ import { ReviewMode } from "../../model/review-mode";
 import { UserConfigService } from "../../../user-config/user-config.service";
 import { TouchscreenModeSetting } from "../../../user-config/user-config-setting";
 import { WordOverviewComponent } from "../word-overview/word-overview.component";
-import { AppHeaderService } from "../../../home/components/header/app-header-service";
+import { PreloadableAudioPlayerComponent } from "../../../audio/components/preloadable-audio-player/preloadable-audio-player.component";
 
 const PAUSE_BUTTON_ICON_RUNNING: string = "pause";
 const PAUSE_BUTTON_ICON_PAUSED: string = "play_arrow";
@@ -33,15 +32,15 @@ const CORRECT_NEAR_MISS_MULTIPLIER: number = 1.5;
     selector: "review-container",
     templateUrl: "review-container.html",
     styleUrl: "review-container.css",
-    imports: [FormsModule, ReactiveFormsModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, CountdownTimerComponent, ReviewPromptComponent, AudioPlayerComponent, MatProgressBarModule, ReviewSummaryComponent, SingleWordEditComponent, WordOverviewComponent],
+    imports: [FormsModule, ReactiveFormsModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, CountdownTimerComponent, ReviewPromptComponent, MatProgressBarModule, ReviewSummaryComponent, SingleWordEditComponent, WordOverviewComponent, PreloadableAudioPlayerComponent],
     host: { ["(document:keypress)"]: "onKeypress($event)", ["(document:keydown)"]: "onKeydown($event)" }
 })
 export class ReviewContainerComponent {
 
     @ViewChild(CountdownTimerComponent) countdownTimer: CountdownTimerComponent;
     @ViewChild(ReviewPromptComponent) reviewPrompt: ReviewPromptComponent;
-    @ViewChild(AudioPlayerComponent) wordAudioPlayer: AudioPlayerComponent;
     @ViewChild(ReviewSummaryComponent) reviewSummaryComponent: ReviewSummaryComponent;
+    @ViewChild(PreloadableAudioPlayerComponent) preloadableAudioPlayerComponent: PreloadableAudioPlayerComponent;
     
     @ViewChild("pauseButton") pauseButton: MatButton;
     @ViewChild("nextButton") nextButton: MatButton;
@@ -68,7 +67,6 @@ export class ReviewContainerComponent {
 
     audioWordId: string = "";
     selectedAudioPath: string = "";
-    preloadAudio: boolean = false;
 
     showSummary: boolean = false;
     showOveviewWordFromSummary: Word | null = null;
@@ -139,7 +137,7 @@ export class ReviewContainerComponent {
         }
         
         if (this.selectedAudioPath) {
-            this.wordAudioPlayer.playAudio();
+            this.preloadableAudioPlayerComponent.playAudio(this.selectedAudioPath);
         }
     }
 
@@ -258,7 +256,7 @@ export class ReviewContainerComponent {
             });
         }
 
-        this.setAudio(!this.playAudioOnLoad(wordReview.reviewMode));
+        this.setAudio(this.playAudioOnLoad(wordReview.reviewMode));
     }
 
     private updateProgressBar(): void {
@@ -266,23 +264,23 @@ export class ReviewContainerComponent {
         this.percentComplete = progress.completedTests / progress.totalTests * 100;
     }
 
-    private setAudio(preload: boolean): void {
+    private setAudio(autoplay: boolean): void {
         if (this.currentWordReview.word.audioFiles && this.currentWordReview.word.audioFiles.length > 0) {
             const selectedAudioFileIndex = Math.floor(Math.random() * this.currentWordReview.word.audioFiles.length);
             if (this.selectedAudioPath === this.currentWordReview.word.audioFiles[selectedAudioFileIndex] && this.audioWordId === this.currentWordReview.word.id) {
-                if (!this.preloadAudio) {
-                    // If the audio is not changing, just play the existing audio, no need to try and change it
-                    this.wordAudioPlayer.playAudio();
+                if (autoplay) {
+                    // If auto is not changing, no need to preload anything, just handle autoplay
+                    this.preloadableAudioPlayerComponent.playAudio(this.selectedAudioPath);
                 }
             } else {
-                this.selectedAudioPath = this.currentWordReview.word.audioFiles[selectedAudioFileIndex];
                 this.audioWordId = this.currentWordReview.word.id;
-                this.preloadAudio = preload;
+                this.selectedAudioPath = this.currentWordReview.word.audioFiles[selectedAudioFileIndex];
+
+                this.preloadableAudioPlayerComponent.preloadAudio(this.selectedAudioPath, autoplay);
             }
         } else {
             this.audioWordId = ""
             this.selectedAudioPath = "";
-            this.preloadAudio = false;
         }
     }
 
@@ -336,7 +334,7 @@ export class ReviewContainerComponent {
                     this.reviewPrompt.resetFields()
                 }
 
-                this.wordAudioPlayer.stopAudio();
+                this.preloadableAudioPlayerComponent.stopAudio();
                 this.setCurrentWordReview(nextWordReview);
             }
         }

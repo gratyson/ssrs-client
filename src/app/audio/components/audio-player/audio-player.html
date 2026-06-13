@@ -1,6 +1,4 @@
-<button mat-icon-button [hidden]="hidden" (click)="playAudio()"><mat-icon>play_circle</mat-icon></button>
-@for (unused of audioFilePath; track $index) {
-    <audio controls class="audio-player" #audioPlayer preload=false [src]="audioFilePath[$index]" (canplay)="onCanPlay()">
-        <source [src]="audioFilePath[$index]" [type]="audioMimeType[$index]">
-    </audio>
-}
+<button mat-icon-button (click)="playAudio()"><mat-icon>play_circle</mat-icon></button>
+<audio controls class="audio-player" #audioPlayer [src]="audioFilePath">
+    <source [src]="audioFilePath" [type]="audioMimeType">
+</audio>

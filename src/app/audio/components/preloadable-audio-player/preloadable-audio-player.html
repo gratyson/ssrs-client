@@ -1,0 +1,7 @@
+<div class="preloaded-audio">
+    @for (unused of audioFilePaths; track $index) {
+        <audio controls class="audio-player" #audioPlayer preload="auto" [src]="audioFilePaths[$index]" (canplay)="onCanPlay($index)">
+            <source [src]="audioFilePaths[$index]" [type]="audioMimeTypes[$index]">
+        </audio>
+    }
+</div>
