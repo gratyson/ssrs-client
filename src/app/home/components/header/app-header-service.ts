@@ -6,22 +6,25 @@ const CLEAR_LOADING_BAR_DELAY_MS: number = 50;  // short delay before clearing t
 @Injectable({providedIn: "root"})
 export class AppHeaderService {
     
+    private instanceIdMap: WeakMap<Function, number> = new WeakMap<Function, number>();
+    private instanceIdCtr: number = 0;
+
     private loadingBarStatus: LoadingBarStatus = {};
     private loadingBarStatusSource: BehaviorSubject<LoadingBarStatus> = new BehaviorSubject<LoadingBarStatus>({});
 
     public loadingBarStatusChange: Observable<LoadingBarStatus> = this.loadingBarStatusSource.asObservable();
 
     public showLoadingBar(source: any, precedence: LoadingBarPrecedence = LoadingBarPrecedence.Low, delayMs: number = 0): void {
-        this.loadingBarStatus[this.sourceToString(source)] = precedence;
+        this.loadingBarStatus[this.sourceToKey(source)] = precedence;
         setTimeout(() => this.loadingBarStatusSource.next(this.loadingBarStatus), delayMs);
     }
 
     public clearLoadingBar(source: any): void {
-        delete this.loadingBarStatus[this.sourceToString(source)];
+        delete this.loadingBarStatus[this.sourceToKey(source)];
         setTimeout(() => this.loadingBarStatusSource.next(this.loadingBarStatus), CLEAR_LOADING_BAR_DELAY_MS);
     }
 
-    private sourceToString(source: any): string {
+    private sourceToKey(source: any): string {
         if (source === null || source === undefined) {
             return "null";
         }
@@ -30,7 +33,15 @@ export class AppHeaderService {
             return "str-" + String(source);
         }
 
-        return "obj-" + (source.constructor?.name ?? "unknown");
+        return "obj-" + this.getinstanceId(source);
+    }
+
+    private getinstanceId(source: any): number {
+        if (!this.instanceIdMap.has(source)) {
+            this.instanceIdMap.set(source, ++this.instanceIdCtr);
+        }
+
+        return this.instanceIdMap.get(source) ?? -1;
     }
 }
 
