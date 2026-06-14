@@ -7,6 +7,12 @@ import { Language } from "../../../language/language";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { WordReviewHistory } from "../../model/lexicon";
 import { WordReviewHistoryClient } from "../../../client/word-review-history-client";
+import { finalize } from "rxjs";
+import { AppHeaderService, LoadingBarPrecedence } from "../../../home/components/header/app-header-service";
+
+const LOADING_BAR_DELAY_MS: number = 150;
+const LOAD_WORDS_SOURCE_IDENTIFIER: string = "LexiconWordRowEditBatchComponent-loadSource";
+const LOAD_HISTORY_SOURCE_IDENTIFIER: string = "LexiconWordRowEditBatchComponent-loadHistory";
 
 @Component({
     selector: "word-row-edit-batch",
@@ -18,6 +24,7 @@ export class LexiconWordRowEditBatchComponent {
 
     private wordClient: WordClient = inject(WordClient);
     private wordReviewHistoryClient: WordReviewHistoryClient = inject(WordReviewHistoryClient);
+    private appHeaderService: AppHeaderService = inject(AppHeaderService);
 
     @ViewChild(LexiconWordRowEditBatchComponent) childWordRowEditBatch: LexiconWordRowEditBatchComponent;
 
@@ -109,7 +116,8 @@ export class LexiconWordRowEditBatchComponent {
         if (this.batchSize) {
             this.words = [];
 
-            this.wordClient.loadWordsBatch(this.lexiconId, this.batchSize, this.offset + this.newWordOffsetAdjustment, this.lastWord, this.currentFilters).subscribe(words => {
+            this.appHeaderService.showLoadingBar(LOAD_WORDS_SOURCE_IDENTIFIER, LoadingBarPrecedence.Low, LOADING_BAR_DELAY_MS);
+            this.wordClient.loadWordsBatch(this.lexiconId, this.batchSize, this.offset + this.newWordOffsetAdjustment, this.lastWord, this.currentFilters).pipe(finalize(() => this.appHeaderService.clearLoadingBar(LOAD_WORDS_SOURCE_IDENTIFIER))).subscribe(words => {
                 this.words = words;
                 this.hasMore = words.length >= this.batchSize;
                 this.loadReviewHistories();
@@ -143,7 +151,8 @@ export class LexiconWordRowEditBatchComponent {
     }
 
     private loadReviewHistories(): void {
-        this.wordReviewHistoryClient.getWordReviewHistoryBatch(this.lexiconId, this.words.map<string>(word => word.id)).subscribe((reviewHistoryList) => {
+        this.appHeaderService.showLoadingBar(LOAD_HISTORY_SOURCE_IDENTIFIER, LoadingBarPrecedence.Low, LOADING_BAR_DELAY_MS);
+        this.wordReviewHistoryClient.getWordReviewHistoryBatch(this.lexiconId, this.words.map<string>(word => word.id)).pipe(finalize(() => this.appHeaderService.clearLoadingBar(LOAD_HISTORY_SOURCE_IDENTIFIER))).subscribe((reviewHistoryList) => {
             this.reviewHistoryByWordId = {};
 
             for(let reviewHistory of reviewHistoryList) {
