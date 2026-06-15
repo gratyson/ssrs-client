@@ -33,10 +33,6 @@ export class PreloadableAudioPlayerComponent {
     
     playOnLoad: string = "";
 
-    public ngOnInit(): void {
-
-    }
-
     public preloadAudio(audioFileName: string, autoplay: boolean = false): void {
         if (autoplay) {
             this.playOnLoad = audioFileName;
@@ -57,11 +53,14 @@ export class PreloadableAudioPlayerComponent {
                 this.audioFileNameIndex[audioFileName] = newIdx;
             });
         }
+
     }
 
     public playAudio(audioFileName: string): void {
         if (!this.audioFileNameIndex.hasOwnProperty(audioFileName)) {
             this.preloadAudio(audioFileName);
+        } else {
+            this.markExistingAsMRU(this.audioFileNameIndex[audioFileName]);
         }
 
         this.pausePlayingAudio();
@@ -106,13 +105,15 @@ export class PreloadableAudioPlayerComponent {
         return idxToUse;
     }
 
-    private markExistingAsMRU(index: number) {        
-        for (let mruIdx = 0; mruIdx < PLAYER_COUNT; mruIdx++) {
-            if (this.mostRecentlyUsedQueue[mruIdx] === index) {
-                this.mostRecentlyUsedQueue.splice(mruIdx);
-                this.mostRecentlyUsedQueue.unshift(index);
+    private markExistingAsMRU(index: number) {   
+        if (this.mostRecentlyUsedQueue[0] !== index) {    
+            for (let mruIdx = 1; mruIdx < PLAYER_COUNT; mruIdx++) {
+                if (this.mostRecentlyUsedQueue[mruIdx] === index) {
+                    this.mostRecentlyUsedQueue.splice(mruIdx, 1);
+                    this.mostRecentlyUsedQueue.unshift(index);
 
-                break;
+                    break;
+                }
             }
         }
     }
